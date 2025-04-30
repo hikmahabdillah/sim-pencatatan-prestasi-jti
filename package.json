@@ -11,10 +11,8 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "@tailwindcss/vite": "^4.1.4",
         "preline": "^3.0.1",
         "sweetalert2": "^11.19.1",
-        "tailwindcss": "^4.1.4",
         "tailwindcss-animated": "^2.0.0"
     }
 }
