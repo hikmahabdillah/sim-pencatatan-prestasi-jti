@@ -21,19 +21,23 @@
     <!-- Argon CSS -->
     <link id="pagestyle" href="{{ asset('argon/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
 
-    {{-- @vite('resources/css/app.css') --}}
-    {{-- @vite('resources/js/app.js') --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
+    @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
 </head>
 
 <body class="{{ $class ?? '' }}">
 
-    <div class="min-height-300 bg-primary position-absolute w-100"></div>
-    <div class="position-absolute w-100 min-height-300 top-0"
-        style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
-        <span class="mask bg-primary opacity-6"></span>
-    </div>
+    @if (Request::is('/'))
+        <div class="min-height-300 bg-primary position-absolute w-100"></div>
+        <div class="position-absolute w-100 min-height-300 top-0"
+            style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
+            <span class="mask bg-primary opacity-6"></span>
+        </div>
+    @endif
 
     @include('layouts.sidebar')
+
 
     <main class="main-content border-radius-lg">
         @yield('content')
