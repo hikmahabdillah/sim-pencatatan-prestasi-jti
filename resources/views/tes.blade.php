@@ -1,10 +1,10 @@
-@extends('layouts.template', ['class' => 'g-sidenav-show bg-gray-100'])
+@extends('layouts.template', ['class' => 'g-sidenav-show bg-light', 'page' => 'prestasi-mahasiswa'])
 
 @section('content')
     @include('layouts.navbar', ['title' => 'Dashboard'])
-    <div class="container-fluid py-4">
-        <table id="prestasiTable" class="table table-bordered">
-            <thead>
+    <div class="container-fluid py-4 h-100 flex-grow-1">
+        <table id="prestasiTable" class="table table table-bordered table-striped table-hover table-responsive table-light">
+            <thead class="table-light">
                 <tr>
                     <th>Nama</th>
                     <th>Prestasi</th>

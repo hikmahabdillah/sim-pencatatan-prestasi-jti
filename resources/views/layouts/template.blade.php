@@ -24,6 +24,7 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
         @vite('resources/css/app.css')
         @vite('resources/js/app.js')
+        @stack('css')
     </head>
 
     <body class="{{ $class ?? '' }}">
@@ -38,7 +39,7 @@
 
         @include('layouts.sidebar')
 
-        <main class="main-content border-radius-lg">
+        <main class="main-content border-radius-lg d-flex flex-column min-vh-100 bg-light">
             @yield('content')
         </main>
 
@@ -49,6 +50,8 @@
         <script src="{{ asset('argon/assets/js/core/bootstrap.min.js') }}"></script>
         <script src="{{ asset('argon/assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
         <script src="{{ asset('argon/assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
+        {{-- <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script> --}}
 
         <script>
             var win = navigator.platform.indexOf('Win') > -1;

@@ -8,6 +8,14 @@
                 style="max-height: 60px!important; width: 60px" alt="main_logo">
             <span class="ms-1 fs-5 font-weight-bold">Talenti</span>
         </a>
+        <!-- Minimize Button -->
+        <div class="position-absolute end-4 top-105 d-none d-xl-block bg-white z-index-2">
+            <button
+                class="bg-white btn btn-sm btn-icon-only btn-rounded btn-outline-secondary mb-0 p-2 d-md-flex justify-content-md-center align-items-md-center"
+                id="minimizeSidebar">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+        </div>
     </div>
     <hr class="horizontal dark mt-4">
     <div class="collapse navbar-collapse w-auto" style="height: auto" id="sidenav-collapse-main">
@@ -165,3 +173,76 @@
         </ul>
     </div>
 </aside>
+
+<!-- JavaScript for Sidebar Toggle -->
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const minimizeBtn = document.getElementById('minimizeSidebar');
+            const sidebar = document.getElementById('sidenav-main');
+            const mainContent = document.querySelector('.main-content');
+            const navLinks = document.querySelectorAll('.nav-link-text');
+            const navHeaders = document.querySelectorAll('.nav-item h6');
+            const brandText = document.querySelector('.navbar-brand span');
+
+            minimizeBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('mini-sidebar');
+
+                // Toggle text visibility
+                navLinks.forEach(link => link.classList.toggle('d-none'));
+                navHeaders.forEach(header => header.classList.toggle('d-none'));
+                brandText.classList.toggle('d-none');
+
+                // Toggle icon
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-chevron-left');
+                icon.classList.toggle('fa-chevron-right');
+
+                // Toggle width of sidebar
+                if (sidebar.classList.contains('mini-sidebar')) {
+                    sidebar.style.width = '80px';
+                    // Apply margin only if screen width >= 1200px
+                    if (window.innerWidth >= 1200) {
+                        mainContent.style.setProperty('margin-left', '6.125rem', 'important');
+                    }
+                } else {
+                    sidebar.style.width = '';
+                    mainContent.style.setProperty('margin-left', '', 'important');
+                }
+
+                // Optional: reapply on resize
+                window.addEventListener('resize', () => {
+                    if (!sidebar.classList.contains('mini-sidebar')) return;
+                    if (window.innerWidth >= 1200) {
+                        mainContent.style.setProperty('margin-left', '6.125rem', 'important');
+                    } else {
+                        mainContent.style.setProperty('margin-left', '', 'important');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
+<!-- CSS for Sidebar -->
+@push('css')
+    <style>
+        /* Add these styles to your CSS */
+        .mini-sidebar .nav-link {
+            justify-content: center;
+        }
+
+        .mini-sidebar .icon {
+            margin-right: 0 !important;
+        }
+
+        .mini-sidebar .navbar-brand {
+            justify-content: center;
+        }
+
+        @media (min-width: 1200px) {
+            .mini-sidebar {
+                width: 80px !important;
+            }
+        }
+    </style>
+@endpush
