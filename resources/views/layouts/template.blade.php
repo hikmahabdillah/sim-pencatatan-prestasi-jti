@@ -27,7 +27,7 @@
         @stack('css')
     </head>
 
-    <body class="{{ $class ?? '' }}">
+    <body class="g-sidenav-show bg-light">
 
         @if (Request::is('/'))
             <div class="min-height-300 bg-primary position-absolute w-100"></div>

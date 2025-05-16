@@ -23851,6 +23851,99 @@ hr.horizontal.gray-light {
     border-top: 1px solid currentColor;
 }
 
+/* data tables Style */
+/* Table layout */
+table.dataTable {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    width: 100%;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Header */
+table.dataTable thead {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+table.dataTable thead th {
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    padding: 12px;
+}
+
+/* Row hover effect */
+table.dataTable tbody tr:hover {
+    background-color: #f1f3f5;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* Row cells */
+table.dataTable tbody td {
+    padding: 12px;
+    /* border-top: 1px solid #dee2e6; */
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Pagination buttons */
+.dt-paging-button {
+    background-color: #e9ecef;
+    border: none;
+    padding: 0.4em 0.9em !important;
+    margin: 0 2px;
+    /* border-radius: 8px; */
+    border-radius: 50% !important;
+    font-size: 16px;
+    /* color: #495057; */
+    transition: background 0.2s ease;
+}
+
+div.dt-container .dt-paging .dt-paging-button:hover:not(.disabled) {
+    background: #fb6340 !important;
+    color: #fff !important;
+    border-radius: 50% !important;
+    font-weight: bold;
+    padding: 0.4em 0.9em !important;
+    border: none !important;
+}
+
+div.dt-container .dt-paging nav .dt-paging-button.current {
+    background-color: #fb6340 !important;
+    color: #fff !important;
+    border-radius: 50% !important;
+    font-weight: bold;
+    padding: 0.4em 0.9em !important;
+}
+
+/* Search bar & dropdown */
+.dt-search input[type="search"],
+.dt-length select {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 10px !important;
+    background-color: #fff;
+    margin-left: 6px;
+}
+
+.dt-search label,
+.dt-length label {
+    font-weight: 500;
+    margin-right: 6px;
+    color: #495057;
+}
+
+/* Info text */
+.dt-info {
+    padding: 10px 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
 .timeline {
     position: relative;
 }

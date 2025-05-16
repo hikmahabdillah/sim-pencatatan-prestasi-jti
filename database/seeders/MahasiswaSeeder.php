@@ -22,7 +22,7 @@ class MahasiswaSeeder extends Seeder
                 'no_hp' => '6212341234',
                 'alamat' => 'Jalanan',
                 'id_prodi' => 1, // pastikan id_prodi = 1 sudah ada di tabel 'prodi'
-                'id_minatBakat' => 8, // pastikan id_minatBakat = 1 sudah ada di tabel 'minat_bakat'
+                'id_kategori' => 8, // pastikan id_kategori = 1 sudah ada di tabel 'minat_bakat'
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -34,7 +34,7 @@ class MahasiswaSeeder extends Seeder
                 'no_hp' => '6212341235',
                 'alamat' => 'Jalanan juga',
                 'id_prodi' => 2,
-                'id_minatBakat' => 12,
+                'id_kategori' => 6,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -46,7 +46,7 @@ class MahasiswaSeeder extends Seeder
                 'no_hp' => '6212341236',
                 'alamat' => 'Jalanan ujung',
                 'id_prodi' => 2,
-                'id_minatBakat' => 1,
+                'id_kategori' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
