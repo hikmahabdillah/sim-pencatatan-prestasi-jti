@@ -1,5 +1,4 @@
 <!-- Navbar -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl mt-3 mx-3 bg-primary"
     id="navbarBlur" data-scroll="false">
     <div class="container-fluid justify-content-between py-1 px-3">
@@ -11,38 +10,27 @@
             <h6 class="font-weight-bolder text-white mb-0">{{ $title }}</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-3 me-sm-4 flex-grow-0" id="navbar">
-            <div class="image">
-                <img src="{{ asset('image/vino.jpeg')}}" class="rounded-circle me-2" width="35" height="35" alt="User Image">
-            </div>
-            <div class="dropdown">
-                <a href="#" class="nav-link text-white font-weight-bold px-0 d-flex align-items-center"
-                    data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
-                    <i class="fa fa-user me-2 text-white"></i>
-                    <span>Username</span>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
-                    <li>
-                        <a href="#" class="dropdown-item">
-                            <i class="fa fa-user me-2"></i> Profile
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-item">
-                            <i class="fa-solid fa-trophy me-2"></i> Prestasi
-                        </a>
-                    </li>
-                    <li>
-                        <form method="POST" action="" id="logout-form">
-                            @csrf
-                            <button type="submit" class="dropdown-item d-flex align-items-center">
-                                <i class="fa fa-sign-out me-2"></i> Log out
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
+            <ul class="navbar-nav align-items-center justify-content-end gap-3">
+                <div class="dropdown" style="cursor: pointer;">
+                    <div class="text-white dropdown-toggle mb-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img src="{{ asset('image/vino.jpeg') }}" class="rounded-circle me-2" width="40" height="40"
+                            alt="User Image">
+                        Username
+                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="fa fa-user me-2"></i>Profile</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="fa-solid fa-trophy me-2"></i>Prestasi</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#"><i class="fa fa-sign-out me-2"></i>Log out</a>
+                        </li>
+                    </ul>
+                </div>
 
-            <ul class="navbar-nav  justify-content-end">
                 {{-- <li class="nav-item d-flex align-items-center">
                     <form role="form" method="post" action="" id="logout-form">
                         @csrf
@@ -53,7 +41,7 @@
                         </a>
                     </form>
                 </li> --}}
-                {{-- <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
                         <div class="sidenav-toggler-inner">
                             <i class="sidenav-toggler-line bg-white"></i>
@@ -62,7 +50,7 @@
                         </div>
                     </a>
                 </li>
-                <li class="nav-item px-3 d-flex align-items-center">
+                {{-- <li class="nav-item px-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-white p-0">
                         <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
                     </a>
