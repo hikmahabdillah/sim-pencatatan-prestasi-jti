@@ -21,6 +21,10 @@ Route::get('/tes', function () {
     return view('tes');
 });
 
+Route::get('/modal', function () {
+    return view('modal');
+});
+
 Route::get('/login', function () {
     return view('auth.login');
 });
