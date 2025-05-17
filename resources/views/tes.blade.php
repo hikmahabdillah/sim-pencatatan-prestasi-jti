@@ -80,28 +80,24 @@
             </div>
         </div>
         <button onclick="showSuccess()" class="btn btn-success mt-3">Tes SweetAlert</button>
-        <div class="container-fluid py-4 h-100 flex-grow-1">
-            <div class="card p-3">
-                    <form>
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="nama" class="form-label">Nama</label>
-                                <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan nama"
-                                    required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="prestasi" class="form-label">Prestasi</label>
-                                <input type="text" id="prestasi" name="prestasi" class="form-control"
-                                    placeholder="Masukkan prestasi" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </form>
-            </div>
-
-
+        <div class="card p-3">
+            <form>
+                @csrf
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nama" class="form-label">Nama</label>
+                        <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan nama" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="prestasi" class="form-label">Prestasi</label>
+                        <input type="text" id="prestasi" name="prestasi" class="form-control"
+                            placeholder="Masukkan prestasi" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </form>
         </div>
+
         @include('layouts.footer')
 @endsection
 
