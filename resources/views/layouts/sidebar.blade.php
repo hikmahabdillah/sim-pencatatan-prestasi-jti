@@ -22,9 +22,9 @@
         <ul class="navbar-nav">
             <!-- Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                <a class="nav-link active" href="#">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Dashboard</span>
@@ -34,8 +34,8 @@
             <!-- Profile -->
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Profile</span>
@@ -48,8 +48,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-trophy text-success text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Prestasi Mahasiswa</span>
@@ -57,8 +57,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-check-bold text-success text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Verifikasi Prestasi</span>
@@ -66,8 +66,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-chart-bar-32 text-success text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Laporan Prestasi</span>
@@ -80,8 +80,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-istanbul text-info text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Lomba</span>
@@ -89,8 +89,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-settings text-info text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Manajemen Lomba</span>
@@ -98,8 +98,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-notification-70 text-info text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Update Status Pendaftaran</span>
@@ -112,8 +112,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-hat-3 text-warning text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Manajemen Mahasiswa Bimbingan</span>
@@ -121,8 +121,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-badge text-warning text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Validasi Prestasi Mahasiswa</span>
@@ -135,8 +135,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-palette text-danger text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Minat Bakat</span>
@@ -149,8 +149,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-single-02 text-primary text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">User Management</span>
@@ -163,8 +163,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
-                    <div
-                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
                         <i class="ni ni-collection text-secondary text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Tables</span>
