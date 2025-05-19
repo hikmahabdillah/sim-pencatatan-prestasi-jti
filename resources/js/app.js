@@ -1,7 +1,4 @@
 import "./bootstrap";
-// jQuery
-import $ from "jquery";
-window.$ = window.jQuery = $;
 
 // Bootstrap Icons (CSS diimpor di app.css)
 

@@ -5609,7 +5609,7 @@ fieldset:disabled .btn {
     z-index: 2;
     color: #ea3005;
     background-color: #e9ecef;
-    border-color: #dee2e6;
+    /* border-color: #dee2e6; */
 }
 .page-link:focus {
     z-index: 3;
@@ -5649,7 +5649,7 @@ fieldset:disabled .btn {
 }
 
 .pagination-lg .page-link {
-    padding: 0.75rem 1.5rem;
+    /* padding: 0.75rem 1.5rem; */
     font-size: 1.125rem;
 }
 .pagination-lg .page-item:first-child .page-link {
@@ -23903,7 +23903,6 @@ table.dataTable tbody td {
 .dt-paging-button {
     background-color: #e9ecef;
     border: none;
-    padding: 0.4em 0.9em !important;
     margin: 0 2px;
     /* border-radius: 8px; */
     border-radius: 50% !important;
@@ -23911,14 +23910,17 @@ table.dataTable tbody td {
     /* color: #495057; */
     transition: background 0.2s ease;
 }
+div.dt-container .dt-paging .dt-paging-button {
+    padding: 0 !important;
+}
 
 div.dt-container .dt-paging .dt-paging-button:hover:not(.disabled) {
-    background: #fb6340 !important;
-    color: #fff !important;
+    /* background: #fb6340 !important;
+    color: #fff !important; */
     border-radius: 50% !important;
     font-weight: bold;
-    padding: 0.4em 0.9em !important;
     border: none !important;
+    padding: 0 !important;
 }
 
 div.dt-container .dt-paging nav .dt-paging-button.current {
@@ -26130,4 +26132,11 @@ pre[class*="language-"] {
     .ps {
         overflow: auto !important;
     }
+}
+
+.ellipsis {
+    white-space: nowrap; /* Jangan pindah ke baris baru */
+    overflow: hidden; /* Sembunyikan teks yang melebihi lebar */
+    text-overflow: ellipsis; /* Tambahkan titik-titik (...) */
+    max-width: 500px; /* Atur lebar maksimum kolom */
 }
