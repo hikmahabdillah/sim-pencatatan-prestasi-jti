@@ -84,5 +84,3 @@ Route::prefix('prodi')->group(function () {
     Route::get('/{id}/confirm_delete', [ProdiController::class, 'confirm_delete']);
     Route::delete('/{id}/delete', [ProdiController::class, 'delete']);
 });
-
-
