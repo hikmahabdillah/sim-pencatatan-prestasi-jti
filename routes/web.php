@@ -3,7 +3,6 @@
 use App\Http\Controllers\CobacrudController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
-use App\Models\KategoriModel;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,13 +45,11 @@ Route::prefix('cobacrud')->group(function () {
 });
 
 Route::prefix('kategori')->group(function () {
-    Route::get('/', [KategoriController::class, 'index']);
-    Route::post('/store', [KategoriController::class, 'store']);
-    Route::post('/list', [KategoriController::class, 'list']);
-    Route::get('/create', [KategoriController::class, 'create']);
-    Route::get('/{id}/show', [KategoriController::class, 'show']);
-    Route::get('/{id}/edit', [KategoriController::class, 'edit']);
-    Route::put('/{id}/update', [KategoriController::class, 'update']);
-    Route::get('/{id}/confirm_delete', [KategoriController::class, 'confirm_delete']);
-    Route::delete('/{id}/delete', [KategoriController::class, 'delete']);
+    Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
+    Route::get('/create_ajax', [KategoriController::class, 'create_ajax']);
+    Route::get('/{id}/show_ajax', [KategoriController::class, 'show_ajax']);
+    Route::post('/', [KategoriController::class, 'store_ajax'])->name('kategori.store_ajax');
+    Route::get('/{id}/edit_ajax', [KategoriController::class, 'edit_ajax'])->name('kategori.edit_ajax');
+    Route::put('/{id}', [KategoriController::class, 'update_ajax'])->name('kategori.update_ajax');
+    Route::delete('/{id}/delete_ajax', [KategoriController::class, 'destroy'])->name('kategori.destroy');
 });
