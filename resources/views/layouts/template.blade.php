@@ -6,7 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('argon/assets/img/apple-icon.png') }}">
         <link rel="icon" type="image/png" href="{{ asset('image/Logo talenti bg.jpg') }}">
-        <title>Talenti | Talenta JTI</title>
+        <title>Talenti | {{ $page ?? 'Talenta JTI' }}</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
         <!-- Fonts and icons -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -26,7 +28,6 @@
         {{-- link awesome --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         @vite('resources/css/app.css')
-        @vite('resources/js/app.js')
         @stack('css')
     </head>
 
@@ -49,12 +50,16 @@
         {{-- @include('components.fixed-plugin') --}}
 
         <!-- Core JS Files -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        @vite('resources/js/app.js')
         <script src="{{ asset('argon/assets/js/core/popper.min.js') }}"></script>
         <script src="{{ asset('argon/assets/js/core/bootstrap.min.js') }}"></script>
         <script src="{{ asset('argon/assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
         <script src="{{ asset('argon/assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
-        {{-- <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
-        <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script> --}}
+        <script src="https://cdn.datatables.net/2.3.0/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.3.0/js/dataTables.bootstrap5.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
         <script>
             var win = navigator.platform.indexOf('Win') > -1;
@@ -71,7 +76,14 @@
 
         <!-- Argon Dashboard JS -->
         <script src="{{ asset('argon/assets/js/argon-dashboard.js') }}"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        </script>
         @stack('js')
     </body>
 
