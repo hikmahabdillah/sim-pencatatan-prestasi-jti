@@ -3,6 +3,8 @@
 use App\Http\Controllers\CobacrudController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\ProdiController;
 use App\Models\KategoriModel;
 
 /*
@@ -56,3 +58,31 @@ Route::prefix('kategori')->group(function () {
     Route::get('/{id}/confirm_delete', [KategoriController::class, 'confirm_delete']);
     Route::delete('/{id}/delete', [KategoriController::class, 'delete']);
 });
+
+// Routes untuk PeriodeController
+Route::prefix('periode')->group(function () {
+    Route::get('/', [PeriodeController::class, 'index']);
+    Route::post('/store', [PeriodeController::class, 'store']);
+    Route::post('/list', [PeriodeController::class, 'list']);
+    Route::get('/create', [PeriodeController::class, 'create']);
+    Route::get('/{id}/show', [PeriodeController::class, 'show']);
+    Route::get('/{id}/edit', [PeriodeController::class, 'edit']);
+    Route::put('/{id}/update', [PeriodeController::class, 'update']);
+    Route::get('/{id}/confirm_delete', [PeriodeController::class, 'confirm_delete']);
+    Route::delete('/{id}/delete', [PeriodeController::class, 'delete']);
+});
+
+// Routes untuk ProdiController
+Route::prefix('prodi')->group(function () {
+    Route::get('/', [ProdiController::class, 'index']);
+    Route::post('/store', [ProdiController::class, 'store']);
+    Route::post('/list', [ProdiController::class, 'list']);
+    Route::get('/create', [ProdiController::class, 'create']);
+    Route::get('/{id}/show', [ProdiController::class, 'show']);
+    Route::get('/{id}/edit', [ProdiController::class, 'edit']);
+    Route::put('/{id}/update', [ProdiController::class, 'update']);
+    Route::get('/{id}/confirm_delete', [ProdiController::class, 'confirm_delete']);
+    Route::delete('/{id}/delete', [ProdiController::class, 'delete']);
+});
+
+
