@@ -100,8 +100,9 @@
 
                 <div class="form-group">
                     <label for="InputEmail">Email</label>
-                    <input type="email" name="email" class="form-control" id="InputEmail" placeholder="name@gmail.com"
-                        required>
+
+                    <input type="email" name="email" class="form-control" id="InputEmail" placeholder="name@gmail.com" required>
+
                 </div>
                 <div class="form-group">
                     <label for="select">Juara</label>
@@ -135,8 +136,9 @@
                 </div>
                 <div class="form-group">
                     <label for="nomor hp">Nomor Hp</label>
-                    <input type="tel" name="" class="form-control" id="nomor hp" placeholder="081234567890"
-                        required>
+
+                    <input type="tel" name="" class="form-control" id="nomor hp" placeholder="081234567890" required>
+
                 </div>
                 <div class="form-group">
                     <label for="nomor">Nomor</label>
@@ -152,8 +154,9 @@
                 </div>
                 <div class="form-group">
                     <label for="datetime">Jadwal Lomba</label>
-                    <input type="datetime-local" name="" class="form-control" value="2025-11-23T10:30:00"
-                        id="datetime" required>
+
+                    <input type="datetime-local" name="" class="form-control" value="2025-11-23T10:30:00" id="datetime" required>
+
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
@@ -165,7 +168,9 @@
                 <div class="form-group">
                     <label for="">Tingkat Lomba</label>
                     <div class="form-check">
-                        <input class="form-check-input" name="" type="checkbox" value="" id="checkbox1">
+
+                        <input class="form-check-input" name="" type="checkbox" value="" id="checkbox1" >
+
                         <label class="custom-control-label" for="checkbox1">kota</label>
                     </div>
                     <div class="form-check">
@@ -180,18 +185,17 @@
                 <div class="form-group">
                     <label for="">Tingkat Lomba</label>
                     <div class="form-check">
-                        <input class="form-check-input" name="radioDisabled" type="radio" value=""
-                            id="radio1" required>
+
+                        <input class="form-check-input" name="radioDisabled" type="radio" value="" id="radio1" required>
                         <label class="custom-control-label" for="radio1">kota</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" name="radioDisabled" type="radio" value=""
-                            id="radio2">
+                        <input class="form-check-input" name="radioDisabled" type="radio" value="" id="radio2">
                         <label class="custom-control-label" for="radio2">Provinsi</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" name="radioDisabled" type="radio" value=""
-                            id="radio3">
+                        <input class="form-check-input" name="radioDisabled" type="radio" value="" id="radio3">
+
                         <label class="custom-control-label" for="radio3">Nasional</label>
                     </div>
                 </div>
@@ -199,7 +203,9 @@
                     <label for="">Status</label>
                     <div class="form-check form-switch">
                         <label class="me-2 mb-0">Pending</label>
-                        <input class="me-0 ms-0 form-check-input" name="" type="checkbox">
+
+                        <input class="me-0 ms-0 form-check-input" name="" type="checkbox" >
+
                         <label class="ms-2 mb-0" for="statusSwitch">Done</label>
                     </div>
                 </div>

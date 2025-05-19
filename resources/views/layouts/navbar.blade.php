@@ -11,14 +11,14 @@
                             <li class="breadcrumb-item text-sm text-white active" aria-current="page">{{ $value }}
                             </li>
                         @else
-                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white"
-                                    href="#">{{ $value }}</a></li>
+                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="#">{{ $value }}</a></li>
                         @endif
                     @endforeach
                 @endisset
             </ol>
             @isset($breadcrumb->list)
-                <h6 class="font-weight-bolder text-white mb-0">{{ end($breadcrumb->list) }}</h6>{{-- mengambil elemen terakhir dari list(menu yang sedang aktif sekarang) --}}
+                <h6 class="font-weight-bolder text-white mb-0">{{ end($breadcrumb->list) }}</h6>{{-- mengambil elemen
+                terakhir dari list(menu yang sedang aktif sekarang) --}}
             @endisset
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-3 me-sm-4 flex-grow-0" id="navbar">
@@ -26,19 +26,22 @@
                 <div class="dropdown" style="cursor: pointer;">
                     <div class="text-white dropdown-toggle mb-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        <img src="{{ asset('image/vino.jpeg') }}" class="rounded-circle me-2" width="40"
-                            height="40" alt="User Image">
+                        <img src="{{ asset('image/vino.jpeg') }}" class="rounded-circle me-2" width="40" height="40"
+                            alt="User Image">
                         Username
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li>
-                            <a class="dropdown-item" href="#"><i class="fa fa-user me-2"></i>Profile</a>
+                            <a class="dropdown-item" href="#"><i
+                                    class="ni ni-single-02 text-primary text-sm opacity-10 me-2"></i>Profile</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#"><i class="fa-solid fa-trophy me-2"></i>Prestasi</a>
+                            <a class="dropdown-item" href="#"><i
+                                    class="ni ni-trophy text-primary text-sm opacity-10 me-2"></i></i>Prestasi</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#"><i class="fa fa-sign-out me-2"></i>Log out</a>
+                            <a class="dropdown-item" href="#"><i
+                                    class="ni ni-user-run text-primary text-sm opacity-10 me-2"></i>Log out</a>
                         </li>
                     </ul>
                 </div>
