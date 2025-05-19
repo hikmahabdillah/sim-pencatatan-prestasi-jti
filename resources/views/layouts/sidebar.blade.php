@@ -22,23 +22,53 @@
         <ul class="navbar-nav">
             <!-- Dashboard -->
             <li class="nav-item">
-                <a class="nav-link active" href="#">
+                <a class="nav-link active" href="/">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
                         <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Dashboard</span>
+                    <span class="nav-link-text ms-1">Dashboard(all user)</span>
                 </a>
             </li>
 
-            <!-- Profile -->
+            <!-- Administrasi -->
+            <li class="nav-item mt-3">
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Administrasi (admin)</h6>
+            </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/pengguna">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Pengguna">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Profile</span>
+                    <span class="nav-link-text ms-1">Manajemen Pengguna</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/mahasiswa">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Mahasiswa">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Manajemen Mahasiswa</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/dospem">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Dosen Pembimbing">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Manajemen Dosen Pembimbing</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Admin">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Manajemen Admin</span>
                 </a>
             </li>
 
@@ -47,127 +77,103 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Prestasi Mahasiswa</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/prestasi">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Prestasi Mahasiswa">
                         <i class="ni ni-trophy text-success text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Prestasi Mahasiswa</span>
+                    <span class="nav-link-text ms-1">Prestasi Mahasiswa(admin-dospem)</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/verifikasi-prestasi">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Verifikasi Prestasi">
                         <i class="ni ni-check-bold text-success text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Verifikasi Prestasi</span>
+                    <span class="nav-link-text ms-1">Verifikasi Prestasi(admin-dospem)</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/tingkat-prestasi">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Tingkat Prestasi">
                         <i class="ni ni-chart-bar-32 text-success text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Laporan Prestasi</span>
+                    <span class="nav-link-text ms-1">Manajemen Tingkat Prestasi(admin)</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/laporan-prestasi">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Laporan Prestasi">
+                        <i class="ni ni-chart-bar-32 text-success text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Laporan Prestasi(admin-mahasiswa)</span>
                 </a>
             </li>
 
             <!-- Kelompok Lomba -->
             <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Manajemen Lomba</h6>
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Lomba</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/lomba">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Lomba">
                         <i class="ni ni-istanbul text-info text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Lomba</span>
+                    <span class="nav-link-text ms-1">Lomba(dospem-mahasiswa)</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/manajemen-lomba">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Lomba">
                         <i class="ni ni-settings text-info text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Manajemen Lomba</span>
+                    <span class="nav-link-text ms-1">Manajemen Lomba(admin)</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/kategori">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
-                        <i class="ni ni-notification-70 text-info text-sm opacity-10"></i>
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Kategori">
+                        <i class="ni ni-settings text-info text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Update Status Pendaftaran</span>
-                </a>
-            </li>
-
-            <!-- Kelompok Bimbingan -->
-            <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Bimbingan</h6>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
-                        <i class="ni ni-hat-3 text-warning text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Manajemen Mahasiswa Bimbingan</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
-                        <i class="ni ni-badge text-warning text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Validasi Prestasi Mahasiswa</span>
-                </a>
-            </li>
-
-            <!-- Minat Bakat -->
-            <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Pengembangan</h6>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
-                        <i class="ni ni-palette text-danger text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Minat Bakat</span>
-                </a>
-            </li>
-
-            <!-- Administrasi -->
-            <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Administrasi</h6>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
-                        <i class="ni ni-single-02 text-primary text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">User Management</span>
+                    <span class="nav-link-text ms-1">Manajemen Kategori(admin)</span>
                 </a>
             </li>
 
             <!-- Lainnya -->
             <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Lainnya</h6>
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Lainnya (admin)</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/role">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Nama Menu">
-                        <i class="ni ni-collection text-secondary text-sm opacity-10"></i>
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Role">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Tables</span>
+                    <span class="nav-link-text ms-1">Manajemen Role</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/prodi">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Program Studi">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Manajemen Program Studi</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/periode">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Periode">
+                        <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Manajemen periode</span>
                 </a>
             </li>
         </ul>

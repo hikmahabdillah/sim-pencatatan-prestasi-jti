@@ -35,7 +35,11 @@
 </form>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
+        $.validator.addMethod("tahunAjaranPattern", function(value, element) {
+            return this.optional(element) || /^[0-9]{4}\/[0-9]{4}$/.test(value);
+        }, "Format tahun ajaran harus YYYY/YYYY");
+
         $("#form-edit").validate({
             rules: {
                 semester: {
@@ -43,23 +47,21 @@
                 },
                 tahun_ajaran: {
                     required: true,
-                    pattern: /^[0-9]{4}\/[0-9]{4}$/
+                    tahunAjaranPattern: true //custom validation method
                 }
             },
             messages: {
                 tahun_ajaran: {
-                    pattern: "Format tahun ajaran harus YYYY/YYYY"
+                    required: "Tahun ajaran harus diisi",
+                    tahunAjaranPattern: "Format harus YYYY/YYYY, contoh: 2023/2024"
                 }
             },
-            submitHandler: function (form) {
+            submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    success: function (response) {
+                    success: function(response) {
                         if (response.status) {
                             $('#myModal').modal('hide');
                             Swal.fire({
@@ -70,7 +72,7 @@
                             tablecrud.ajax.reload();
                         } else {
                             $('.error-text').text('');
-                            $.each(response.msgField, function (prefix, val) {
+                            $.each(response.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
                             });
                             Swal.fire({
@@ -84,14 +86,14 @@
                 return false;
             },
             errorElement: 'span',
-            errorPlacement: function (error, element) {
+            errorPlacement: function(error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: function (element, errorClass, validClass) {
+            highlight: function(element, errorClass, validClass) {
                 $(element).addClass('is-invalid');
             },
-            unhighlight: function (element, errorClass, validClass) {
+            unhighlight: function(element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
             }
         });
