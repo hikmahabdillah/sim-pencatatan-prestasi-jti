@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\TingkatPrestasiController;
 use App\Models\KategoriModel;
 
 /*
@@ -97,4 +98,17 @@ Route::prefix('role')->group(function () {
     Route::put('/{id}/update', [RoleController::class, 'update']);
     Route::get('/{id}/confirm_delete', [RoleController::class, 'confirm_delete']);
     Route::delete('/{id}/delete', [RoleController::class, 'delete']);
+});
+
+// Routes untuk TingkatPrestasiController
+Route::prefix('tingkat_prestasi')->group(function () {
+    Route::get('/', [TingkatPrestasiController::class, 'index']);
+    Route::post('/store', [TingkatPrestasiController::class, 'store']);
+    Route::post('/list', [TingkatPrestasiController::class, 'list']);
+    Route::get('/create', [TingkatPrestasiController::class, 'create']);
+    Route::get('/{id}/show', [TingkatPrestasiController::class, 'show']);
+    Route::get('/{id}/edit', [TingkatPrestasiController::class, 'edit']);
+    Route::put('/{id}/update', [TingkatPrestasiController::class, 'update']);
+    Route::get('/{id}/confirm_delete', [TingkatPrestasiController::class, 'confirm_delete']);
+    Route::delete('/{id}/delete', [TingkatPrestasiController::class, 'delete']);
 });
