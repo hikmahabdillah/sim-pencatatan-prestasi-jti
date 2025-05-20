@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CobacrudController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeriodeController;
@@ -83,4 +84,17 @@ Route::prefix('prodi')->group(function () {
     Route::put('/{id}/update', [ProdiController::class, 'update']);
     Route::get('/{id}/confirm_delete', [ProdiController::class, 'confirm_delete']);
     Route::delete('/{id}/delete', [ProdiController::class, 'delete']);
+});
+
+// Routes untuk RoleController
+Route::prefix('role')->group(function () {
+    Route::get('/', [RoleController::class, 'index']);
+    Route::post('/store', [RoleController::class, 'store']);
+    Route::post('/list', [RoleController::class, 'list']);
+    Route::get('/create', [RoleController::class, 'create']);
+    Route::get('/{id}/show', [RoleController::class, 'show']);
+    Route::get('/{id}/edit', [RoleController::class, 'edit']);
+    Route::put('/{id}/update', [RoleController::class, 'update']);
+    Route::get('/{id}/confirm_delete', [RoleController::class, 'confirm_delete']);
+    Route::delete('/{id}/delete', [RoleController::class, 'delete']);
 });
