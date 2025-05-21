@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('password', 255);
             $table->unsignedBigInteger('role_id')->index();
             $table->boolean('status_aktif')->default(true);
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->rememberToken();
             $table->timestamps();
 
