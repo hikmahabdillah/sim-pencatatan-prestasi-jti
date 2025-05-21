@@ -68,6 +68,14 @@
                     </select>
                     <div id="error-id_kategori" class="text-danger error-text"></div>
                 </div>
+                <div class="form-group">
+                    <label for="status_aktif" class="form-label">Status Akun</label>
+                    <select id="status_aktif" name="status_aktif" class="form-control" required>
+                        <option value="1" {{ $data->pengguna->status_aktif ? 'selected' : '' }}>Aktif</option>
+                        <option value="0" {{ !$data->pengguna->status_aktif ? 'selected' : '' }}>Nonaktif</option>
+                    </select>
+                    <div id="error-status_aktif" class="text-danger error-text"></div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Kembali</button>
@@ -93,6 +101,9 @@
                     digits: true,
                     min: 2000,
                     max: {{ date('Y') }}
+                },
+                status_aktif: {
+                    required: true
                 },
                 email: {
                     required: true,

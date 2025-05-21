@@ -42,7 +42,7 @@ class MahasiswaController extends Controller
             ->addColumn('aksi', function ($mhs) {
                 $btn  = '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/show') . '\')" class="btn btn-info btn-sm" >Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/edit') . '\')" class="btn btn-warning btn-sm" >Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/confirm_delete') . '\')" class="btn btn-danger btn-sm" >Hapus</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/confirm_delete') . '\')" class="btn btn-danger btn-sm" >Nonaktifkan</button> ';
                 return $btn;
             })
             ->addColumn('prodi', function ($mhs) {
@@ -87,23 +87,23 @@ class MahasiswaController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Validation error',
+                'message' => 'Validasi gagal',
                 'errors' => $validator->errors()
             ], 422);
         }
 
         DB::beginTransaction();
         try {
-            // Create user account first
+            // Buat akun pengguna terlebih dahulu
             $pengguna = PenggunaModel::create([
                 'username' => $request->nim,
                 'password' => Hash::make($request->nim),
-                'role_id' => 3, // Role for mahasiswa
+                'role_id' => 3, // Role untuk mahasiswa
                 'status_aktif' => true,
                 'foto' => 'default.jpg'
             ]);
 
-            // Create mahasiswa record
+            // Buat data mahasiswa
             $mahasiswa = MahasiswaModel::create([
                 'nim' => $request->nim,
                 'id_pengguna' => $pengguna->id_pengguna,
@@ -120,14 +120,14 @@ class MahasiswaController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'Mahasiswa created successfully',
+                'message' => 'Data mahasiswa berhasil disimpan',
                 'data' => $mahasiswa
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => false,
-                'message' => 'Failed to create mahasiswa',
+                'message' => 'Gagal menyimpan data mahasiswa',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -137,7 +137,7 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = MahasiswaModel::with(['pengguna', 'prodi', 'kategori'])->find($id);
         if (!$mahasiswa) {
-            return redirect('/mahasiswa')->with('error', 'Mahasiswa not found');
+            return redirect('/mahasiswa')->with('error', 'Data mahasiswa tidak ditemukan');
         }
 
         $prodi = ProdiModel::all();
@@ -156,7 +156,7 @@ class MahasiswaController extends Controller
         if (!$mahasiswa) {
             return response()->json([
                 'status' => false,
-                'message' => 'Mahasiswa not found'
+                'message' => 'Data mahasiswa tidak ditemukan'
             ], 404);
         }
 
@@ -174,14 +174,14 @@ class MahasiswaController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Validation error',
+                'message' => 'Validasi gagal',
                 'errors' => $validator->errors()
             ], 422);
         }
 
         DB::beginTransaction();
         try {
-            // Update mahasiswa data
+            // Update data mahasiswa
             $mahasiswa->update([
                 'nim' => $request->nim,
                 'nama' => $request->nama,
@@ -193,23 +193,26 @@ class MahasiswaController extends Controller
                 'id_kategori' => $request->id_kategori
             ]);
 
-            // Update pengguna username if NIM changed
+            // Update username pengguna jika NIM berubah
             if ($mahasiswa->pengguna->username !== $request->nim) {
                 $mahasiswa->pengguna->update(['username' => $request->nim]);
             }
+
+            $mahasiswa->pengguna->update([
+                'status_aktif' => $request->status_aktif,
+            ]);
 
             DB::commit();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Mahasiswa updated successfully',
-                'data' => $mahasiswa
+                'message' => 'Data mahasiswa berhasil diperbarui'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => false,
-                'message' => 'Failed to update mahasiswa',
+                'message' => 'Gagal memperbarui data mahasiswa',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -219,7 +222,7 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = MahasiswaModel::find($id);
         if (!$mahasiswa) {
-            return redirect('/mahasiswa')->with('error', 'Mahasiswa not found');
+            return redirect('/mahasiswa')->with('error', 'Data mahasiswa tidak ditemukan');
         }
 
         return view('mahasiswa.delete', ['data' => $mahasiswa]);
@@ -231,7 +234,7 @@ class MahasiswaController extends Controller
         if (!$mahasiswa) {
             return response()->json([
                 'status' => false,
-                'message' => 'Mahasiswa not found'
+                'message' => 'Data mahasiswa tidak ditemukan'
             ], 404);
         }
 
@@ -239,23 +242,24 @@ class MahasiswaController extends Controller
         try {
             $id_pengguna = $mahasiswa->id_pengguna;
 
-            // Delete mahasiswa first
-            $mahasiswa->delete();
-
-            // Then delete associated pengguna
-            PenggunaModel::where('id_pengguna', $id_pengguna)->delete();
+            $pengguna = PenggunaModel::find($id_pengguna);
+            if ($pengguna) {
+                $pengguna->update([
+                    'status_aktif' => false,
+                ]);
+            }
 
             DB::commit();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Mahasiswa deleted successfully'
+                'message' => 'Data mahasiswa berhasil dinonaktifkan'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => false,
-                'message' => 'Failed to delete mahasiswa',
+                'message' => 'Gagal menonaktifkan data mahasiswa',
                 'error' => $e->getMessage()
             ], 500);
         }
