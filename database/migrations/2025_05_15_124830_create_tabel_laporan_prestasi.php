@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('laporan_prestasi', function (Blueprint $table) {
             $table->id('id_laporan');
-            $table->string('nim',20)->index();
+            $table->unsignedBigInteger('id_mahasiswa')->index();
             $table->string('nama_mahasiswa');
             $table->unsignedBigInteger('prodi')->index();
             $table->string('nama_lomba');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('status_verifikasi');
             $table->timestamps();
 
-            $table->foreign('nim')->references('nim')->on('mahasiswa');
+            $table->foreign('id_mahasiswa')->references('id_mahasiswa')->on('mahasiswa');
             $table->foreign('prodi')->references('id_prodi')->on('prodi');
             $table->foreign('kategori')->references('id_kategori')->on('kategori');
             $table->foreign('tingkat')->references('id_tingkat_prestasi')->on('tingkat_prestasi');
