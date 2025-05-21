@@ -84,8 +84,7 @@
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li>
-                            <a class="dropdown-item" href="{{ url(getRoleUrl() . '/' . getIdUser() . '/profile') }}"><i
-                                    class="ni ni-single-02 text-primary text-sm opacity-10 me-2"></i>Profile</a>
+                            <a class="dropdown-item" href="{{ url(getRoleUrl() . '/' . getIdUser() . '/profile') }}"><i class="ni ni-single-02 text-primary text-sm opacity-10 me-2"></i>Profile</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#"><i
