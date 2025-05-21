@@ -1,4 +1,35 @@
 <!-- Navbar -->
+@php
+    function getRoleUrl()
+    {
+        $role = auth()->user()->role_id;
+        switch ($role) {
+            case 1:
+                return 'admin';
+            case 2:
+                return 'dospem';
+            case 3:
+                return 'mahasiswa';
+            default:
+                return '';
+        }
+    }
+
+    function getRoleName()
+    {
+        $role = auth()->user()->role_id;
+        switch ($role) {
+            case 1:
+                return 'Admin';
+            case 2:
+                return 'Dosen Pembimbing';
+            case 3:
+                return 'Mahasiswa';
+            default:
+                return '';
+        }
+    }
+@endphp
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl mt-3 mx-3 bg-primary"
     id="navbarBlur" data-scroll="false">
     <div class="container-fluid justify-content-between py-1 px-3">
@@ -11,7 +42,8 @@
                             <li class="breadcrumb-item text-sm text-white active" aria-current="page">{{ $value }}
                             </li>
                         @else
-                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="#">{{ $value }}</a></li>
+                            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white"
+                                    href="#">{{ $value }}</a></li>
                         @endif
                     @endforeach
                 @endisset
@@ -26,13 +58,19 @@
                 <div class="dropdown" style="cursor: pointer;">
                     <div class="text-white dropdown-toggle mb-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        <img src="{{ asset('image/vino.jpeg') }}" class="rounded-circle me-2" width="40" height="40"
-                            alt="User Image">
-                        Username
+                        @php
+                            $foto = auth()->user()->foto
+                                ? asset('storage/' . auth()->user()->foto)
+                                : asset('image/fotoDefault.jpg');
+                        @endphp
+                        <img src="{{ $foto }}" class="rounded-circle me-2" style="object-fit: cover"
+                            width="40" height="40" alt="User Image">
+                        {{ getRoleName() }}
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li>
-                            <a class="dropdown-item" href="#"><i
+                            <a class="dropdown-item"
+                                href="{{ url(getRoleUrl() . '/' . auth()->user()->username . '/profile') }}"><i
                                     class="ni ni-single-02 text-primary text-sm opacity-10 me-2"></i>Profile</a>
                         </li>
                         <li>
@@ -40,7 +78,7 @@
                                     class="ni ni-trophy text-primary text-sm opacity-10 me-2"></i></i>Prestasi</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#"><i
+                            <a class="dropdown-item" href="/logout"><i
                                     class="ni ni-user-run text-primary text-sm opacity-10 me-2"></i>Log out</a>
                         </li>
                     </ul>

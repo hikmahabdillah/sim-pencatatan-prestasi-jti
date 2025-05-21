@@ -196,6 +196,7 @@ class MahasiswaController extends Controller
             // Update username pengguna jika NIM berubah
             if ($mahasiswa->pengguna->username !== $request->nim) {
                 $mahasiswa->pengguna->update(['username' => $request->nim]);
+                $mahasiswa->pengguna->update(['password' => Hash::make($request->nim)]);
             }
 
             $mahasiswa->pengguna->update([

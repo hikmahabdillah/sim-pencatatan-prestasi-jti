@@ -22,20 +22,20 @@
         <div id="myModal" class="modal fade animate shake" tabindex="-1" tingkat_prestasi="dialog" data-backdrop="static"
             data-keyboard="false" data-width="75%" aria-hidden="true"></div>
         @include('layouts.footer')
-@endsection
+    @endsection
 
     {{-- contoh implementasi data tables dan sweet alert --}}
     @push('js')
         <script>
             function modalAction(url = '') {
-                $('#myModal').load(url, function () {
+                $('#myModal').load(url, function() {
                     $('#myModal').modal('show');
                 });
             }
 
             let tablecrud;
 
-            $(document).ready(function () {
+            $(document).ready(function() {
                 tablecrud = $('#tingkat_prestasi-table').DataTable({
                     processing: true,
                     serverSide: true,
@@ -44,45 +44,28 @@
                         type: "POST",
                     },
                     columns: [{
-                        data: 'DT_RowIndex',
-                        className: 'text-center',
-                        orderable: false,
-                        searchable: false,
-                        width: "2%"
-                    },
-                    {
-                        data: 'nama_tingkat_prestasi',
-                        width: "20%"
-                    },
-                    {
-                        data: 'deskripsi',
-                        className: 'ellipsis',
-                        width: "45%",
-                        render: function (data, type, row) {
-                            if (!data) return '';
-                            const shortText = data.length > 50 ? data.substring(0, 50) + '...' :
-                                data;
-                            return `<span data-bs-toggle="tooltip" 
-                                data-bs-placement="top" 
-                                title="${data.replace(/"/g, '&quot;')}" 
-                                data-container="body" 
-                                data-animation="true">
-                            ${shortText}
-                            </span>`;
+                            data: 'DT_RowIndex',
+                            className: 'text-center',
+                            orderable: false,
+                            searchable: false,
+                            width: "2%"
+                        },
+                        {
+                            data: 'nama_tingkat_prestasi',
+                            width: "20%"
+                        },
+                        {
+                            data: 'aksi',
+                            className: 'text-center',
+                            orderable: false,
+                            searchable: false,
+                            width: "10%"
                         }
-                    },
-                    {
-                        data: 'aksi',
-                        className: 'text-center',
-                        orderable: false,
-                        searchable: false,
-                        width: "10%"
-                    }
                     ]
                 });
 
                 // Inisialisasi tooltip setiap kali tabel di-redraw
-                tablecrud.on('draw', function () {
+                tablecrud.on('draw', function() {
                     $('[data-bs-toggle="tooltip"]').tooltip();
                 });
             });
