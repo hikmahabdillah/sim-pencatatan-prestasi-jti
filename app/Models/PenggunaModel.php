@@ -33,6 +33,21 @@ class PenggunaModel extends Authenticatable
         return $this->belongsTo(RoleModel::class, 'role_id', 'role_id');
     }
 
+    public function mahasiswa()
+    {
+        return $this->hasOne(MahasiswaModel::class, 'id_pengguna', 'id_pengguna');
+    }
+
+    public function dosen()
+    {
+        return $this->hasOne(DosenPembimbingModel::class, 'id_pengguna', 'id_pengguna');
+    }
+
+    public function admin()
+    {
+        return $this->hasOne(AdminModel::class, 'id_pengguna', 'id_pengguna');
+    }
+
     public function getRoleName(): string
     {
         return $this->role->role_name ?? 'Unknown';

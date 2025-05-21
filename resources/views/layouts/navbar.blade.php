@@ -15,16 +15,31 @@
         }
     }
 
-    function getRoleName()
+    function getuserName()
     {
         $role = auth()->user()->role_id;
         switch ($role) {
             case 1:
-                return 'Admin';
+                return auth()->user()->admin?->nama_admin;
             case 2:
-                return 'Dosen Pembimbing';
+                return auth()->user()->dosen?->nama;
             case 3:
-                return 'Mahasiswa';
+                return auth()->user()->mahasiswa?->nama;
+            default:
+                return auth()->user()->username;
+        }
+    }
+
+    function getIdUser()
+    {
+        $role = auth()->user()->role_id;
+        switch ($role) {
+            case 1:
+                return auth()->user()->admin?->id_admin;
+            case 2:
+                return auth()->user()->dosen?->id_dospem;
+            case 3:
+                return auth()->user()->mahasiswa?->id_mahasiswa;
             default:
                 return '';
         }
@@ -65,12 +80,11 @@
                         @endphp
                         <img src="{{ $foto }}" class="rounded-circle me-2" style="object-fit: cover"
                             width="40" height="40" alt="User Image">
-                        {{ getRoleName() }}
+                        {{ getuserName() }}
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li>
-                            <a class="dropdown-item"
-                                href="{{ url(getRoleUrl() . '/' . auth()->user()->username . '/profile') }}"><i
+                            <a class="dropdown-item" href="{{ url(getRoleUrl() . '/' . getIdUser() . '/profile') }}"><i
                                     class="ni ni-single-02 text-primary text-sm opacity-10 me-2"></i>Profile</a>
                         </li>
                         <li>
