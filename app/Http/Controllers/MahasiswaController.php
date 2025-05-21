@@ -94,15 +94,15 @@ class MahasiswaController extends Controller
 
         DB::beginTransaction();
         try {
-            // Buat akun pengguna terlebih dahulu
+            // Create user account first
             $pengguna = PenggunaModel::create([
                 'username' => $request->nim,
                 'password' => Hash::make($request->nim),
-                'role_id' => 3, // Role untuk mahasiswa
+                'role_id' => 3, // Role for mahasiswa
                 'status_aktif' => true,
                 'foto' => 'default.jpg'
             ]);
-
+              
             // Buat data mahasiswa
             $mahasiswa = MahasiswaModel::create([
                 'nim' => $request->nim,
@@ -192,7 +192,7 @@ class MahasiswaController extends Controller
                 'id_prodi' => $request->id_prodi,
                 'id_kategori' => $request->id_kategori
             ]);
-
+          
             // Update username pengguna jika NIM berubah
             if ($mahasiswa->pengguna->username !== $request->nim) {
                 $mahasiswa->pengguna->update(['username' => $request->nim]);
@@ -201,7 +201,6 @@ class MahasiswaController extends Controller
             $mahasiswa->pengguna->update([
                 'status_aktif' => $request->status_aktif,
             ]);
-
             DB::commit();
 
             return response()->json([
@@ -241,7 +240,6 @@ class MahasiswaController extends Controller
         DB::beginTransaction();
         try {
             $id_pengguna = $mahasiswa->id_pengguna;
-
             $pengguna = PenggunaModel::find($id_pengguna);
             if ($pengguna) {
                 $pengguna->update([
