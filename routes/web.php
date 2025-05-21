@@ -4,6 +4,7 @@ use App\Http\Controllers\CobacrudController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\TingkatPrestasiController;
@@ -111,4 +112,17 @@ Route::prefix('tingkat_prestasi')->group(function () {
     Route::put('/{id}/update', [TingkatPrestasiController::class, 'update']);
     Route::get('/{id}/confirm_delete', [TingkatPrestasiController::class, 'confirm_delete']);
     Route::delete('/{id}/delete', [TingkatPrestasiController::class, 'delete']);
+});
+
+// Routes untuk MahasiswaController
+Route::prefix('mahasiswa')->group(function () {
+    Route::get('/', [MahasiswaController::class, 'index']);
+    Route::post('/store', [MahasiswaController::class, 'store']);
+    Route::post('/list', [MahasiswaController::class, 'list']);
+    Route::get('/create', [MahasiswaController::class, 'create']);
+    Route::get('/{id}/show', [MahasiswaController::class, 'show']);
+    Route::get('/{id}/edit', [MahasiswaController::class, 'edit']);
+    Route::put('/{id}/update', [MahasiswaController::class, 'update']);
+    Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
+    Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
 });
