@@ -1,0 +1,263 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\MahasiswaModel;
+use App\Models\ProdiModel;
+use App\Models\KategoriModel;
+use App\Models\PenggunaModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Hash;
+
+class MahasiswaController extends Controller
+{
+    public function index()
+    {
+        $activeMenu = 'mahasiswa';
+        $breadcrumb = (object)[
+            'title' => 'Data Mahasiswa',
+            'list'  => ['Mahasiswa']
+        ];
+
+        $prodi = ProdiModel::all();
+        $kategori = KategoriModel::all();
+
+        return view('mahasiswa.index', [
+            'breadcrumb' => $breadcrumb,
+            'activeMenu' => $activeMenu,
+            'prodi' => $prodi,
+            'kategori' => $kategori
+        ]);
+    }
+
+    public function list(Request $request)
+    {
+        $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->get();
+
+        return DataTables::of($mahasiswa)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($mhs) {
+                $btn  = '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/show') . '\')" class="btn btn-info btn-sm" >Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/edit') . '\')" class="btn btn-warning btn-sm" >Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/confirm_delete') . '\')" class="btn btn-danger btn-sm" >Hapus</button> ';
+                return $btn;
+            })
+            ->addColumn('prodi', function ($mhs) {
+                return $mhs->prodi->nama_prodi;
+            })
+            ->addColumn('kategori', function ($mhs) {
+                return $mhs->kategori->nama_kategori;
+            })
+            ->addColumn('status', function ($mhs) {
+                return $mhs->pengguna->status_aktif ? 'Aktif' : 'Non-Aktif';
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function show(string $id)
+    {
+        $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->find($id);
+        return view('mahasiswa.show', ['data' => $mahasiswa]);
+    }
+
+    public function create()
+    {
+        $prodi = ProdiModel::all();
+        $kategori = KategoriModel::all();
+        return view('mahasiswa.create', ['prodi' => $prodi, 'kategori' => $kategori]);
+    }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nim' => 'required|string|max:20|unique:mahasiswa,nim',
+            'nama' => 'required|string|max:200',
+            'angkatan' => 'required|integer',
+            'email' => 'required|email|unique:mahasiswa,email',
+            'no_hp' => 'required|string|max:20',
+            'alamat' => 'required|string',
+            'id_prodi' => 'required|exists:prodi,id_prodi',
+            'id_kategori' => 'required|exists:kategori,id_kategori'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Create user account first
+            $pengguna = PenggunaModel::create([
+                'username' => $request->nim,
+                'password' => Hash::make($request->nim),
+                'role_id' => 3, // Role for mahasiswa
+                'status_aktif' => true,
+                'foto' => 'default.jpg'
+            ]);
+
+            // Create mahasiswa record
+            $mahasiswa = MahasiswaModel::create([
+                'nim' => $request->nim,
+                'id_pengguna' => $pengguna->id_pengguna,
+                'nama' => $request->nama,
+                'angkatan' => $request->angkatan,
+                'email' => $request->email,
+                'no_hp' => $request->no_hp,
+                'alamat' => $request->alamat,
+                'id_prodi' => $request->id_prodi,
+                'id_kategori' => $request->id_kategori
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Mahasiswa created successfully',
+                'data' => $mahasiswa
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to create mahasiswa',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function edit(string $id)
+    {
+        $mahasiswa = MahasiswaModel::with(['pengguna', 'prodi', 'kategori'])->find($id);
+        if (!$mahasiswa) {
+            return redirect('/mahasiswa')->with('error', 'Mahasiswa not found');
+        }
+
+        $prodi = ProdiModel::all();
+        $kategori = KategoriModel::all();
+
+        return view('mahasiswa.edit', [
+            'data' => $mahasiswa,
+            'prodi' => $prodi,
+            'kategori' => $kategori
+        ]);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $mahasiswa = MahasiswaModel::find($id);
+        if (!$mahasiswa) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mahasiswa not found'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nim' => 'required|string|max:20|unique:mahasiswa,nim,' . $id . ',id_mahasiswa',
+            'nama' => 'required|string|max:200',
+            'angkatan' => 'required|integer',
+            'email' => 'required|email|unique:mahasiswa,email,' . $id . ',id_mahasiswa',
+            'no_hp' => 'required|string|max:20',
+            'alamat' => 'required|string',
+            'id_prodi' => 'required|exists:prodi,id_prodi',
+            'id_kategori' => 'required|exists:kategori,id_kategori'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Update mahasiswa data
+            $mahasiswa->update([
+                'nim' => $request->nim,
+                'nama' => $request->nama,
+                'angkatan' => $request->angkatan,
+                'email' => $request->email,
+                'no_hp' => $request->no_hp,
+                'alamat' => $request->alamat,
+                'id_prodi' => $request->id_prodi,
+                'id_kategori' => $request->id_kategori
+            ]);
+
+            // Update pengguna username if NIM changed
+            if ($mahasiswa->pengguna->username !== $request->nim) {
+                $mahasiswa->pengguna->update(['username' => $request->nim]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Mahasiswa updated successfully',
+                'data' => $mahasiswa
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to update mahasiswa',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function confirm_delete(string $id)
+    {
+        $mahasiswa = MahasiswaModel::find($id);
+        if (!$mahasiswa) {
+            return redirect('/mahasiswa')->with('error', 'Mahasiswa not found');
+        }
+
+        return view('mahasiswa.delete', ['data' => $mahasiswa]);
+    }
+
+    public function delete(string $id)
+    {
+        $mahasiswa = MahasiswaModel::find($id);
+        if (!$mahasiswa) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mahasiswa not found'
+            ], 404);
+        }
+
+        DB::beginTransaction();
+        try {
+            $id_pengguna = $mahasiswa->id_pengguna;
+
+            // Delete mahasiswa first
+            $mahasiswa->delete();
+
+            // Then delete associated pengguna
+            PenggunaModel::where('id_pengguna', $id_pengguna)->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Mahasiswa deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to delete mahasiswa',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+}

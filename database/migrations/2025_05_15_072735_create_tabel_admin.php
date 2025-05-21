@@ -6,25 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('admin', function (Blueprint $table) {
-            $table->string('id_admin',20)->primary()->index();
+            $table->id('id_admin');
+            $table->unsignedBigInteger('id_pengguna')->index();
+            $table->string('username', 150);
             $table->string('nama_admin', 150);
             $table->string('email');
             $table->timestamps();
 
             // Foreign key ke tabel pengguna
-            $table->foreign('id_admin')->references('id_pengguna')->on('pengguna');
+            $table->foreign('id_pengguna')->references('id_pengguna')->on('pengguna');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('admin');

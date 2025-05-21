@@ -6,15 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('pengguna', function (Blueprint $table) {
-            $table->string('id_pengguna', 20)->primary()->unique();
-            $table->string('password',20);
-            $table->unsignedBigInteger('role_id')->index(); 
+            $table->id('id_pengguna');
+            $table->string('username', 20)->unique();
+            $table->string('password', 255);
+            $table->unsignedBigInteger('role_id')->index();
             $table->boolean('status_aktif')->default(true);
             $table->string('foto');
             $table->rememberToken();
@@ -24,9 +22,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('pengguna');

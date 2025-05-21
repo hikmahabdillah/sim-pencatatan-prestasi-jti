@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('pendaftaran_lomba', function (Blueprint $table) {
             $table->id('id_pendaftaran');
-            $table->string('nim',20)->index();
+            $table->unsignedBigInteger('id_mahasiswa')->index();
             $table->unsignedBigInteger('id_lomba')->index();
             $table->date('tanggal_pendaftaran');
             $table->string('status_pendaftaran');
             $table->string('berkas_pendaftaran');
             $table->timestamps();
 
-            $table->foreign('nim')->references('nim')->on('mahasiswa');
+            $table->foreign('id_mahasiswa')->references('id_mahasiswa')->on('mahasiswa');
             $table->foreign('id_lomba')->references('id_lomba')->on('lomba');
         });
     }

@@ -26,7 +26,7 @@ class LombaSeeder extends Seeder
                 'tanggal_selesai' => '2025-04-07',
                 'deadline_pendaftaran' => '2025-03-31',
                 'status_verifikasi' => 'disetujui',
-                'added_by' => 'dosen', // Pastikan ada pengguna dengan id_pengguna = '22410001'
+                'added_by' => 1, // Pastikan ada pengguna dengan id_pengguna = '22410001'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -43,7 +43,7 @@ class LombaSeeder extends Seeder
                 'tanggal_selesai' => '2025-10-15',
                 'deadline_pendaftaran' => '2025-04-21',
                 'status_verifikasi' => 'disetujui',
-                'added_by' => 'dosen', // Pastikan ada pengguna dengan id_pengguna = '22410002'
+                'added_by' => 2, // Pastikan ada pengguna dengan id_pengguna = '22410002'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -60,7 +60,7 @@ class LombaSeeder extends Seeder
                 'tanggal_selesai' => '2025-01-25',
                 'deadline_pendaftaran' => '2025-01-18',
                 'status_verifikasi' => 'disetujui',
-                'added_by' => 'dosenfalse', // Pastikan ada pengguna dengan id_pengguna = '22410002'
+                'added_by' => 3, // Pastikan ada pengguna dengan id_pengguna = '22410002'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -77,7 +77,7 @@ class LombaSeeder extends Seeder
                 'tanggal_selesai' => '2026-03-03',
                 'deadline_pendaftaran' => '2026-02-20',
                 'status_verifikasi' => 'menunggu',
-                'added_by' => 'dosen', // Pastikan ada pengguna dengan id_pengguna = '22410002'
+                'added_by' => 4, // Pastikan ada pengguna dengan id_pengguna = '22410002'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -94,7 +94,7 @@ class LombaSeeder extends Seeder
                 'tanggal_selesai' => '2026-01-02',
                 'deadline_pendaftaran' => '2026-01-01',
                 'status_verifikasi' => 'ditolak',
-                'added_by' => 'dosenfalse', // Pastikan ada pengguna dengan id_pengguna = '22410002'
+                'added_by' => 5, // Pastikan ada pengguna dengan id_pengguna = '22410002'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
                 'created_at' => now(),
                 'updated_at' => now(),
