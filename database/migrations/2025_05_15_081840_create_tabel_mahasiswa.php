@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('no_hp', 20);
             $table->string('alamat');
+            $table->date('tanggal_lahir');
+            $table->enum('jenis_kelamin', ['L', 'P']);
             $table->unsignedBigInteger('id_prodi')->index();
             $table->unsignedBigInteger('id_kategori')->index();
             $table->timestamps();

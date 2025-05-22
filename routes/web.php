@@ -119,7 +119,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::post('/list', [MahasiswaController::class, 'list']);
         Route::get('/create', [MahasiswaController::class, 'create']);
         Route::get('/{id}/show', [MahasiswaController::class, 'show']);
-        Route::get('/{id}/profile', [MahasiswaController::class, 'profile']);
+        Route::get('/{id}/profile', [MahasiswaController::class, 'getProfile']);
+        Route::put('/{id}/update-foto', [MahasiswaController::class, 'updateFoto']);
         Route::get('/{id}/edit', [MahasiswaController::class, 'edit']);
         Route::put('/{id}/update', [MahasiswaController::class, 'update']);
         Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
