@@ -102,7 +102,7 @@ class MahasiswaController extends Controller
                 'status_aktif' => true,
                 'foto' => 'default.jpg'
             ]);
-              
+
             // Buat data mahasiswa
             $mahasiswa = MahasiswaModel::create([
                 'nim' => $request->nim,
@@ -192,7 +192,7 @@ class MahasiswaController extends Controller
                 'id_prodi' => $request->id_prodi,
                 'id_kategori' => $request->id_kategori
             ]);
-          
+
             // Update username pengguna jika NIM berubah
             if ($mahasiswa->pengguna->username !== $request->nim) {
                 $mahasiswa->pengguna->update(['username' => $request->nim]);
@@ -259,6 +259,79 @@ class MahasiswaController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Gagal menonaktifkan data mahasiswa',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getProfile($id)
+    {
+        $breadcrumb = (object)[
+            'title' => 'Data Mahasiswa',
+            'list'  => ['Mahasiswa']
+        ];
+        $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->where('id_mahasiswa', $id)->first();
+        if (!$mahasiswa) {
+            return redirect('/mahasiswa')->with('error', 'Data mahasiswa tidak ditemukan');
+        }
+
+        return view('mahasiswa.profile', [
+            'data' => $mahasiswa,
+            'breadcrumb' => $breadcrumb,
+        ]);
+    }
+
+    public function updateFoto($id)
+    {
+        $mahasiswa = MahasiswaModel::find($id);
+        if (!$mahasiswa) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data mahasiswa tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make(request()->all(), [
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $file = request()->file('foto');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+
+            // Hapus foto lama jika ada
+            $fotoLama = $mahasiswa->pengguna->foto;
+            $fotoPath = public_path('storage/' . $fotoLama);
+            if ($fotoLama && file_exists($fotoPath)) {
+                unlink($fotoPath);
+            }
+
+            // Simpan foto baru
+            $file->move(public_path('storage'), $filename);
+
+            // Update foto pengguna
+            $mahasiswa->pengguna->update(['foto' => $filename]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Foto berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal memperbarui foto',
                 'error' => $e->getMessage()
             ], 500);
         }

@@ -38,6 +38,14 @@
                                     {{ $data->no_hp }}
                                 </p>
                                 <p class="text-dark mb-0 text-wrap">
+                                    <strong>Jenis Kelamin: </strong>
+                                    {{ $data->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}
+                                </p>
+                                <p class="text-dark mb-0 text-wrap">
+                                    <strong>Tanggal Lahir: </strong>
+                                    {{ \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y') }}
+                                </p>
+                                <p class="text-dark mb-0 text-wrap">
                                     <strong>Alamat: </strong>
                                     {{ $data->alamat }}
                                 </p>

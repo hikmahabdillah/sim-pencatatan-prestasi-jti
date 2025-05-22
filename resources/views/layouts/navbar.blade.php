@@ -78,8 +78,8 @@
                                 ? asset('storage/' . auth()->user()->foto)
                                 : asset('image/fotoDefault.jpg');
                         @endphp
-                        <img src="{{ $foto }}" class="rounded-circle me-2" style="object-fit: cover"
-                            width="40" height="40" alt="User Image">
+                        <img src="{{ $foto }}" class="rounded-circle me-2" id="mini-profile"
+                            style="object-fit: cover" width="40" height="40" alt="User Image">
                         {{ getuserName() }}
                     </div>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
