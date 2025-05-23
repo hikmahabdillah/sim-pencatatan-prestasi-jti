@@ -6,33 +6,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('mahasiswa', function (Blueprint $table) {
-            $table->string('nim', 20)->unique()->index();
+            $table->id('id_mahasiswa'); // Primary key auto increment dengan nama spesifik
+            $table->string('nim', 20)->unique();
+            $table->unsignedBigInteger('id_pengguna')->index();
             $table->string('nama', 200);
             $table->integer('angkatan');
             $table->string('email');
             $table->string('no_hp', 20);
             $table->string('alamat');
+            $table->date('tanggal_lahir');
+            $table->enum('jenis_kelamin', ['L', 'P']);
             $table->unsignedBigInteger('id_prodi')->index();
             $table->unsignedBigInteger('id_kategori')->index();
             $table->timestamps();
 
-            //foreign key
+            // Foreign keys
             $table->foreign('id_prodi')->references('id_prodi')->on('prodi');
             $table->foreign('id_kategori')->references('id_kategori')->on('kategori');
-            // Foreign key ke tabel pengguna
-            $table->foreign('nim')->references('id_pengguna')->on('pengguna');
+            $table->foreign('id_pengguna')->references('id_pengguna')->on('pengguna');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('mahasiswa');

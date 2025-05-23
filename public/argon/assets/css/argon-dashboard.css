@@ -26140,3 +26140,11 @@ pre[class*="language-"] {
     text-overflow: ellipsis; /* Tambahkan titik-titik (...) */
     max-width: 500px; /* Atur lebar maksimum kolom */
 }
+
+.fotoPreview {
+    transition: all 0.3s ease-in-out;
+}
+
+.fotoPreview:hover {
+    transform: scale(1.1) rotate(10deg);
+}
