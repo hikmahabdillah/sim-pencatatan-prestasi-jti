@@ -22,21 +22,18 @@ class PenggunaSeeder extends Seeder
                 'password' => Hash::make('admin1'),
                 'role_id' => 1,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => 'admin2',
                 'password' => Hash::make('admin2'),
                 'role_id' => 1,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => 'admin3',
                 'password' => Hash::make('admin3'),
                 'role_id' => 1,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
 
             // Dosen Pembimbing
@@ -45,35 +42,30 @@ class PenggunaSeeder extends Seeder
                 'password' => Hash::make('0012345678'),
                 'role_id' => 2,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '0012345679',
                 'password' => Hash::make('0012345679'),
                 'role_id' => 2,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '0012345680',
                 'password' => Hash::make('0012345680'),
                 'role_id' => 2,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '0012345681',
                 'password' => Hash::make('0012345681'),
                 'role_id' => 2,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '0012345682',
                 'password' => Hash::make('0012345682'),
                 'role_id' => 2,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
 
             // Mahasiswa
@@ -82,49 +74,42 @@ class PenggunaSeeder extends Seeder
                 'password' => Hash::make('20210001'),
                 'role_id' => 3,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '20210002',
                 'password' => Hash::make('20210002'),
                 'role_id' => 3,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '20210003',
                 'password' => Hash::make('20210003'),
                 'role_id' => 3,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '20220001',
                 'password' => Hash::make('20220001'),
                 'role_id' => 3,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '20220002',
                 'password' => Hash::make('20220002'),
                 'role_id' => 3,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '20220003',
                 'password' => Hash::make('20220003'),
                 'role_id' => 3,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
             [
                 'username' => '20230001',
                 'password' => Hash::make('20230001'),
                 'role_id' => 3,
                 'status_aktif' => true,
-                'foto' => 'fotoDefault.jpg'
             ],
         ];
 

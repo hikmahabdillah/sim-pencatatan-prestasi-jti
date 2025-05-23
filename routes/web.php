@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CobacrudController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,98 @@ Route::get('/login', function () {
     return view('auth.login');
 });
 
+Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter {id}, maka harus berupa angka
+
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'postlogin']);
+Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+
+Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+    Route::middleware(['authorize:Admin'])->group(function () {
+        Route::prefix('kategori')->group(function () {
+            Route::get('/', [KategoriController::class, 'index']);
+            Route::post('/store', [KategoriController::class, 'store']);
+            Route::post('/list', [KategoriController::class, 'list']);
+            Route::get('/create', [KategoriController::class, 'create']);
+            Route::get('/{id}/show', [KategoriController::class, 'show']);
+            Route::get('/{id}/edit', [KategoriController::class, 'edit']);
+            Route::put('/{id}/update', [KategoriController::class, 'update']);
+            Route::get('/{id}/confirm_delete', [KategoriController::class, 'confirm_delete']);
+            Route::delete('/{id}/delete', [KategoriController::class, 'delete']);
+        });
+
+        // Routes untuk PeriodeController
+        Route::prefix('periode')->group(function () {
+            Route::get('/', [PeriodeController::class, 'index']);
+            Route::post('/store', [PeriodeController::class, 'store']);
+            Route::post('/list', [PeriodeController::class, 'list']);
+            Route::get('/create', [PeriodeController::class, 'create']);
+            Route::get('/{id}/show', [PeriodeController::class, 'show']);
+            Route::get('/{id}/edit', [PeriodeController::class, 'edit']);
+            Route::put('/{id}/update', [PeriodeController::class, 'update']);
+            Route::get('/{id}/confirm_delete', [PeriodeController::class, 'confirm_delete']);
+            Route::delete('/{id}/delete', [PeriodeController::class, 'delete']);
+        });
+
+        // Routes untuk ProdiController
+        Route::prefix('prodi')->group(function () {
+            Route::get('/', [ProdiController::class, 'index']);
+            Route::post('/store', [ProdiController::class, 'store']);
+            Route::post('/list', [ProdiController::class, 'list']);
+            Route::get('/create', [ProdiController::class, 'create']);
+            Route::get('/{id}/show', [ProdiController::class, 'show']);
+            Route::get('/{id}/edit', [ProdiController::class, 'edit']);
+            Route::put('/{id}/update', [ProdiController::class, 'update']);
+            Route::get('/{id}/confirm_delete', [ProdiController::class, 'confirm_delete']);
+            Route::delete('/{id}/delete', [ProdiController::class, 'delete']);
+        });
+
+        // Routes untuk RoleController
+        Route::prefix('role')->group(function () {
+            Route::get('/', [RoleController::class, 'index']);
+            Route::post('/store', [RoleController::class, 'store']);
+            Route::post('/list', [RoleController::class, 'list']);
+            Route::get('/create', [RoleController::class, 'create']);
+            Route::get('/{id}/show', [RoleController::class, 'show']);
+            Route::get('/{id}/edit', [RoleController::class, 'edit']);
+            Route::put('/{id}/update', [RoleController::class, 'update']);
+            Route::get('/{id}/confirm_delete', [RoleController::class, 'confirm_delete']);
+            Route::delete('/{id}/delete', [RoleController::class, 'delete']);
+        });
+
+        // Routes untuk TingkatPrestasiController
+        Route::prefix('tingkat_prestasi')->group(function () {
+            Route::get('/', [TingkatPrestasiController::class, 'index']);
+            Route::post('/store', [TingkatPrestasiController::class, 'store']);
+            Route::post('/list', [TingkatPrestasiController::class, 'list']);
+            Route::get('/create', [TingkatPrestasiController::class, 'create']);
+            Route::get('/{id}/show', [TingkatPrestasiController::class, 'show']);
+            Route::get('/{id}/edit', [TingkatPrestasiController::class, 'edit']);
+            Route::put('/{id}/update', [TingkatPrestasiController::class, 'update']);
+            Route::get('/{id}/confirm_delete', [TingkatPrestasiController::class, 'confirm_delete']);
+            Route::delete('/{id}/delete', [TingkatPrestasiController::class, 'delete']);
+        });
+    });
+
+
+    // Routes untuk MahasiswaController
+    Route::prefix('mahasiswa')->group(function () {
+        Route::get('/', [MahasiswaController::class, 'index']);
+        Route::post('/store', [MahasiswaController::class, 'store']);
+        Route::post('/list', [MahasiswaController::class, 'list']);
+        Route::get('/create', [MahasiswaController::class, 'create']);
+        Route::get('/{id}/show', [MahasiswaController::class, 'show']);
+        Route::get('/{id}/profile', [MahasiswaController::class, 'getProfile']);
+        Route::put('/{id}/update-foto', [MahasiswaController::class, 'updateFoto']);
+        Route::get('/{id}/edit-profile', [MahasiswaController::class, 'getUpdateProfile']);
+        Route::put('/{id}/update-profile', [MahasiswaController::class, 'updateProfile']);
+        Route::get('/{id}/edit', [MahasiswaController::class, 'edit']);
+        Route::put('/{id}/update', [MahasiswaController::class, 'update']);
+        Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
+        Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
+    });
+});
+
 // contoh route untuk penerapannya
 Route::prefix('cobacrud')->group(function () {
     Route::get('/', [CobacrudController::class, 'index']);
@@ -48,81 +141,4 @@ Route::prefix('cobacrud')->group(function () {
     Route::put('/{id}/update', [CobacrudController::class, 'update']);
     Route::get('/{id}/confirm_delete', [CobacrudController::class, 'confirm_delete']);
     Route::delete('/{id}/delete', [CobacrudController::class, 'delete']);
-});
-
-Route::prefix('kategori')->group(function () {
-    Route::get('/', [KategoriController::class, 'index']);
-    Route::post('/store', [KategoriController::class, 'store']);
-    Route::post('/list', [KategoriController::class, 'list']);
-    Route::get('/create', [KategoriController::class, 'create']);
-    Route::get('/{id}/show', [KategoriController::class, 'show']);
-    Route::get('/{id}/edit', [KategoriController::class, 'edit']);
-    Route::put('/{id}/update', [KategoriController::class, 'update']);
-    Route::get('/{id}/confirm_delete', [KategoriController::class, 'confirm_delete']);
-    Route::delete('/{id}/delete', [KategoriController::class, 'delete']);
-});
-
-// Routes untuk PeriodeController
-Route::prefix('periode')->group(function () {
-    Route::get('/', [PeriodeController::class, 'index']);
-    Route::post('/store', [PeriodeController::class, 'store']);
-    Route::post('/list', [PeriodeController::class, 'list']);
-    Route::get('/create', [PeriodeController::class, 'create']);
-    Route::get('/{id}/show', [PeriodeController::class, 'show']);
-    Route::get('/{id}/edit', [PeriodeController::class, 'edit']);
-    Route::put('/{id}/update', [PeriodeController::class, 'update']);
-    Route::get('/{id}/confirm_delete', [PeriodeController::class, 'confirm_delete']);
-    Route::delete('/{id}/delete', [PeriodeController::class, 'delete']);
-});
-
-// Routes untuk ProdiController
-Route::prefix('prodi')->group(function () {
-    Route::get('/', [ProdiController::class, 'index']);
-    Route::post('/store', [ProdiController::class, 'store']);
-    Route::post('/list', [ProdiController::class, 'list']);
-    Route::get('/create', [ProdiController::class, 'create']);
-    Route::get('/{id}/show', [ProdiController::class, 'show']);
-    Route::get('/{id}/edit', [ProdiController::class, 'edit']);
-    Route::put('/{id}/update', [ProdiController::class, 'update']);
-    Route::get('/{id}/confirm_delete', [ProdiController::class, 'confirm_delete']);
-    Route::delete('/{id}/delete', [ProdiController::class, 'delete']);
-});
-
-// Routes untuk RoleController
-Route::prefix('role')->group(function () {
-    Route::get('/', [RoleController::class, 'index']);
-    Route::post('/store', [RoleController::class, 'store']);
-    Route::post('/list', [RoleController::class, 'list']);
-    Route::get('/create', [RoleController::class, 'create']);
-    Route::get('/{id}/show', [RoleController::class, 'show']);
-    Route::get('/{id}/edit', [RoleController::class, 'edit']);
-    Route::put('/{id}/update', [RoleController::class, 'update']);
-    Route::get('/{id}/confirm_delete', [RoleController::class, 'confirm_delete']);
-    Route::delete('/{id}/delete', [RoleController::class, 'delete']);
-});
-
-// Routes untuk TingkatPrestasiController
-Route::prefix('tingkat_prestasi')->group(function () {
-    Route::get('/', [TingkatPrestasiController::class, 'index']);
-    Route::post('/store', [TingkatPrestasiController::class, 'store']);
-    Route::post('/list', [TingkatPrestasiController::class, 'list']);
-    Route::get('/create', [TingkatPrestasiController::class, 'create']);
-    Route::get('/{id}/show', [TingkatPrestasiController::class, 'show']);
-    Route::get('/{id}/edit', [TingkatPrestasiController::class, 'edit']);
-    Route::put('/{id}/update', [TingkatPrestasiController::class, 'update']);
-    Route::get('/{id}/confirm_delete', [TingkatPrestasiController::class, 'confirm_delete']);
-    Route::delete('/{id}/delete', [TingkatPrestasiController::class, 'delete']);
-});
-
-// Routes untuk MahasiswaController
-Route::prefix('mahasiswa')->group(function () {
-    Route::get('/', [MahasiswaController::class, 'index']);
-    Route::post('/store', [MahasiswaController::class, 'store']);
-    Route::post('/list', [MahasiswaController::class, 'list']);
-    Route::get('/create', [MahasiswaController::class, 'create']);
-    Route::get('/{id}/show', [MahasiswaController::class, 'show']);
-    Route::get('/{id}/edit', [MahasiswaController::class, 'edit']);
-    Route::put('/{id}/update', [MahasiswaController::class, 'update']);
-    Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
-    Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
 });
