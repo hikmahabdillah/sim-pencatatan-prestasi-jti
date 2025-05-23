@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\PenggunaModel;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class PenggunaSeeder extends Seeder
 {
@@ -13,61 +15,106 @@ class PenggunaSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('pengguna')->insert([
+        $penggunas = [
+            // Admins
             [
-                'id_pengguna' => 'admin',
-                'password' => 'admin',
-                'role_id' => 1, // Admin
+                'username' => 'admin1',
+                'password' => Hash::make('admin1'),
+                'role_id' => 1,
                 'status_aktif' => true,
-                'foto' => 'admin01.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
-                'id_pengguna' => 'dosen',
-                'password' => 'dosen',
-                'role_id' => 2, // Dosen Pembimbing
+                'username' => 'admin2',
+                'password' => Hash::make('admin2'),
+                'role_id' => 1,
                 'status_aktif' => true,
-                'foto' => 'dosen001.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
-                'id_pengguna' => '1231231231',
-                'password' => 'true',
-                'role_id' => 3, // Mahasiswa
+                'username' => 'admin3',
+                'password' => Hash::make('admin3'),
+                'role_id' => 1,
                 'status_aktif' => true,
-                'foto' => 'mahasiswa001.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
+
+            // Dosen Pembimbing
             [
-                'id_pengguna' => '1231231232',
-                'password' => 'false',
-                'role_id' => 3,
-                'status_aktif' => false,
-                'foto' => 'mahasiswa002.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id_pengguna' => 'dosenfalse',
-                'password' => 'dosenfalse',
+                'username' => '0012345678',
+                'password' => Hash::make('0012345678'),
                 'role_id' => 2,
-                'status_aktif' => false,
-                'foto' => 'dosen002.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'status_aktif' => true,
             ],
             [
-                'id_pengguna' => '1231231233',
-                'password' => 'true',
+                'username' => '0012345679',
+                'password' => Hash::make('0012345679'),
+                'role_id' => 2,
+                'status_aktif' => true,
+            ],
+            [
+                'username' => '0012345680',
+                'password' => Hash::make('0012345680'),
+                'role_id' => 2,
+                'status_aktif' => true,
+            ],
+            [
+                'username' => '0012345681',
+                'password' => Hash::make('0012345681'),
+                'role_id' => 2,
+                'status_aktif' => true,
+            ],
+            [
+                'username' => '0012345682',
+                'password' => Hash::make('0012345682'),
+                'role_id' => 2,
+                'status_aktif' => true,
+            ],
+
+            // Mahasiswa
+            [
+                'username' => '20210001',
+                'password' => Hash::make('20210001'),
                 'role_id' => 3,
                 'status_aktif' => true,
-                'foto' => 'mahasiswa003.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
-        ]);
+            [
+                'username' => '20210002',
+                'password' => Hash::make('20210002'),
+                'role_id' => 3,
+                'status_aktif' => true,
+            ],
+            [
+                'username' => '20210003',
+                'password' => Hash::make('20210003'),
+                'role_id' => 3,
+                'status_aktif' => true,
+            ],
+            [
+                'username' => '20220001',
+                'password' => Hash::make('20220001'),
+                'role_id' => 3,
+                'status_aktif' => true,
+            ],
+            [
+                'username' => '20220002',
+                'password' => Hash::make('20220002'),
+                'role_id' => 3,
+                'status_aktif' => true,
+            ],
+            [
+                'username' => '20220003',
+                'password' => Hash::make('20220003'),
+                'role_id' => 3,
+                'status_aktif' => true,
+            ],
+            [
+                'username' => '20230001',
+                'password' => Hash::make('20230001'),
+                'role_id' => 3,
+                'status_aktif' => true,
+            ],
+        ];
+
+        foreach ($penggunas as $pengguna) {
+            PenggunaModel::create($pengguna);
+        }
     }
 }

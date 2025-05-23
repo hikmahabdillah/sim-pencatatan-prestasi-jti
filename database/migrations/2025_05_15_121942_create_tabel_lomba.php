@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('tanggal_selesai');
             $table->date('deadline_pendaftaran');
             $table->string('status_verifikasi');
-            $table->string('added_by',20)->index();
+            $table->unsignedBigInteger('added_by')->index();
             $table->unsignedBigInteger('role_pengusul')->index();
             $table->timestamps();
 

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('prestasi_mahasiswa', function (Blueprint $table) {
             $table->id('id_prestasi');
-            $table->string('nim',20)->index();
             $table->unsignedBigInteger('id_tingkat_prestasi')->index();
-            $table->string('id_dospem',20)->index();
+            $table->unsignedBigInteger('id_mahasiswa')->index();
+            $table->unsignedBigInteger('id_dospem')->index();
             $table->string('nama_prestasi');
             $table->unsignedBigInteger('id_kategori')->index();
             $table->string('juara');
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('karya')->nullable();
             $table->timestamps();
 
-            $table->foreign('nim')->references('nim')->on('mahasiswa');
+            $table->foreign('id_mahasiswa')->references('id_mahasiswa')->on('mahasiswa');
             $table->foreign('id_tingkat_prestasi')->references('id_tingkat_prestasi')->on('tingkat_prestasi');
             $table->foreign('id_dospem')->references('id_dospem')->on('dosen_pembimbing');
             $table->foreign('id_periode')->references('id_periode')->on('periode');
