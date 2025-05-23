@@ -12,9 +12,14 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="position-relative h-100">
-                            <div class="blur-shadow-image h-100">
+                            <div class="blur-shadow-image h-100" style="max-height: 300px;">
+                                @php
+                                    $foto = $data->pengguna->foto
+                                        ? asset('storage/' . $data->pengguna->foto)
+                                        : asset('image/fotoDefault.jpg');
+                                @endphp
                                 <img class="w-100 h-100 rounded-3 shadow-lg" style="object-fit: cover"
-                                    src="{{ asset('image/fotoDefault.jpg') }}">
+                                    src="{{ $foto }}">
                                 {{-- src="{{ asset('storage/' . auth()->user()->profile_image) ?? 'image/fotoDefault.jpg' }}" --}}
                             </div>
                         </div>
