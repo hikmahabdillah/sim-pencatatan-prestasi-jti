@@ -57,10 +57,10 @@
                 <h5 class="fw-semibold mb-4 text-warning">Personal Information</h5>
 
                 <!-- Tombol Edit -->
-                <a href="{{ 'mahasiswa/' . auth()->user()->mahasiswa->id_mahasiswa . '/edit-profile' }}"
+                <button onclick="modalAction('edit-profile')"
                     class="btn btn-warning position-absolute top-0 end-0 mt-3 me-3 btn-sm fs-6 font-weight-normal">
                     Edit
-                </a>
+                </button>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -71,7 +71,8 @@
                         <p class="fw-semibold">{{ $data->email }}</p>
 
                         <p class="mb-1 text-muted small font-weight-bold">Tanggal Lahir</p>
-                        <p class="fw-semibold">{{ \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y') }}
+                        <p class="fw-semibold">
+                            {{ \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y') }}
                         </p>
 
                         <p class="mb-1 text-muted small font-weight-bold">Jenis Kelamin</p>
@@ -105,6 +106,12 @@
 
 @push('js')
     <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
+                $('#myModal').modal('show');
+            });
+        }
+
         $(document).ready(function() {
             // Preview photo when selected
             function previewFoto(input) {

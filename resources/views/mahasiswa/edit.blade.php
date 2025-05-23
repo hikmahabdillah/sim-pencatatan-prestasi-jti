@@ -46,10 +46,25 @@
                     <div id="error-alamat" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
+                    <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" class="form-control"
+                        value="{{ $data->tanggal_lahir }}" required>
+                    <div id="error-tanggal_lahir" class="text-danger error-text"></div>
+                </div>
+                <div class="form-group">
+                    <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+                    <select id="jenis_kelamin" name="jenis_kelamin" class="form-control" required>
+                        <option value="L" {{ $data->jenis_kelamin == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="P" {{ $data->jenis_kelamin == 'P' ? 'selected' : '' }}>Perempuan</option>
+                    </select>
+                    <div id="error-jenis_kelamin" class="text-danger error-text"></div>
+                </div>
+                <div class="form-group">
                     <label for="id_prodi" class="form-label">Program Studi</label>
                     <select id="id_prodi" name="id_prodi" class="form-control" required>
                         @foreach ($prodi as $p)
-                            <option value="{{ $p->id_prodi }}" {{ $p->id_prodi == $data->id_prodi ? 'selected' : '' }}>
+                            <option value="{{ $p->id_prodi }}"
+                                {{ $p->id_prodi == $data->id_prodi ? 'selected' : '' }}>
                                 {{ $p->nama_prodi }}
                             </option>
                         @endforeach
@@ -57,7 +72,7 @@
                     <div id="error-id_prodi" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
-                    <label for="id_kategori" class="form-label">Kategori</label>
+                    <label for="id_kategori" class="form-label">Minat Bakat</label>
                     <select id="id_kategori" name="id_kategori" class="form-control" required>
                         @foreach ($kategori as $k)
                             <option value="{{ $k->id_kategori }}"
@@ -72,7 +87,8 @@
                     <label for="status_aktif" class="form-label">Status Akun</label>
                     <select id="status_aktif" name="status_aktif" class="form-control" required>
                         <option value="1" {{ $data->pengguna->status_aktif ? 'selected' : '' }}>Aktif</option>
-                        <option value="0" {{ !$data->pengguna->status_aktif ? 'selected' : '' }}>Nonaktif</option>
+                        <option value="0" {{ !$data->pengguna->status_aktif ? 'selected' : '' }}>Nonaktif
+                        </option>
                     </select>
                     <div id="error-status_aktif" class="text-danger error-text"></div>
                 </div>
@@ -114,6 +130,13 @@
                     maxlength: 20
                 },
                 alamat: {
+                    required: true
+                },
+                tanggal_lahir: {
+                    required: true,
+                    date: true
+                },
+                jenis_kelamin: {
                     required: true
                 },
                 id_prodi: {

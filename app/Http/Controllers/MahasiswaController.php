@@ -80,6 +80,8 @@ class MahasiswaController extends Controller
             'email' => 'required|email|unique:mahasiswa,email',
             'no_hp' => 'required|string|max:20',
             'alamat' => 'required|string',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:L,P',
             'id_prodi' => 'required|exists:prodi,id_prodi',
             'id_kategori' => 'required|exists:kategori,id_kategori'
         ]);
@@ -103,7 +105,7 @@ class MahasiswaController extends Controller
                 'foto' => 'default.jpg'
             ]);
 
-            // Buat data mahasiswa
+            // Create mahasiswa data
             $mahasiswa = MahasiswaModel::create([
                 'nim' => $request->nim,
                 'id_pengguna' => $pengguna->id_pengguna,
@@ -112,6 +114,8 @@ class MahasiswaController extends Controller
                 'email' => $request->email,
                 'no_hp' => $request->no_hp,
                 'alamat' => $request->alamat,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
                 'id_prodi' => $request->id_prodi,
                 'id_kategori' => $request->id_kategori
             ]);
@@ -167,6 +171,8 @@ class MahasiswaController extends Controller
             'email' => 'required|email|unique:mahasiswa,email,' . $id . ',id_mahasiswa',
             'no_hp' => 'required|string|max:20',
             'alamat' => 'required|string',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:L,P',
             'id_prodi' => 'required|exists:prodi,id_prodi',
             'id_kategori' => 'required|exists:kategori,id_kategori'
         ]);
@@ -189,6 +195,8 @@ class MahasiswaController extends Controller
                 'email' => $request->email,
                 'no_hp' => $request->no_hp,
                 'alamat' => $request->alamat,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
                 'id_prodi' => $request->id_prodi,
                 'id_kategori' => $request->id_kategori
             ]);
@@ -216,6 +224,77 @@ class MahasiswaController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function updateProfile(Request $request, string $id)
+    {
+        $mahasiswa = MahasiswaModel::find($id);
+        if (!$mahasiswa) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data mahasiswa tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string|max:200',
+            'email' => 'required|email|unique:mahasiswa,email,' . $id . ',id_mahasiswa',
+            'no_hp' => 'required|string|max:20',
+            'alamat' => 'required|string',
+            'tanggal_lahir' => 'required|date',
+            'id_kategori' => 'required|exists:kategori,id_kategori'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Update data mahasiswa
+            $mahasiswa->update([
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'no_hp' => $request->no_hp,
+                'alamat' => $request->alamat,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'id_kategori' => $request->id_kategori
+            ]);
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data mahasiswa berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal memperbarui data mahasiswa',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getUpdateProfile(string $id)
+    {
+        $mahasiswa = MahasiswaModel::with(['pengguna', 'prodi', 'kategori'])->find($id);
+        if (!$mahasiswa) {
+            return redirect('/mahasiswa')->with('error', 'Data mahasiswa tidak ditemukan');
+        }
+
+        $prodi = ProdiModel::all();
+        $kategori = KategoriModel::all();
+
+        return view('mahasiswa.edit-profile', [
+            'data' => $mahasiswa,
+            'prodi' => $prodi,
+            'kategori' => $kategori
+        ]);
     }
 
     public function confirm_delete(string $id)

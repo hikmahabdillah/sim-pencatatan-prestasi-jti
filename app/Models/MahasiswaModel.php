@@ -19,6 +19,8 @@ class MahasiswaModel extends Model
         'email',
         'no_hp',
         'alamat',
+        'tanggal_lahir',
+        'jenis_kelamin',
         'id_prodi',
         'id_kategori'
     ];

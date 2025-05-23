@@ -121,6 +121,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/show', [MahasiswaController::class, 'show']);
         Route::get('/{id}/profile', [MahasiswaController::class, 'getProfile']);
         Route::put('/{id}/update-foto', [MahasiswaController::class, 'updateFoto']);
+        Route::get('/{id}/edit-profile', [MahasiswaController::class, 'getUpdateProfile']);
+        Route::put('/{id}/update-profile', [MahasiswaController::class, 'updateProfile']);
         Route::get('/{id}/edit', [MahasiswaController::class, 'edit']);
         Route::put('/{id}/update', [MahasiswaController::class, 'update']);
         Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
