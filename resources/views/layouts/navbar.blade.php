@@ -126,17 +126,17 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <li>
                                 <a class="dropdown-item" href="{{ url(getRoleUrl() . '/' . getIdUser() . '/profile') }}">
-                                    <i class="ni ni-single-02 text-primary text-sm opacity-10 me-2"></i>Profile
+                                    <i class="ni ni-single-02 text-warning text-sm opacity-10 me-2"></i>Profile
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="{{ url(getRoleUrl() . '/' . getIdUser() . '/prestasi') }}">
-                                    <i class="ni ni-trophy text-primary text-sm opacity-10 me-2"></i>Prestasi
+                                    <i class="ni ni-trophy text-warning text-sm opacity-10 me-2"></i>Prestasi
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="/logout">
-                                    <i class="ni ni-user-run text-primary text-sm opacity-10 me-2"></i>Log out
+                                    <i class="ni ni-user-run text-warning text-sm opacity-10 me-2"></i>Log out
                                 </a>
                             </li>
                         </ul>
