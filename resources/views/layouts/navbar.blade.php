@@ -130,7 +130,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{{ url(getRoleUrl() . '/' . getIdUser() . '/prestasi') }}">
                                     <i class="ni ni-trophy text-primary text-sm opacity-10 me-2"></i>Prestasi
                                 </a>
                             </li>

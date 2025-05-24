@@ -7,7 +7,9 @@ use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\DosenPembimbingController;
 use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\PrestasiController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\TingkatPrestasiController;
 use App\Models\KategoriModel;
@@ -128,6 +130,25 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::put('/{id}/update', [MahasiswaController::class, 'update']);
         Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
         Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
+        Route::get('/{id}/prestasi', [PrestasiController::class, 'getPrestasiMahasiswa']);
+        Route::get('/{id}/detail-prestasi', [PrestasiController::class, 'getDetailPrestasiMahasiswa']);
+    });
+
+    // Routes untuk DosenPembimbinController
+    Route::prefix('dospem')->group(function () {
+        Route::get('/', [DosenPembimbingController::class, 'index']);
+        Route::post('/store', [DosenPembimbingController::class, 'store']);
+        Route::post('/list', [DosenPembimbingController::class, 'list']);
+        Route::get('/create', [DosenPembimbingController::class, 'create']);
+        Route::get('/{id}/show', [DosenPembimbingController::class, 'show']);
+        Route::get('/{id}/profile', [DosenPembimbingController::class, 'getProfile']);
+        Route::put('/{id}/update-foto', [DosenPembimbingController::class, 'updateFoto']);
+        Route::get('/{id}/edit-profile', [DosenPembimbingController::class, 'getUpdateProfile']);
+        Route::put('/{id}/update-profile', [DosenPembimbingController::class, 'updateProfile']);
+        Route::get('/{id}/edit', [DosenPembimbingController::class, 'edit']);
+        Route::put('/{id}/update', [DosenPembimbingController::class, 'update']);
+        Route::get('/{id}/confirm_delete', [DosenPembimbingController::class, 'confirm_delete']);
+        Route::delete('/{id}/delete', [DosenPembimbingController::class, 'delete']);
     });
      // Routes untuk AdminController
     Route::prefix('admin')->group(function () {

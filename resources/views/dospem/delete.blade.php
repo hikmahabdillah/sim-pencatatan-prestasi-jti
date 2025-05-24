@@ -1,23 +1,23 @@
 <!-- Modal -->
-<form action="{{ url('/mahasiswa/' . $data->id_mahasiswa . '/delete') }}" method="POST" id="form-delete">
+<form action="{{ url('/dospem/' . $data->id_dospem . '/delete') }}" method="POST" id="form-delete">
     @csrf
     @method('DELETE')
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Nonaktifkan Mahasiswa</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Hapus Dosen Pembimbing</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="alert alert-danger text-white" role="alert">
-                    <strong>Konfirmasi!</strong> Apakah anda yakin ingin menonaktifkan mahasiswa ini?
+                    <strong>Konfirmasi!</strong> Apakah anda yakin ingin menonaktifkan dosen pembimbing ini?
                 </div>
                 <table class="table table-bordered">
                     <tr>
-                        <th width="20%">NIM</th>
-                        <td>{{ $data->nim }}</td>
+                        <th width="20%">NIP</th>
+                        <td>{{ $data->nip }}</td>
                     </tr>
                     <tr>
                         <th>Nama</th>
@@ -28,7 +28,7 @@
                         <td>{{ $data->prodi->nama_prodi }}</td>
                     </tr>
                     <tr>
-                        <th>Kategori</th>
+                        <th>Bidang Keahlian</th>
                         <td>{{ $data->kategori->nama_kategori }}</td>
                     </tr>
                 </table>
@@ -56,7 +56,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            tableMahasiswa.ajax.reload();
+                            tableDospem.ajax.reload();
                         } else {
                             Swal.fire({
                                 icon: 'error',

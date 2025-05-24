@@ -346,12 +346,12 @@ class MahasiswaController extends Controller
     public function getProfile($id)
     {
         $breadcrumb = (object)[
-            'title' => 'Data Mahasiswa',
-            'list'  => ['Mahasiswa']
+            'title' => 'Profile Mahasiswa',
+            'list'  => ['Profile Mahasiswa']
         ];
         $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->where('id_mahasiswa', $id)->first();
         if (!$mahasiswa) {
-            return redirect('/mahasiswa')->with('error', 'Data mahasiswa tidak ditemukan');
+            return redirect('/mahasiswa/' . $id . '/profile')->with('error', 'Data mahasiswa tidak ditemukan');
         }
 
         return view('mahasiswa.profile', [
