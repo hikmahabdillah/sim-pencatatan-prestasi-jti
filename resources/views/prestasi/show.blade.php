@@ -6,8 +6,18 @@
         <div class="row">
             <div class="mx-auto">
                 <div class="card">
-                    <div class="card-header bg-light">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">Detail Prestasi Mahasiswa</h4>
+                        <div class="d-flex gap-2 align-items-center">
+                            <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/edit-prestasi')"
+                                class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </button>
+                            <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/confirm-delete-prestasi')"
+                                class="btn btn-sm btn-warning">
+                                <i class="fas fa-trash me-1"></i> Delete
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         @if (!$prestasi)
@@ -117,7 +127,8 @@
                         @endif
                     </div>
                     <div class="card-footer bg-light pt-0">
-                        <a href="{{ url()->previous() }}" class="btn btn-secondary">
+                        <a href="{{ url('/mahasiswa/' . auth()->user()->mahasiswa->id_mahasiswa . '/prestasi') }}"
+                            class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Kembali
                         </a>
                     </div>
@@ -125,7 +136,8 @@
             </div>
         </div>
     </div>
-
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
     @include('layouts.footer')
 @endsection
 
@@ -147,10 +159,10 @@
 
 @push('js')
     <script>
-        // Add any necessary JavaScript here
-        $(document).ready(function() {
-            // Initialize tooltips if needed
-            $('[data-bs-toggle="tooltip"]').tooltip();
-        });
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
+                $('#myModal').modal('show');
+            });
+        }
     </script>
 @endpush
