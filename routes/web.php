@@ -114,6 +114,14 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         });
     });
 
+    Route::prefix('prestasi')->group(function () {
+        Route::get('/tambah-prestasi', [PrestasiController::class, 'create']);
+        Route::post('/store', [PrestasiController::class, 'store']);
+        Route::get('/{id}/edit-prestasi', [PrestasiController::class, 'getEditPrestasi']);
+        Route::put('/{id}/update-prestasi', [PrestasiController::class, 'updatePrestasi']);
+        Route::get('/{id}/confirm-delete-prestasi', [PrestasiController::class, 'confirmDeletePrestasi']);
+        Route::delete('/{id}/delete-prestasi', [PrestasiController::class, 'deletePrestasi']);
+    });
 
     // Routes untuk MahasiswaController
     Route::prefix('mahasiswa')->group(function () {
