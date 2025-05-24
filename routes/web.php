@@ -8,6 +8,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\DosenPembimbingController;
 use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\PrestasiController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\TingkatPrestasiController;
 use App\Models\KategoriModel;
@@ -128,6 +129,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::put('/{id}/update', [MahasiswaController::class, 'update']);
         Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
         Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
+        Route::get('/{id}/prestasi', [PrestasiController::class, 'getPrestasiMahasiswa']);
+        Route::get('/{id}/detail-prestasi', [PrestasiController::class, 'getDetailPrestasiMahasiswa']);
     });
 
     // Routes untuk DosenPembimbinController
