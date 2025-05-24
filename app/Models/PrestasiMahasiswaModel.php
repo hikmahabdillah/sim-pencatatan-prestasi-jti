@@ -15,7 +15,7 @@ class PrestasiMahasiswaModel extends Model
         'id_tingkat_prestasi',
         'id_mahasiswa',
         'id_dospem',
-        'nama_prestasi',
+        'nama_tingkat_prestasi',
         'id_kategori',
         'juara',
         'tanggal_prestasi',
