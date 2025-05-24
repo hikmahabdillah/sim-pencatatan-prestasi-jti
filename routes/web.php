@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CobacrudController;
 use App\Http\Controllers\RoleController;
@@ -148,6 +149,22 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::put('/{id}/update', [DosenPembimbingController::class, 'update']);
         Route::get('/{id}/confirm_delete', [DosenPembimbingController::class, 'confirm_delete']);
         Route::delete('/{id}/delete', [DosenPembimbingController::class, 'delete']);
+    });
+     // Routes untuk AdminController
+    Route::prefix('admin')->group(function () {
+        Route::get('/', [AdminController::class, 'index']);
+        Route::post('/store', [AdminController::class, 'store']);
+        Route::post('/list', [AdminController::class, 'list']);
+        Route::get('/create', [AdminController::class, 'create']);
+        Route::get('/{id}/show', [AdminController::class, 'show']);
+        Route::get('/{id}/profile', [AdminController::class, 'getProfile']);
+        Route::put('/{id}/update-foto', [AdminController::class, 'updateFoto']);
+        Route::get('/{id}/edit-profile', [AdminController::class, 'getUpdateProfile']);
+        Route::put('/{id}/update-profile', [AdminController::class, 'updateProfile']);
+        Route::get('/{id}/edit', [AdminController::class, 'edit']);
+        Route::put('/{id}/update', [AdminController::class, 'update']);
+        Route::get('/{id}/confirm_delete', [AdminController::class, 'confirm_delete']);
+        Route::delete('/{id}/delete', [AdminController::class, 'delete']);
     });
 });
 
