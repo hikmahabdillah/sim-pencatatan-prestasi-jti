@@ -118,7 +118,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/manajemen-lomba">
+                <a class="nav-link" href="/lomba/manajemen-lomba">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Lomba">
                         <i class="ni ni-settings text-info text-sm opacity-10"></i>
