@@ -125,7 +125,6 @@ class MahasiswaController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Data mahasiswa berhasil disimpan',
-                'data' => $mahasiswa
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();

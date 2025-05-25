@@ -3,21 +3,23 @@
 @section('content')
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
-        <button onclick="modalAction('{{ url('periode/create') }}')" class="btn bg-gradient-info mt-1">
-            Tambah Periode
+        <button onclick="modalAction('{{ url('prestasi/create') }}')" class="btn bg-gradient-info mt-1">
+            Tambah Prestasi
         </button>
         <div class="card p-3 table-responsive">
-            <table id="periode-table" class="table table-hover">
+            <table id="prestasi-table" class="table table-hover">
                 <thead class="table-light">
                     <tr>
                         <th class="text-center">No</th>
-                        <th class="text-center">Semester</th>
-                        <th class="text-center">Tahun Ajaran</th>
+                        <th class="text-center">Nama Prestasi</th>
+                        <th class="text-center">Mahasiswa</th>
+                        <th class="text-center">Kategori</th>
+                        <th class="text-center">Tingkat Prestasi</th>
+                        <th class="text-center">Status Verifikasi</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
@@ -36,11 +38,11 @@
             let tablecrud;
 
             $(document).ready(function() {
-                tablecrud = $('#periode-table').DataTable({
+                tablecrud = $('#prestasi-table').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ url('periode/list') }}",
+                        url: "{{ url('prestasi/list') }}",
                         type: "POST",
                     },
                     columns: [{
@@ -51,6 +53,25 @@
                             width: "2%"
                         },
                         {
+                            data: 'nama_prestasi',
+                            width: "15%"
+                        },
+                        {
+                            data: 'mahasiswa',
+                            width: "15%"
+                        },
+                        {
+                            data: 'kategori',
+                            width: "10%"
+                        },
+                        {
+                            data: 'tingkat_prestasi',
+                            width: "10%"
+                        },
+                        {
+                            data: 'status_verifikasi',
+                            className: 'text-center',
+                            width: "10%"
                             data: 'semester',
                             width: "20%"
                         },
@@ -63,7 +84,7 @@
                             className: 'text-center',
                             orderable: false,
                             searchable: false,
-                            width: "10%"
+                            width: "15%"
                         }
                     ]
                 });

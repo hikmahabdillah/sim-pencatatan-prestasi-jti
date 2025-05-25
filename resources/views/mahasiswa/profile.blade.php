@@ -156,6 +156,10 @@
                             if (response.foto_url) {
                                 $('#fotoPreview').attr('src', response.foto_url);
                             }
+
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
                         } else {
                             // Handle validation errors
                             if (response.msgField) {
