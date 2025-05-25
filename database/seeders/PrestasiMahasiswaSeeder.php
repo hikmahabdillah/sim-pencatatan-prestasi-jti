@@ -23,7 +23,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'juara' => 'Juara ' . $i,
                 'tanggal_prestasi' => now()->subDays($i * 10),
                 'id_periode' => 1,
-                'keterangan' => 'Deskripsi prestasi ' . $i,
+                'deskripsi' => 'Prestasi yang bagus! pertahankan!' . $i,
                 'foto_kegiatan' => 'foto' . $i . '.jpg',
                 'bukti_sertifikat' => 'sertifikat' . $i . '.pdf',
                 'surat_tugas' => 'surat' . $i . '.pdf',

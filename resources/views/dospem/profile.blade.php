@@ -77,7 +77,7 @@
                     <div class="col-md-6 mb-3">
                         <p class="mb-1 text-muted small font-weight-bold">NIP</p>
                         <p class="fw-semibold">{{ $data->nip }}</p>
-                        
+
                         <p class="mb-1 text-muted small font-weight-bold">Status</p>
                         <p class="fw-semibold">
                             @if ($data->pengguna->status_aktif)
@@ -99,17 +99,17 @@
 @push('js')
     <script>
         function modalAction(url = '') {
-            $('#myModal').load(url, function () {
+            $('#myModal').load(url, function() {
                 $('#myModal').modal('show');
             });
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Preview photo when selected
             function previewFoto(input) {
                 if (input.files && input.files[0]) {
                     const reader = new FileReader();
-                    reader.onload = function (e) {
+                    reader.onload = function(e) {
                         $('#fotoPreview').attr('src', e.target.result);
                     };
                     reader.readAsDataURL(input.files[0]);
@@ -139,7 +139,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function (response) {
+                    success: function(response) {
                         if (response.status) {
                             // Show success message
                             $('#successMessage').show().delay(3000).fadeOut();
@@ -148,10 +148,14 @@
                             if (response.foto_url) {
                                 $('#fotoPreview').attr('src', response.foto_url);
                             }
+
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
                         } else {
                             // Handle validation errors
                             if (response.msgField) {
-                                $.each(response.msgField, function (prefix, val) {
+                                $.each(response.msgField, function(prefix, val) {
                                     $('#' + prefix).addClass('is-invalid');
                                     $('#' + prefix).after('<span class="invalid-feedback">' +
                                         val[0] + '</span>');
@@ -168,7 +172,7 @@
                             );
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         let errorMessage = 'Terjadi kesalahan pada server';
                         if (xhr.responseJSON && xhr.responseJSON.message) {
                             errorMessage = xhr.responseJSON.message;
@@ -180,14 +184,14 @@
                             '{{ $data->pengguna->foto ? asset('storage/' . $data->pengguna->foto) : asset('image/fotoDefault.jpg') }}'
                         );
                     },
-                    complete: function () {
+                    complete: function() {
                         $('#loadingIndicator').hide();
                     }
                 });
             }
 
             // Trigger update when file is selected
-            $('#fotoInput').change(function () {
+            $('#fotoInput').change(function() {
                 previewFoto(this);
                 updateFoto();
             });

@@ -115,8 +115,15 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
     });
 
     Route::prefix('prestasi')->group(function () {
+        Route::get('/', [PrestasiController::class, 'index']);
+        Route::post('/list', [PrestasiController::class, 'list']);
         Route::get('/tambah-prestasi', [PrestasiController::class, 'create']);
         Route::post('/store', [PrestasiController::class, 'store']);
+        Route::get('/{id}/detail-prestasi', [PrestasiController::class, 'getDetailPrestasiMahasiswa']); // id prestasi
+        Route::get('/{id}/verifikasi-admin', [PrestasiController::class, 'getVerifikasiAdmin']); // id prestasi
+        Route::put('/{id}/update-verifikasi-admin', [PrestasiController::class, 'updateVerifikasiAdmin']); // id prestasi
+        Route::get('/{id}/verifikasi-dospem', [PrestasiController::class, 'getVerifikasiDospem']); // id prestasi
+        Route::put('/{id}/update-verifikasi-dospem', [PrestasiController::class, 'updateVerifikasiDospem']); // id prestasi
         Route::get('/{id}/edit-prestasi', [PrestasiController::class, 'getEditPrestasi']);
         Route::put('/{id}/update-prestasi', [PrestasiController::class, 'updatePrestasi']);
         Route::get('/{id}/confirm-delete-prestasi', [PrestasiController::class, 'confirmDeletePrestasi']);
@@ -138,8 +145,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::put('/{id}/update', [MahasiswaController::class, 'update']);
         Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
         Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
-        Route::get('/{id}/prestasi', [PrestasiController::class, 'getPrestasiMahasiswa']);
-        Route::get('/{id}/detail-prestasi', [PrestasiController::class, 'getDetailPrestasiMahasiswa']);
+        Route::get('/{id}/prestasi', [PrestasiController::class, 'getPrestasiMahasiswa']); // id mahasiswa
     });
 
     // Routes untuk DosenPembimbinController
@@ -158,7 +164,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/confirm_delete', [DosenPembimbingController::class, 'confirm_delete']);
         Route::delete('/{id}/delete', [DosenPembimbingController::class, 'delete']);
     });
-     // Routes untuk AdminController
+    // Routes untuk AdminController
     Route::prefix('admin')->group(function () {
         Route::get('/', [AdminController::class, 'index']);
         Route::post('/store', [AdminController::class, 'store']);
