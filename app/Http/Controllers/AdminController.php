@@ -78,9 +78,8 @@ class AdminController extends Controller
             $pengguna = PenggunaModel::create([
                 'username' => $request->username,
                 'password' => Hash::make($request->username),
-                'role_id' => 2, // Role untuk admin
+                'role_id' => 1, // Role untuk admin
                 'status_aktif' => true,
-                'foto' => 'default.jpg'
             ]);
 
             // Create admin data

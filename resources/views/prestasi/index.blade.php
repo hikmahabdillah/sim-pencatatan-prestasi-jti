@@ -23,19 +23,19 @@
         <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
             data-keyboard="false" data-width="75%" aria-hidden="true"></div>
         @include('layouts.footer')
-@endsection
+    @endsection
 
     @push('js')
         <script>
             function modalAction(url = '') {
-                $('#myModal').load(url, function () {
+                $('#myModal').load(url, function() {
                     $('#myModal').modal('show');
                 });
             }
 
             let tablecrud;
 
-            $(document).ready(function () {
+            $(document).ready(function() {
                 tablecrud = $('#periode-table').DataTable({
                     processing: true,
                     serverSide: true,
@@ -44,31 +44,31 @@
                         type: "POST",
                     },
                     columns: [{
-                        data: 'DT_RowIndex',
-                        className: 'text-center',
-                        orderable: false,
-                        searchable: false,
-                        width: "2%"
-                    },
-                    {
-                        data: 'semester',
-                        width: "20%"
-                    },
-                    {
-                        data: 'tahun_ajaran',
-                        width: "20%"
-                    },
-                    {
-                        data: 'aksi',
-                        className: 'text-center',
-                        orderable: false,
-                        searchable: false,
-                        width: "10%"
-                    }
+                            data: 'DT_RowIndex',
+                            className: 'text-center',
+                            orderable: false,
+                            searchable: false,
+                            width: "2%"
+                        },
+                        {
+                            data: 'semester',
+                            width: "20%"
+                        },
+                        {
+                            data: 'tahun_ajaran',
+                            width: "20%"
+                        },
+                        {
+                            data: 'aksi',
+                            className: 'text-center',
+                            orderable: false,
+                            searchable: false,
+                            width: "10%"
+                        }
                     ]
                 });
 
-                tablecrud.on('draw', function () {
+                tablecrud.on('draw', function() {
                     $('[data-bs-toggle="tooltip"]').tooltip();
                 });
             });

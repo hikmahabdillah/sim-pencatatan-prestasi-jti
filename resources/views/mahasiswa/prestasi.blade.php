@@ -4,12 +4,15 @@
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
         <div class="card shadow rounded-3 border">
-            <div class="card-header bg-light pb-0">
+            <div class="card-header bg-light pb-0 d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Daftar Prestasi</h4>
+                <button onclick="modalAction('/prestasi/tambah-prestasi')" class="btn btn-sm btn-primary">
+                    <i class="fas fa-add me-1"></i> Tambah Prestasi
+                </button>
             </div>
             <div class="card-body">
                 @if ($prestasi->isEmpty())
-                    <div class="alert alert-info">
+                    <div class="alert alert-info text-white">
                         Belum ada data prestasi.
                     </div>
                 @else
@@ -66,7 +69,6 @@
 
     <!-- Existing Modal -->
     <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-
     </div>
 
     @include('layouts.footer')
