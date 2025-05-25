@@ -11,6 +11,7 @@ use App\Http\Controllers\DosenPembimbingController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PrestasiController;
 use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\LombaController;
 use App\Http\Controllers\TingkatPrestasiController;
 use App\Models\KategoriModel;
 
@@ -173,6 +174,21 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::put('/{id}/update', [AdminController::class, 'update']);
         Route::get('/{id}/confirm_delete', [AdminController::class, 'confirm_delete']);
         Route::delete('/{id}/delete', [AdminController::class, 'delete']);
+    });
+
+     // Routes untuk LombaController
+Route::prefix('lomba')->group(function () {
+    Route::get('/manajemen-lomba', [LombaController::class, 'indexAdmin']);
+    Route::post('/store', [LombaController::class, 'store']);
+    Route::post('/list', [LombaController::class, 'list']);
+    Route::get('/create', [LombaController::class, 'create']);
+    Route::get('/{id}/show', [LombaController::class, 'show']);
+    Route::post('/manajemen-lomba/{id}/setujui', [LombaController::class, 'setujui']);
+    Route::post('/manajemen-lomba/{id}/tolak', [LombaController::class, 'tolak']);
+    Route::get('/{id}/edit', [LombaController::class, 'edit']);
+    Route::put('/{id}/update', [LombaController::class, 'update']);
+    Route::get('/{id}/confirm_delete', [LombaController::class, 'confirm_delete']);
+    Route::delete('/{id}/delete', [LombaController::class, 'delete']);
     });
 });
 
