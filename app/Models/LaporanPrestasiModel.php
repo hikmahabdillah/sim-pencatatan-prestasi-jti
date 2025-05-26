@@ -13,13 +13,10 @@ class LaporanPrestasiModel extends Model
     protected $primaryKey = 'id_laporan';
     protected $fillable = [
         'id_mahasiswa',
-        'nama_mahasiswa',
-        'prodi',
-        'nama_lomba',
-        'tingkat',
-        'kategori',
-        'hasil',
-        'status_verifikasi'
+        'id_prestasi',
+        'id_prodi',
+        'id_tingkat_prestasi',
+        'id_kategori',
     ];
 
     public function mahasiswa()
@@ -27,9 +24,14 @@ class LaporanPrestasiModel extends Model
         return $this->belongsTo(MahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
+    public function prestasi()
+    {
+        return $this->belongsTo(PrestasiMahasiswaModel::class, 'id_prestasi', 'id_prestasi');
+    }
+
     public function programStudi()
     {
-        return $this->belongsTo(ProdiModel::class, 'prodi', 'id_prodi');
+        return $this->belongsTo(ProdiModel::class, 'id_prodi', 'id_prodi');
     }
 
     public function kategoriPrestasi()

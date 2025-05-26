@@ -140,7 +140,9 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            tableMahasiswa.ajax.reload();
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {

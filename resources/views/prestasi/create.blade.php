@@ -84,10 +84,9 @@
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="keterangan" class="form-label">Keterangan</label>
-                            <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Masukkan keterangan tambahan"
+                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                            <textarea id="deskripsi" name="deskripsi" class="form-control" placeholder="Masukkan deskripsi tambahan"
                                 rows="3"></textarea>
-                            <div id="error-keterangan" class="text-danger error-text"></div>
                         </div>
 
                         <div class="form-group">

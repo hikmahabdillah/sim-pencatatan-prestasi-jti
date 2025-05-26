@@ -13,16 +13,19 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" value="{{ $data->username }}" readonly>
+                    <input type="text" id="username" name="username" class="form-control"
+                        value="{{ $data->username }}" readonly>
                 </div>
                 <div class="form-group">
                     <label for="nama_admin" class="form-label">Nama Lengkap</label>
-                    <input type="text" id="nama_admin" name="nama_admin" class="form-control" value="{{ $data->nama_admin }}" required>
+                    <input type="text" id="nama_admin" name="nama_admin" class="form-control"
+                        value="{{ $data->nama_admin }}" required>
                     <div id="error-nama_admin" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" value="{{ $data->email }}" required>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ $data->email }}"
+                        required>
                     <div id="error-email" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
@@ -72,7 +75,9 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            tableAdmin.ajax.reload();
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
