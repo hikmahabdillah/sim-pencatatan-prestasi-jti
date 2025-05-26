@@ -57,7 +57,7 @@ class KategoriController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'nama_kategori' => 'required|string|max:100',
+                'nama_kategori' => 'required|string|max:100|unique:kategori,nama_kategori',
                 'deskripsi' => 'required|string'
             ];
 
@@ -103,7 +103,7 @@ class KategoriController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'nama_kategori' => 'required|string|max:100',
+                'nama_kategori' => 'required|string|max:100|unique:kategori,nama_kategori',
                 'deskripsi' => 'required|string'
             ];
 
