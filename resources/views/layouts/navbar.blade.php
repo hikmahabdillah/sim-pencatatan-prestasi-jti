@@ -129,11 +129,14 @@
                                     <i class="ni ni-single-02 text-warning text-sm opacity-10 me-2"></i>Profile
                                 </a>
                             </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ url(getRoleUrl() . '/' . getIdUser() . '/prestasi') }}">
-                                    <i class="ni ni-trophy text-warning text-sm opacity-10 me-2"></i>Prestasi
-                                </a>
-                            </li>
+                            @if (auth()->user()->role_id == 3)
+                                <li>
+                                    <a class="dropdown-item"
+                                        href="{{ url(getRoleUrl() . '/' . getIdUser() . '/prestasi') }}">
+                                        <i class="ni ni-trophy text-warning text-sm opacity-10 me-2"></i>Prestasi
+                                    </a>
+                                </li>
+                            @endif
                             <li>
                                 <a class="dropdown-item" href="/logout">
                                     <i class="ni ni-user-run text-warning text-sm opacity-10 me-2"></i>Log out

@@ -11,7 +11,7 @@ class TingkatPrestasiController extends Controller
 {
     public function index()
     {
-        $activeMenu = 'prestasimhs'; // digunakan untuk menandai menu aktif di sidebar
+        $activeMenu = 'tingkat_prestasi'; // digunakan untuk menandai menu aktif di sidebar
         $breadcrumb = (object)[
             'title' => 'Manajeman Tingkat Prestasi', // untuk title halaman
             'list'  => ['Tingkat Prestasi'] // untuk breadcrumb
