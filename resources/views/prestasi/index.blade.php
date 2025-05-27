@@ -72,12 +72,6 @@
                             data: 'status_verifikasi',
                             className: 'text-center',
                             width: "10%"
-                            data: 'semester',
-                            width: "20%"
-                        },
-                        {
-                            data: 'tahun_ajaran',
-                            width: "20%"
                         },
                         {
                             data: 'aksi',

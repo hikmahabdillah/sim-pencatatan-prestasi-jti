@@ -137,6 +137,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::post('/list', [MahasiswaController::class, 'list']);
         Route::get('/create', [MahasiswaController::class, 'create']);
         Route::get('/{id}/show', [MahasiswaController::class, 'show']);
+        Route::get('/{id}/edit-password', [MahasiswaController::class, 'getUpdatePassword']);
+        Route::put('/{id}/update-password', [MahasiswaController::class, 'updatePassword']);
         Route::get('/{id}/profile', [MahasiswaController::class, 'getProfile']);
         Route::put('/{id}/update-foto', [MahasiswaController::class, 'updateFoto']);
         Route::get('/{id}/edit-profile', [MahasiswaController::class, 'getUpdateProfile']);
@@ -155,6 +157,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::post('/list', [DosenPembimbingController::class, 'list']);
         Route::get('/create', [DosenPembimbingController::class, 'create']);
         Route::get('/{id}/show', [DosenPembimbingController::class, 'show']);
+        Route::get('/{id}/edit-password', [DosenPembimbingController::class, 'getUpdatePassword']);
+        Route::put('/{id}/update-password', [DosenPembimbingController::class, 'updatePassword']);
         Route::get('/{id}/profile', [DosenPembimbingController::class, 'getProfile']);
         Route::put('/{id}/update-foto', [DosenPembimbingController::class, 'updateFoto']);
         Route::get('/{id}/edit-profile', [DosenPembimbingController::class, 'getUpdateProfile']);
@@ -171,6 +175,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::post('/list', [AdminController::class, 'list']);
         Route::get('/create', [AdminController::class, 'create']);
         Route::get('/{id}/show', [AdminController::class, 'show']);
+        Route::get('/{id}/edit-password', [AdminController::class, 'getUpdatePassword']);
+        Route::put('/{id}/update-password', [AdminController::class, 'updatePassword']);
         Route::get('/{id}/profile', [AdminController::class, 'getProfile']);
         Route::put('/{id}/update-foto', [AdminController::class, 'updateFoto']);
         Route::get('/{id}/edit-profile', [AdminController::class, 'getUpdateProfile']);

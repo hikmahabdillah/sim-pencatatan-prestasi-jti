@@ -68,7 +68,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Prestasi Mahasiswa</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ $activeMenu == 'prestasi' ? 'active' : '' }}" href="/prestasi">
+                <a class="nav-link {{ $activeMenu == 'prestasimhs' ? 'active' : '' }}" href="/prestasi">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Prestasi Mahasiswa">
                         <i class="ni ni-trophy text-success text-sm opacity-10"></i>
