@@ -367,4 +367,74 @@ class AdminController extends Controller
             ], 500);
         }
     }
+
+    public function getUpdatePassword($id)
+    {
+        $admin = AdminModel::with('pengguna')->find($id);
+        if (!$admin) {
+            return redirect('/admin/' . $id . '/profile')->with('error', 'Data admin tidak ditemukan');
+        }
+
+        return view('admin.edit-password', ['data' => $admin]);
+    }
+
+    public function updatePassword(Request $request, $id)
+    {
+        // Cari admin beserta data pengguna
+        $admin = AdminModel::with('pengguna')->find($id);
+
+        if (!$admin) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data admin tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'current_password' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use ($admin) {
+                    if (!Hash::check($value, $admin->pengguna->password)) {
+                        $fail('Password saat ini salah');
+                    }
+                }
+            ],
+            'new_password' => 'required|string|min:6|different:current_password',
+            'new_password_confirmation' => 'required|same:new_password'
+        ], [
+            'new_password.different' => 'Password baru harus berbeda dengan password saat ini',
+            'new_password_confirmation.same' => 'Konfirmasi password tidak cocok'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Update password pengguna
+            $admin->pengguna->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal memperbarui password',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
