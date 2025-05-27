@@ -19,12 +19,17 @@
                             <option value=""{{ $prestasi->status_verifikasi === null ? 'selected' : '' }}>
                                 Pilih
                                 Status Verifikasi</option>
-                            <option value="1" {{ $prestasi->status_verifikasi === true ? 'selected' : '' }}>
+                            <option value="1" {{ $prestasi->status_verifikasi === 1 ? 'selected' : '' }}>
                                 Disetujui</option>
-                            <option value="0" {{ $prestasi->status_verifikasi === false ? 'selected' : '' }}>
+                            <option value="0" {{ $prestasi->status_verifikasi === 0 ? 'selected' : '' }}>
                                 Ditolak</option>
                         </select>
+
                         <div id="error-status_verifikasi" class="text-danger error-text"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="keterangan" class="form-label">Keterangan</label>
+                        <textarea id="keterangan" name="keterangan" class="form-control">{{ $prestasi->keterangan }}</textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

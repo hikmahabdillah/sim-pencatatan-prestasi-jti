@@ -93,7 +93,6 @@ class DosenPembimbingController extends Controller
                 'password' => Hash::make($request->nip),
                 'role_id' => 2, // Role dosen
                 'status_aktif' => true,
-                'foto' => 'default.jpg'
             ]);
 
             $dosen = DosenPembimbingModel::create([

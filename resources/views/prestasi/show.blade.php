@@ -35,25 +35,25 @@
                                 <div class="col-md-8 position-relative">
                                     @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
                                         <h5 class="text-dark mb-3">Mahasiswa: {{ $prestasi->mahasiswa->nama }}</h5>
-                                        @if ($prestasi->status_verifikasi && $prestasi->status_verifikasi_dospem)
+                                        @if ($prestasi->status_verifikasi === 1 && $prestasi->status_verifikasi_dospem === 1)
                                             <span class="badge bg-gradient-success position-absolute end-2 top-2">
                                                 <i class="fas fa-check-circle me-1"></i> Terverifikasi (Admin & Dospem)
                                             </span>
-                                        @elseif($prestasi->status_verifikasi && !$prestasi->status_verifikasi_dospem)
+                                        @elseif($prestasi->status_verifikasi === 1 && $prestasi->status_verifikasi_dospem === null)
                                             <span class="badge bg-gradient-primary position-absolute end-2 top-2">
                                                 <i class="fas fa-check-circle me-1"></i> Terverifikasi Admin
                                             </span>
-                                        @elseif(!$prestasi->status_verifikasi && $prestasi->status_verifikasi_dospem)
+                                        @elseif($prestasi->status_verifikasi_dospem === 1 && $prestasi->status_verifikasi === null)
                                             <span class="badge bg-gradient-info position-absolute end-2 top-2">
                                                 <i class="fas fa-check-circle me-1"></i> Terverifikasi Dospem
                                             </span>
                                         @elseif($prestasi->status_verifikasi === 0 || $prestasi->status_verifikasi_dospem === 0)
                                             <span class="badge bg-gradient-danger position-absolute end-2 top-2">
                                                 <i class="fas fa-times-circle me-1"></i> Ditolak
-                                                @if ($prestasi->status_verifikasi === 0)
-                                                    (Admin)
-                                                @elseif($prestasi->status_verifikasi_dospem === 0)
+                                                @if ($prestasi->status_verifikasi_dospem === 0)
                                                     (Dospem)
+                                                @elseif($prestasi->status_verifikasi === 0)
+                                                    (Admin)
                                                 @endif
                                             </span>
                                         @else
@@ -68,21 +68,21 @@
                                             <span class="badge bg-gradient-success position-absolute end-2 top-2">
                                                 <i class="fas fa-check-circle me-1"></i> Terverifikasi (Admin & Dospem)
                                             </span>
-                                        @elseif ($prestasi->status_verifikasi)
-                                            <span class="badge bg-gradient-success position-absolute end-2 top-2">
-                                                <i class="fas fa-check-circle me-1"></i> Terverifikasi Admin
-                                            </span>
-                                        @elseif($prestasi->status_verifikasi === false)
-                                            <span class="badge bg-gradient-danger position-absolute end-2 top-2">
-                                                <i class="fas fa-times-circle me-1"></i> Ditolak Admin
-                                            </span>
-                                        @elseif($prestasi->status_verifikasi_dospem)
+                                        @elseif($prestasi->status_verifikasi_dospem === 1 && $prestasi->status_verifikasi === null)
                                             <span class="badge bg-gradient-info position-absolute end-2 top-2">
                                                 <i class="fas fa-check-circle me-1"></i> Terverifikasi Dospem
                                             </span>
-                                        @elseif($prestasi->status_verifikasi_dospem === false)
+                                        @elseif($prestasi->status_verifikasi_dospem === 0 && $prestasi->status_verifikasi === null)
                                             <span class="badge bg-gradient-danger position-absolute end-2 top-2">
                                                 <i class="fas fa-times-circle me-1"></i> Ditolak Dospem
+                                            </span>
+                                        @elseif ($prestasi->status_verifikasi === 1)
+                                            <span class="badge bg-gradient-success position-absolute end-2 top-2">
+                                                <i class="fas fa-check-circle me-1"></i> Terverifikasi Admin
+                                            </span>
+                                        @elseif($prestasi->status_verifikasi === 0)
+                                            <span class="badge bg-gradient-danger position-absolute end-2 top-2">
+                                                <i class="fas fa-times-circle me-1"></i> Ditolak Admin
                                             </span>
                                         @else
                                             <span class="badge bg-gradient-secondary position-absolute end-2 top-2">
@@ -200,18 +200,22 @@
                             <i class="fas fa-arrow-left me-1"></i> Kembali
                         </a>
                         <div class="d-flex gap-2 align-items-center">
-                            @if (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem)
+                            @if (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === 1)
                                 <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/verifikasi-admin')"
                                     class="btn btn-md btn-primary">
                                     <i class="fas fa-check me-1"></i>
                                     {{ $prestasi->status_verifikasi != null ? 'Edit Verifikasi' : 'Verifikasi' }}
                                 </button>
-                            @elseif (auth()->user()->role_id == 1 && !$prestasi->status_verifikasi_dospem)
+                            @elseif (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === null)
                                 <p class="text-dark">
                                     Menunggu verifikasi dari Dosen Pembimbing
                                 </p>
+                            @elseif (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === 0)
+                                <p class="text-dark">
+                                    Verifikasi Dosen Pembimbing ditolak. Tidak bisa melakukan verifikasi
+                                </p>
                             @endif
-                            @if (auth()->user()->role_id == 2)
+                            @if (auth()->user()->role_id == 2 && $prestasi->status_verifikasi === null)
                                 <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/verifikasi-dospem')"
                                     class="btn btn-md btn-primary">
                                     <i class="fas fa-check me-1"></i>

@@ -20,10 +20,9 @@
                             <option value=""{{ $prestasi->status_verifikasi_dospem === null ? 'selected' : '' }}>
                                 Pilih
                                 Status Verifikasi</option>
-                            <option value="1" {{ $prestasi->status_verifikasi_dospem === true ? 'selected' : '' }}>
+                            <option value="1" {{ $prestasi->status_verifikasi_dospem === 1 ? 'selected' : '' }}>
                                 Disetujui</option>
-                            <option value="0"
-                                {{ $prestasi->status_verifikasi_dospem === false ? 'selected' : '' }}>
+                            <option value="0" {{ $prestasi->status_verifikasi_dospem === 0 ? 'selected' : '' }}>
                                 Ditolak</option>
                         </select>
                         <div id="error-status_verifikasi_dospem" class="text-danger error-text"></div>

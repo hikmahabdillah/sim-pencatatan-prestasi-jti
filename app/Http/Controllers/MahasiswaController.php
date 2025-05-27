@@ -102,7 +102,6 @@ class MahasiswaController extends Controller
                 'password' => Hash::make($request->nim),
                 'role_id' => 3, // Role for mahasiswa
                 'status_aktif' => true,
-                'foto' => 'default.jpg'
             ]);
 
             // Create mahasiswa data
