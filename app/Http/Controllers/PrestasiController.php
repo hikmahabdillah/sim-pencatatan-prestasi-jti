@@ -23,7 +23,7 @@ class PrestasiController extends Controller
             'title' => 'Prestasi Mahasiswa',
             'list'  => ['Prestasi Mahasiswa']
         ];
-        $activeMenu = 'verifikasi_prestasi';
+        $activeMenu = 'prestasimhs';
 
         return view('prestasi.index', [
             'breadcrumb' => $breadcrumb,
