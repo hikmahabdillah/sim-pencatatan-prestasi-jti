@@ -94,70 +94,10 @@
                 </p>
             </div>
             <div class="card-footer d-flex justify-content-between align-items-center bg-transparent">
-                <a href="{{ url('/lomba/manajemen-lomba') }}" class="btn btn-secondary">
+                @if(auth()->user()->role_id == 3)
+                <a href="{{ url('/lomba') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Kembali
                 </a>
-
-                <div>
-                    <form id="form-setujui" action="{{ url('lomba/manajemen-lomba/' . $data->id_lomba . '/setujui') }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="button" id="btn-setujui" class="btn btn-success me-2">Setujui</button>
-                    </form>
-
-                    <form id="form-tolak" action="{{ url('lomba/manajemen-lomba/' . $data->id_lomba . '/tolak') }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="button" id="btn-tolak" class="btn btn-danger">Tolak</button>
-                    </form>
-                </div>
             </div>
-        </div>
-        @include('layouts.footer')
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            document.getElementById('btn-setujui').addEventListener('click', function() {
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: "Apakah Anda yakin ingin menyetujui lomba ini?",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, setujui',
-                    cancelButtonText: 'Batal',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('form-setujui').submit();
-                    }
-                });
-            });
-
-            document.getElementById('btn-tolak').addEventListener('click', function() {
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: "Apakah Anda yakin ingin menolak lomba ini?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, tolak',
-                    cancelButtonText: 'Batal',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('form-tolak').submit();
-                    }
-                });
-            });
-        </script>
-
-        <!-- SweetAlert notifikasi sukses -->
-        @if(session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: "{{ session('success') }}",
-                timer: 2500,
-                showConfirmButton: false,
-            });
-        </script>
-        @endif
-
-        @endsection
+            @include('layouts.footer')
+            @endsection

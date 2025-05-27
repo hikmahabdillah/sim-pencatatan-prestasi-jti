@@ -89,7 +89,7 @@
                                 </div>
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title">${item.nama_lomba}</h5>
-                                     <h7 class="card-title">${item.nama_kategori}</h7>
+                                    <h7 class="card-title">${item.nama_kategori}</h7>
                                     <p class="card-text text-sm mb-2">
                                         ${item.deskripsi.length > 100 ? item.deskripsi.substring(0, 100) + '...' : item.deskripsi}
                                     </p>

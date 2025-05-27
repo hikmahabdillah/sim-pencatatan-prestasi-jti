@@ -4,6 +4,11 @@
     @method('PUT')
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
+            @if ($lomba && $lomba->status_verifikasi == 1)
+            <div class="alert alert-warning text-center text-white">
+                <strong>Lomba sudah diverifikasi, sehingga tidak dapat diedit.</strong>
+            </div>
+            @else
             <div class="modal-header">
                 <h5 class="modal-title">Edit Data Lomba</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -25,9 +30,9 @@
                         <label>Kategori</label>
                         <select name="id_kategori" class="form-control">
                             @foreach ($id_kategori as $kategori)
-                                <option value="{{ $kategori->id_kategori }}" {{ $kategori->id_kategori == $lomba->id_kategori ? 'selected' : '' }}>
-                                    {{ $kategori->nama_kategori }}
-                                </option>
+                            <option value="{{ $kategori->id_kategori }}" {{ $kategori->id_kategori == $lomba->id_kategori ? 'selected' : '' }}>
+                                {{ $kategori->nama_kategori }}
+                            </option>
                             @endforeach
                         </select>
                         <div class="text-danger error-text" id="error-id_kategori"></div>
@@ -36,9 +41,9 @@
                         <label>Tingkat Prestasi</label>
                         <select name="id_tingkat_prestasi" class="form-control">
                             @foreach ($id_tingkat_prestasi as $tingkat)
-                                <option value="{{ $tingkat->id_tingkat_prestasi }}" {{ $tingkat->id_tingkat_prestasi == $lomba->id_tingkat_prestasi ? 'selected' : '' }}>
-                                    {{ $tingkat->nama_tingkat_prestasi }}
-                                </option>
+                            <option value="{{ $tingkat->id_tingkat_prestasi }}" {{ $tingkat->id_tingkat_prestasi == $lomba->id_tingkat_prestasi ? 'selected' : '' }}>
+                                {{ $tingkat->nama_tingkat_prestasi }}
+                            </option>
                             @endforeach
                         </select>
                         <div class="text-danger error-text" id="error-id_tingkat_prestasi"></div>
@@ -52,9 +57,9 @@
                         <label>Periode</label>
                         <select name="periode" class="form-control">
                             @foreach ($id_periode as $periode)
-                                <option value="{{ $periode->id_periode }}" {{ $periode->id_periode == $lomba->periode ? 'selected' : '' }}>
-                                    {{ $periode->semester }} - {{ $periode->tahun_ajaran }}
-                                </option>
+                            <option value="{{ $periode->id_periode }}" {{ $periode->id_periode == $lomba->periode ? 'selected' : '' }}>
+                                {{ $periode->semester }} - {{ $periode->tahun_ajaran }}
+                            </option>
                             @endforeach
                         </select>
                         <div class="text-danger error-text" id="error-periode"></div>
@@ -100,14 +105,13 @@
                 <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
             </div>
         </div>
+        @endif
     </div>
 </form>
- @push('js')
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $(document).on('submit', '#form-edit', function(e) {
             e.preventDefault();
-
             var formData = new FormData(this);
 
             $.ajax({
@@ -147,4 +151,3 @@
         });
     });
 </script>
-@endpush

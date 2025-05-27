@@ -38,12 +38,15 @@
                     <tr>
                         <th>Status Verifikasi</th>
                         <td>
-                            @if ($data->status_verifikasi)
-                            <span class="badge bg-success">Terverifikasi</span>
+                            @if ($data->status_verifikasi === 1)
+                            <span class="badge bg-success">Disetujui</span>
+                            @elseif ($data->status_verifikasi === 0)
+                            <span class="badge bg-danger">Ditolak</span>
                             @else
                             <span class="badge bg-secondary">Belum Diverifikasi</span>
                             @endif
                         </td>
+
                     </tr>
                 </table>
             </div>
@@ -71,7 +74,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            tableLomba.ajax.reload(); // reload datatable jika pakai DataTables
+                            location.reload();
                         } else {
                             Swal.fire({
                                 icon: 'error',
