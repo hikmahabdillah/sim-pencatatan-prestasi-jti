@@ -3,9 +3,9 @@
 @section('content')
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
-        <h4>Profile Mahasiswa</h4>
-        {{-- <p>{{ auth()->user() }}</p> --}}
-        <form id="updateFotoForm" action="{{ url('/mahasiswa/' . $data->id_mahasiswa . '/update-foto') }}" method="POST"
+        <h4>Profile Admin</h4>
+
+        <form id="updateFotoForm" action="{{ url('/admin/' . $data->id_admin . '/update-foto') }}" method="POST"
             enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -34,9 +34,8 @@
                     <div class="col-lg-7 ps-0 my-auto flex-grow-1">
                         <div class="card-body text-left p-0">
                             <div class="p-md-0 pt-3 my-auto">
-                                <h5 class="font-weight-bolder mb-0 text-uppercase">{{ $data->nama }}</h5>
-                                <p class="text-uppercase text-sm font-weight-bold">{{ $data->prodi->nama_prodi }} -
-                                    {{ $data->nim }}</p>
+                                <h5 class="font-weight-bolder mb-0 text-uppercase">{{ $data->nama_admin }}</h5>
+                                <p class="text-uppercase text-sm font-weight-bold">{{ $data->username }}</p>
                                 <div id="loadingIndicator" style="display: none;">
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                     Mengunggah...
@@ -58,9 +57,13 @@
 
         <div class="card shadow rounded-3 border">
             <div class="card-body position-relative">
-                <h5 class="fw-semibold mb-4 text-warning">Personal Information</h5>
+                <h5 class="fw-semibold mb-4 text-warning">Informasi Admin</h5>
 
                 <!-- Tombol Edit -->
+                {{-- <button onclick="modalAction('{{ url('/admin/' . $data->id_admin . '/edit-profile') }}')"
+                    class="btn btn-warning position-absolute top-0 end-0 mt-3 me-3 btn-sm fs-6 font-weight-normal">
+                    Edit
+                </button> --}}
                 <button onclick="modalAction('edit-profile')"
                     class="btn btn-warning position-absolute top-0 end-0 mt-3 me-3 btn-sm fs-6 font-weight-normal">
                     Edit
@@ -68,36 +71,31 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <p class="mb-1 text-muted small font-weight-bold">Minat Bakat</p>
-                        <p class="fw-semibold">{{ $data->kategori->nama_kategori }}</p>
+                        <p class="mb-1 text-muted small font-weight-bold">Username</p>
+                        <p class="fw-semibold">{{ $data->username }}</p>
 
                         <p class="mb-1 text-muted small font-weight-bold">Email Address</p>
                         <p class="fw-semibold">{{ $data->email }}</p>
 
-                        <p class="mb-1 text-muted small font-weight-bold">Tanggal Lahir</p>
-                        <p class="fw-semibold">
-                            {{ \Carbon\Carbon::parse($data->tanggal_lahir)->translatedFormat('d F Y') }}
-                        </p>
-
-                        <p class="mb-1 text-muted small font-weight-bold">Jenis Kelamin</p>
-                        <p class="fw-semibold"> {{ $data->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
-
-
+                        <p class="mb-1 text-muted small font-weight-bold">Role</p>
+                        <p class="fw-semibold">Admin</p>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <p class="mb-1 text-muted small font-weight-bold">Phone Number</p>
-                        <p class="fw-semibold">{{ $data->no_hp }}</p>
-
-                        <p class="mb-1 text-muted small font-weight-bold">Alamat</p>
-                        <p class="fw-semibold text-wrap">{{ $data->alamat }}</p>
-
-                        <p class="mb-1 text-muted small font-weight-bold">Angkatan</p>
+                        <p class="mb-1 text-muted small font-weight-bold">Tanggal Dibuat</p>
                         <p class="fw-semibold">
-                            {{ $data->angkatan }} - {{ $data->pengguna->status_aktif ? 'Aktif' : 'Non-Aktif' }}
+                            {{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y') }}
                         </p>
 
-                        {{-- Tambahkan data tambahan jika perlu di sisi kanan --}}
+                        <p class="mb-1 text-muted small font-weight-bold">Terakhir Diupdate</p>
+                        <p class="fw-semibold">
+                            {{ \Carbon\Carbon::parse($data->updated_at)->translatedFormat('d F Y') }}
+                        </p>
+
+                        <p class="mb-1 text-muted small font-weight-bold">Status</p>
+                        <p class="fw-semibold">
+                            {{ $data->pengguna->status_aktif ? 'Aktif' : 'Non-Aktif' }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -162,8 +160,9 @@
                             }
 
                             setTimeout(() => {
-                                window.location.reload();
+                                window.location.href = '{{ url()->current() }}';
                             }, 1000);
+
                         } else {
                             // Handle validation errors
                             if (response.msgField) {

@@ -15,16 +15,19 @@ class PrestasiMahasiswaModel extends Model
         'id_tingkat_prestasi',
         'id_mahasiswa',
         'id_dospem',
-        'nama_prestasi',
         'id_kategori',
+        'nama_prestasi',
         'juara',
         'tanggal_prestasi',
         'id_periode',
+        'deskripsi',
         'keterangan',
         'foto_kegiatan',
         'bukti_sertifikat',
         'surat_tugas',
-        'karya'
+        'karya',
+        'status_verifikasi_dospem',
+        'status_verifikasi',
     ];
 
     public function tingkatPrestasi()

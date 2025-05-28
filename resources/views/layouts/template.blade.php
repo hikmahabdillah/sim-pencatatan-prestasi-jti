@@ -41,7 +41,7 @@
             </div>
         @endif
 
-        @include('layouts.sidebar')
+        @include('layouts.sidebar', ['activeMenu' => $activeMenu ?? ''])
 
         <main class="main-content border-radius-lg d-flex flex-column min-vh-100 bg-light">
             @yield('content')

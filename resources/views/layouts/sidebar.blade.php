@@ -22,7 +22,7 @@
         <ul class="navbar-nav">
             <!-- Dashboard -->
             <li class="nav-item">
-                <a class="nav-link active" href="/">
+                <a class="nav-link {{ $activeMenu == 'dashboard' ? 'active' : '' }}" href="/">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
                         <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
@@ -36,7 +36,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Administrasi (admin)</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/mahasiswa">
+                <a class="nav-link {{ $activeMenu == 'mahasiswa' ? 'active' : '' }}" href="/mahasiswa">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Mahasiswa">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -45,7 +45,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/dospem">
+                <a class="nav-link {{ $activeMenu == 'dospem' ? 'active' : '' }}" href="/dospem">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Dosen Pembimbing">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -54,7 +54,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin">
+                <a class="nav-link {{ $activeMenu == 'admin' ? 'active' : '' }}" href="/admin">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Admin">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -68,7 +68,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Prestasi Mahasiswa</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/prestasi">
+                <a class="nav-link {{ $activeMenu == 'prestasimhs' ? 'active' : '' }}" href="/prestasi">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Prestasi Mahasiswa">
                         <i class="ni ni-trophy text-success text-sm opacity-10"></i>
@@ -77,16 +77,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/verifikasi-prestasi">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Verifikasi Prestasi">
-                        <i class="ni ni-check-bold text-success text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Verifikasi Prestasi(admin-dospem)</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/tingkat_prestasi">
+                <a class="nav-link {{ $activeMenu == 'tingkat_prestasi' ? 'active' : '' }}" href="/tingkat_prestasi">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Tingkat Prestasi">
                         <i class="ni ni-chart-bar-32 text-success text-sm opacity-10"></i>
@@ -95,7 +86,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/laporan-prestasi">
+                <a class="nav-link {{ $activeMenu == 'laporan_prestasi' ? 'active' : '' }}" href="/laporan-prestasi">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Laporan Prestasi">
                         <i class="ni ni-chart-bar-32 text-success text-sm opacity-10"></i>
@@ -109,7 +100,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Lomba</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/lomba">
+                <a class="nav-link {{ $activeMenu == 'lomba' ? 'active' : '' }}" href="/lomba">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Lomba">
                         <i class="ni ni-istanbul text-info text-sm opacity-10"></i>
@@ -118,16 +109,16 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/manajemen-lomba">
+                <a class="nav-link {{ $activeMenu == 'manajemen_lomba' ? 'active' : '' }}" href="/manajemen-lomba">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Lomba">
                         <i class="ni ni-settings text-info text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Manajemen Lomba(admin)</span>
+                    <span class="nav-link-text ms-1">Manajemen Lomba(alluser)</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/kategori">
+                <a class="nav-link {{ $activeMenu == 'kategori' ? 'active' : '' }}" href="/kategori">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Kategori">
                         <i class="ni ni-settings text-info text-sm opacity-10"></i>
@@ -141,7 +132,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Lainnya (admin)</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/role">
+                <a class="nav-link {{ $activeMenu == 'role' ? 'active' : '' }}" href="/role">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Role">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -150,7 +141,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/prodi">
+                <a class="nav-link {{ $activeMenu == 'prodi' ? 'active' : '' }}" href="/prodi">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Program Studi">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -159,7 +150,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/periode">
+                <a class="nav-link {{ $activeMenu == 'periode' ? 'active' : '' }}" href="/periode">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Periode">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>

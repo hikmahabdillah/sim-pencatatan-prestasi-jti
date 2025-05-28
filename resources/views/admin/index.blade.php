@@ -3,29 +3,17 @@
 @section('content')
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
-        <div class="d-flex gap-3 justify-content-between align-items-center mb-3">
-            <button onclick="modalAction('{{ url('dospem/create') }}')" class="btn bg-gradient-info mt-1">
-                Tambah Dosen Pembimbing
-            </button>
-            <div class="d-flex gap-3 align-items-center">
-                <p class="text-muted w-100">Filter status:</p>
-                <select id="status_filter" name="status_filter" class="form-select mb-3 w-100"
-                    style="min-width:150px; max-width: 200px;">
-                    <option value="">Semua Status</option>
-                    <option value="1">Aktif</option>
-                    <option value="0">Non-Aktif</option>
-                </select>
-            </div>
-        </div>
+        <button onclick="modalAction('{{ url('admin/create') }}')" class="btn bg-gradient-info mt-1">
+            Tambah Admin
+        </button>
         <div class="card p-3 table-responsive">
-            <table id="dospem-table" class="table table-hover">
+            <table id="admin-table" class="table table-hover">
                 <thead class="table-light">
                     <tr>
                         <th class="text-center">No</th>
-                        <th class="text-center">NIP</th>
-                        <th class="text-center">Nama</th>
-                        <th class="text-center">Program Studi</th>
-                        <th class="text-center">Bidang Keahlian</th>
+                        <th class="text-center">Username</th>
+                        <th class="text-center">Nama Admin</th>
+                        <th class="text-center">Email</th>
                         <th class="text-center">Status</th>
                         <th class="text-center">Aksi</th>
                     </tr>
@@ -47,18 +35,15 @@
                 });
             }
 
-            let tableDospem;
+            let tableAdmin;
 
             $(document).ready(function() {
-                tableDospem = $('#dospem-table').DataTable({
+                tableAdmin = $('#admin-table').DataTable({
                     processing: true,
-                    serverSide: true,
+                    serverSide: false,
                     ajax: {
-                        url: "{{ url('dospem/list') }}",
+                        url: "{{ url('admin/list') }}",
                         type: "POST",
-                        data: function(d) {
-                            d.status_filter = $('#status_filter').val(); // Send filter value
-                        }
                     },
                     columns: [{
                             data: 'DT_RowIndex',
@@ -68,20 +53,16 @@
                             width: "2%"
                         },
                         {
-                            data: 'nip',
-                            width: "10%"
-                        },
-                        {
-                            data: 'nama',
-                            width: "20%"
-                        },
-                        {
-                            data: 'prodi',
+                            data: 'username',
                             width: "15%"
                         },
                         {
-                            data: 'kategori',
-                            width: "15%"
+                            data: 'nama_admin',
+                            width: "25%"
+                        },
+                        {
+                            data: 'email',
+                            width: "25%"
                         },
                         {
                             data: 'status',
@@ -93,12 +74,9 @@
                             className: 'text-center',
                             orderable: false,
                             searchable: false,
-                            width: "10%"
+                            width: "15%"
                         }
                     ]
-                });
-                $('#status_filter').change(function() {
-                    tableDospem.ajax.reload();
                 });
             });
         </script>

@@ -81,12 +81,12 @@
                     rules: {
                         username: {
                             required: true,
-                            minlength: 4,
+                            minlength: 3,
                             maxlength: 20
                         },
                         password: {
                             required: true,
-                            minlength: 6,
+                            minlength: 3,
                             maxlength: 20
                         }
                     },

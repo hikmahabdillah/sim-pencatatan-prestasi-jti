@@ -15,17 +15,20 @@ return new class extends Migration
             $table->id('id_prestasi');
             $table->unsignedBigInteger('id_tingkat_prestasi')->index();
             $table->unsignedBigInteger('id_mahasiswa')->index();
-            $table->unsignedBigInteger('id_dospem')->index();
+            $table->unsignedBigInteger('id_dospem')->nullable()->index();
             $table->string('nama_prestasi');
             $table->unsignedBigInteger('id_kategori')->index();
             $table->string('juara');
             $table->date('tanggal_prestasi');
             $table->unsignedBigInteger('id_periode')->index();
-            $table->text('keterangan');
+            $table->text('deskripsi')->nullable();
+            $table->text('keterangan')->nullable();
             $table->string('foto_kegiatan');
             $table->string('bukti_sertifikat');
             $table->string('surat_tugas');
             $table->string('karya')->nullable();
+            $table->boolean('status_verifikasi_dospem')->nullable();
+            $table->boolean('status_verifikasi')->nullable();
             $table->timestamps();
 
             $table->foreign('id_mahasiswa')->references('id_mahasiswa')->on('mahasiswa');
