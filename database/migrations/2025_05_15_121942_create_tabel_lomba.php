@@ -21,10 +21,11 @@ return new class extends Migration
             $table->string('link_pendaftaran');
             $table->unsignedBigInteger('periode');
             $table->boolean('biaya_pendaftaran');
+            $table->boolean('berhadiah');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->date('deadline_pendaftaran');
-            $table->string('foto')->nullable();
+            $table->string('foto');
             $table->boolean('status_verifikasi')->nullable();
             $table->unsignedBigInteger('added_by')->index();
             $table->unsignedBigInteger('role_pengusul')->index();

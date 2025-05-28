@@ -109,12 +109,30 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ $activeMenu == 'manajemen_lomba' ? 'active' : '' }}" href="/manajemen-lomba">
+                <a class="nav-link {{ $activeMenu == 'input_lomba' ? 'active' : '' }}" href="/lomba/input-lomba">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Input Lomba">
+                        <i class="ni ni-folder-17 text-info text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Input Lomba(dospem-mahasiswa)</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ $activeMenu == 'pendaftaran_lomba' ? 'active' : '' }}" href="/lomba/pendaftaran-lomba">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="Pendaftaran Lomba">
+                        <i class="ni ni-book-bookmark text-sm opacity-10" style="color:rgb(71, 206, 255);"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Pendaftaran Lomba (Mahasiswa)</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ $activeMenu == 'manajemen_lomba' ? 'active' : '' }}" href="/lomba/manajemen-lomba">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Lomba">
                         <i class="ni ni-settings text-info text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Manajemen Lomba(alluser)</span>
+                    <span class="nav-link-text ms-1">Manajemen Lomba(admin)</span>
                 </a>
             </li>
             <li class="nav-item">

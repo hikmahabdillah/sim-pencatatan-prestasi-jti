@@ -26,9 +26,9 @@
                     <select name="id_kategori" class="form-control" required>
                         <option value="">-- Pilih Kategori --</option>
                         @foreach ($id_kategori as $k)
-                            <option value="{{ $k->id_kategori }}" {{ old('id_kategori') == $k->id_kategori ? 'selected' : '' }}>
-                                {{ $k->nama_kategori }}
-                            </option>
+                        <option value="{{ $k->id_kategori }}" {{ old('id_kategori') == $k->id_kategori ? 'selected' : '' }}>
+                            {{ $k->nama_kategori }}
+                        </option>
                         @endforeach
                     </select>
                     <div class="text-danger error-text" id="error-id_kategori"></div>
@@ -39,9 +39,9 @@
                     <select name="id_tingkat_prestasi" class="form-control" required>
                         <option value="">-- Pilih Tingkat Prestasi --</option>
                         @foreach ($id_tingkat_prestasi as $t)
-                            <option value="{{ $t->id_tingkat_prestasi }}" {{ old('id_tingkat_prestasi') == $t->id_tingkat_prestasi ? 'selected' : '' }}>
-                                {{ $t->nama_tingkat_prestasi }}
-                            </option>
+                        <option value="{{ $t->id_tingkat_prestasi }}" {{ old('id_tingkat_prestasi') == $t->id_tingkat_prestasi ? 'selected' : '' }}>
+                            {{ $t->nama_tingkat_prestasi }}
+                        </option>
                         @endforeach
                     </select>
                     <div class="text-danger error-text" id="error-id_tingkat_prestasi"></div>
@@ -58,22 +58,32 @@
                     <select id="periode" name="periode" class="form-select" required>
                         <option value="">-- Pilih Periode --</option>
                         @foreach($periode as $p)
-                            <option value="{{ $p->id_periode }}" {{ old('periode') == $p->id_periode ? 'selected' : '' }}>
-                                {{ $p->semester }} - {{ $p->tahun_ajaran }}
-                            </option>
+                        <option value="{{ $p->id_periode }}" {{ old('periode') == $p->id_periode ? 'selected' : '' }}>
+                            {{ $p->semester }} - {{ $p->tahun_ajaran }}
+                        </option>
                         @endforeach
                     </select>
                     <div id="error-periode" class="text-danger error-text"></div>
                 </div>
-                
+
                 <div class="form-group col-md-4">
                     <label for="biaya_pendaftaran" class="form-label">Biaya Pendaftaran</label>
                     <select id="biaya_pendaftaran" name="biaya_pendaftaran" class="form-select" required>
-                    <option value="" {{ old('biaya_pendaftaran') === null ? 'selected' : '' }}>-- Pilih Biaya Pendaftaran --</option>
-                    <option value="1" {{ old('biaya_pendaftaran') === '1' ? 'selected' : '' }}>Berbayar</option>
-                    <option value="0" {{ old('biaya_pendaftaran') === '0' ? 'selected' : '' }}>Gratis</option>
+                        <option value="" {{ old('biaya_pendaftaran') === null ? 'selected' : '' }}>-- Pilih Biaya Pendaftaran --</option>
+                        <option value="1" {{ old('biaya_pendaftaran') === '1' ? 'selected' : '' }}>Berbayar</option>
+                        <option value="0" {{ old('biaya_pendaftaran') === '0' ? 'selected' : '' }}>Gratis</option>
                     </select>
                     <div id="error-biaya_pendaftaran" class="text-danger error-text"></div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="berhadiah" class="form-label">Berhadiah</label>
+                    <select id="berhadiah" name="berhadiah" class="form-select" required>
+                        <option value="" {{ old('berhadiah') === null ? 'selected' : '' }}>-- Pilih Opsi --</option>
+                        <option value="1" {{ old('berhadiah') === '1' ? 'selected' : '' }}>Berhadiah</option>
+                        <option value="0" {{ old('berhadiah') === '0' ? 'selected' : '' }}>Tidak Berhadiah</option>
+                    </select>
+                    <div id="error-berhadiah" class="text-danger error-text"></div>
                 </div>
 
                 <div class="form-group col-md-4">
@@ -100,7 +110,7 @@
                     <div class="text-danger error-text" id="error-deadline_pendaftaran"></div>
                 </div>
 
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-8">
                     <label for="foto">Foto Lomba (Opsional)</label>
                     <input type="file" name="foto" class="form-control" accept=".jpg,.jpeg,.png">
                     <div class="text-danger error-text" id="error-foto"></div>
@@ -116,9 +126,9 @@
 </form>
 
 <script>
-     $(document).ready(function () {
+    $(document).ready(function() {
         $('#form-tambah-lomba').on('submit', function(e) {
-            e.preventDefault(); 
+            e.preventDefault();
 
             var formData = new FormData(this);
 
@@ -137,7 +147,7 @@
                             title: 'Berhasil!',
                             text: response.message
                         });
-                        location.reload(); 
+                        location.reload();
                     } else {
                         Swal.fire({
                             icon: 'error',

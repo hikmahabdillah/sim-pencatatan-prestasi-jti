@@ -20,6 +20,7 @@ class LombaModel extends Model
         'link_pendaftaran',
         'periode',
         'biaya_pendaftaran',
+        'berhadiah',
         'tanggal_mulai',
         'tanggal_selesai',
         'deadline_pendaftaran',

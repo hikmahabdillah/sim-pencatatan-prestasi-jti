@@ -12,9 +12,11 @@
             <div class="blur-shadow-image position-relative overflow-hidden"
                 style="width: 150px; height: 200px; border-radius: 25px;">
                 @php
-                $foto = $data->foto ? asset('storage/foto_lomba/' . $data->foto) : asset('image/fotoDefault.jpg');
+                $foto = $data->foto ? asset('storage/' . $data->foto) : asset('image/fotoDefault.jpg');
                 @endphp
-                <img class="w-100 h-100 shadow-lg" style="object-fit: cover;" src="{{ $foto }}" alt="Poster Lomba">
+                <a href="{{ $foto }}" target="_blank" rel="noopener noreferrer">
+                    <img class="w-100 h-100 shadow-lg" style="object-fit: cover;" src="{{ $foto }}" alt="Poster Lomba">
+                </a>
             </div>
         </div>
     </div>
@@ -81,21 +83,8 @@
                     <a href="{{ $data->link_pendaftaran}}" target="_blank">{{ $data->link_pendaftaran }}</a>
                 </p>
             </div>
-            <div class="mb-2 d-flex align-items-center gap-4">
-                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Status Verifikasi</p>
-                <p class="mb-0 fw-semibold">:
-                    @if ($data->status_verifikasi == 1)
-                    Disetujui
-                    @elseif ($data->status_verifikasi == 0)
-                    Ditolak
-                    @else ($data->status_verifikasi == null)
-                    Belum Diverifikasi
-                    @endif
-                </p>
-            </div>
             <div class="card-footer d-flex justify-content-between align-items-center bg-transparent">
-                @if(auth()->user()->role_id == 3)
-                <a href="{{ url('/lomba') }}" class="btn btn-secondary">
+                <a href="{{ url()->previous() }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Kembali
                 </a>
             </div>

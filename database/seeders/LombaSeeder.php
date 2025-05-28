@@ -24,9 +24,11 @@ class LombaSeeder extends Seeder
                 'link_pendaftaran' => 'https://lombadebat.com',
                 'periode'=>'1',
                 'biaya_pendaftaran'=>true,
+                'berhadiah' => true,
                 'tanggal_mulai' => '2025-04-01',
                 'tanggal_selesai' => '2025-04-07',
                 'deadline_pendaftaran' => '2025-03-31',
+                'foto'=> 'fotolomba.jpg',
                 'status_verifikasi' => true,
                 'added_by' => 1, // Pastikan ada pengguna dengan id_pengguna = '22410001'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
@@ -43,9 +45,11 @@ class LombaSeeder extends Seeder
                 'link_pendaftaran' => 'https://olympicgames.com',
                 'periode'=>'1',
                 'biaya_pendaftaran'=>false,
+                'berhadiah' => true,
                 'tanggal_mulai' => '2025-08-15',
                 'tanggal_selesai' => '2025-10-15',
                 'deadline_pendaftaran' => '2025-04-21',
+                'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
                 'added_by' => 2, // Pastikan ada pengguna dengan id_pengguna = '22410002'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
@@ -62,9 +66,11 @@ class LombaSeeder extends Seeder
                 'link_pendaftaran' => 'https://kabmalangtari.com',
                 'periode'=>'1',
                 'biaya_pendaftaran'=>false,
+                'berhadiah' => false,
                 'tanggal_mulai' => '2025-01-20',
                 'tanggal_selesai' => '2025-01-25',
                 'deadline_pendaftaran' => '2025-01-18',
+                'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
                 'added_by' => 3, // Pastikan ada pengguna dengan id_pengguna = '22410002'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
@@ -81,9 +87,11 @@ class LombaSeeder extends Seeder
                 'link_pendaftaran' => 'https://polinema.ac.id/perlombaan',
                 'periode'=>'1',
                 'biaya_pendaftaran'=>true,
+                'berhadiah' => false,
                 'tanggal_mulai' => '2026-03-01',
                 'tanggal_selesai' => '2026-03-03',
                 'deadline_pendaftaran' => '2026-02-20',
+                'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => false,
                 'added_by' => 4, // Pastikan ada pengguna dengan id_pengguna = '22410002'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
@@ -99,10 +107,12 @@ class LombaSeeder extends Seeder
                 'deskripsi' => 'Kompetisi makan makanan terbanyak kota ngalam',
                 'periode'=>'1',
                 'biaya_pendaftaran'=>false,
+                'berhadiah' => true,
                 'link_pendaftaran' => '-',
                 'tanggal_mulai' => '2026-01-02',
                 'tanggal_selesai' => '2026-01-02',
                 'deadline_pendaftaran' => '2026-01-01',
+                'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => false,
                 'added_by' => 5, // Pastikan ada pengguna dengan id_pengguna = '22410002'
                 'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)

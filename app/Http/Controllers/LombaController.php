@@ -23,12 +23,12 @@ class LombaController extends Controller
             'list' => [' Manajemen Lomba']
         ];
 
-        $kategori = KategoriModel::all(); 
+        $kategori = KategoriModel::all();
 
         return view('lomba.indexAdmin', [
             'breadcrumb' => $breadcrumb,
             'activeMenu' => $activeMenu,
-            'kategori' => $kategori, 
+            'kategori' => $kategori,
         ]);
     }
 
@@ -58,57 +58,114 @@ class LombaController extends Controller
             'list' => [' Input Lomba']
         ];
 
+        $kategori = KategoriModel::all();
+
         return view('lomba.inputLomba', [
             'breadcrumb' => $breadcrumb,
             'activeMenu' => $activeMenu,
+            'kategori' => $kategori,
         ]);
     }
 
-    public function listSemua(Request $request)
+    public function listAdmin(Request $request)
     {
-        $user = auth()->user();
-        $filterKategori = $request->input('kategori'); // dari AJAX
-        $keyword = $request->input('keyword'); // dari AJAX
+        $keyword = $request->input('keyword');
+        $filterKategori = $request->input('kategori');
+        $statusVerifikasi = $request->input('status_verifikasi');
 
-        $lomba = LombaModel::with(['kategori', 'tingkatPrestasi'])
+        $lomba = LombaModel::with('kategori')
             ->when($filterKategori, function ($query, $filterKategori) {
                 return $query->where('id_kategori', $filterKategori);
             })
             ->when($keyword, function ($query, $keyword) {
-                return $query->where('nama_lomba', 'like', "%{$keyword}%")
-                    ->orWhereHas('kategori', fn($q) => $q->where('nama_kategori', 'like', "%{$keyword}%"))
-                    ->orWhereHas('tingkatPrestasi', fn($q) => $q->where('nama_tingkat_prestasi', 'like', "%{$keyword}%"));
-            });
-
-        return response()->json([
-            'data' => $lomba->get()->map(function ($l) use ($user) {
-                return [
-                    'id_lomba' => $l->id_lomba,
-                    'nama_lomba' => $l->nama_lomba,
-                    'deskripsi' => $l->deskripsi,
-                    'nama_kategori' => $l->kategori->nama_kategori ?? '-',
-                    'link_pendaftaran' => $l->link_pendaftaran,
-                    'foto' => $l->foto,
-                    'aksi' => $user->role_id == 1
-                        ? '<a href="' . url('/lomba/' . $l->id_lomba . '/show') . '" class="btn btn-info btn-sm">Detail</a> ' .
-                        '<button onclick="modalAction(\'' . url('/lomba/' . $l->id_lomba . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ' .
-                        '<button onclick="modalAction(\'' . url('/lomba/' . $l->id_lomba . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Hapus</button>'
-                        : '<a href="' . url('/lomba/' . $l->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>'
-                ];
+                return $query->where('nama_lomba', 'like', "%{$keyword}%");
             })
-        ]);
+            ->when($statusVerifikasi === 'belum', function ($query) {
+                return $query->whereNull('status_verifikasi');
+            })
+            ->when($statusVerifikasi === 'sudah', function ($query) {
+                return $query->whereIn('status_verifikasi', [0, 1]);
+            })
+            ->get();
+
+        // Buat return sesuai kebutuhan front end
+        $data = $lomba->map(function ($item) {
+            return [
+                'id_lomba' => $item->id_lomba,
+                'nama_lomba' => $item->nama_lomba,
+                'nama_kategori' => $item->kategori->nama_kategori ?? '-',
+                'deskripsi' => $item->deskripsi,
+                'link_pendaftaran' => $item->link_pendaftaran,
+                'foto' => $item->foto,
+                'status_verifikasi' => $item->status_verifikasi,
+                'aksi' => auth()->user()->role_id == 1
+                    ? '<a href="' . url('/lomba/' . $item->id_lomba . '/show') . '" class="btn btn-info btn-sm">Detail</a> ' .
+                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ' .
+                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Hapus</button>'
+                    : '<a href="' . url('/lomba/' . $item->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>',
+            ];
+        });
+
+        return response()->json(['data' => $data]);
     }
 
-    public function listSaya(Request $request)
+    public function listLomba(Request $request)
+    {
+        $keyword = $request->input('keyword');
+        $filterKategori = $request->input('kategori');
+        $statusVerifikasi = $request->input('status_verifikasi');
+
+        $lomba = LombaModel::with('kategori')
+            ->where('status_verifikasi', 1) // hanya lomba yang disetujui
+            ->when($filterKategori, function ($query, $filterKategori) {
+                return $query->where('id_kategori', $filterKategori);
+            })
+            ->when($keyword, function ($query, $keyword) {
+                return $query->where('nama_lomba', 'like', "%{$keyword}%");
+            })
+            ->when($statusVerifikasi === 'belum', function ($query) {
+                return $query->whereNull('status_verifikasi');
+            })
+            ->when($statusVerifikasi === 'sudah', function ($query) {
+                return $query->whereIn('status_verifikasi', [0, 1]);
+            })
+            ->get();
+
+        // Buat return sesuai kebutuhan front end
+        $data = $lomba->map(function ($item) {
+            return [
+                'id_lomba' => $item->id_lomba,
+                'nama_lomba' => $item->nama_lomba,
+                'nama_kategori' => $item->kategori->nama_kategori ?? '-',
+                'deskripsi' => $item->deskripsi,
+                'link_pendaftaran' => $item->link_pendaftaran,
+                'foto' => $item->foto,
+                'status_verifikasi' => $item->status_verifikasi,
+                'aksi' => auth()->user()->role_id == 1
+                    ? '<a href="' . url('/lomba/' . $item->id_lomba . '/show') . '" class="btn btn-info btn-sm">Detail</a> ' .
+                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ' .
+                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Hapus</button>'
+                    : '<a href="' . url('/lomba/' . $item->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>',
+            ];
+        });
+
+        return response()->json(['data' => $data]);
+    }
+
+    public function listInput(Request $request)
     {
         $user = auth()->user();
         $keyword = $request->input('keyword');
         $filterKategori = $request->input('kategori');
+        $filterStatus = $request->input('status_verifikasi'); // Tambahan
 
         $lomba = LombaModel::with(['kategori', 'tingkatPrestasi'])
             ->where('added_by', $user->id_pengguna)
             ->when($filterKategori, function ($query, $filterKategori) {
                 return $query->where('id_kategori', $filterKategori);
+            })
+            ->when($filterStatus !== null, function ($query) use ($filterStatus) {
+                return $query->where('status_verifikasi', $filterStatus);
             })
             ->when($keyword, function ($query, $keyword) {
                 return $query->where(function ($q) use ($keyword) {
@@ -124,7 +181,7 @@ class LombaController extends Controller
             ->addColumn('nama_kategori', fn($l) => $l->kategori->nama_kategori ?? '-')
             ->addColumn('tingkat', fn($l) => $l->tingkatPrestasi->nama_tingkat_prestasi ?? '-')
             ->addColumn('aksi', function ($l) use ($user) {
-                $btn = '<a href="' . url('/lomba/' . $l->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>';
+                $btn = '<a href="' . url('/lomba/' . $l->id_lomba . '/showInput') . '" class="btn btn-info btn-sm">Detail</a>';
                 $btn .= '<button onclick="modalAction(\'' . url('/lomba/' . $l->id_lomba . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/lomba/' . $l->id_lomba . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
                 return $btn;
@@ -134,44 +191,55 @@ class LombaController extends Controller
     }
 
     public function show($id)
-{
-    $data = LombaModel::with(['kategori', 'tingkatPrestasi', 'pengusul','periode'])->find($id);
-    $activeMenu = 'lomba';
+    {
+        $data = LombaModel::with(['kategori', 'tingkatPrestasi', 'pengusul', 'periode'])->find($id);
+        $activeMenu = 'lomba';
         $breadcrumb = (object)[
             'title' => 'Detail Lomba',
             'list' => ['Detail Lomba']
         ];
-    return view('lomba.show', compact('data', 'breadcrumb'));
-}
+        return view('lomba.show', compact('data', 'breadcrumb'));
+    }
 
-public function showMahasiswa($id)
-{
-    $data = LombaModel::with(['kategori', 'tingkatPrestasi', 'pengusul','periode'])->find($id);
-    $activeMenu = 'lomba';
+    public function showMahasiswa($id)
+    {
+        $data = LombaModel::with(['kategori', 'tingkatPrestasi', 'pengusul', 'periode'])->find($id);
+        $activeMenu = 'lomba';
         $breadcrumb = (object)[
             'title' => 'Detail Lomba',
             'list' => ['Detail Lomba']
         ];
-    return view('lomba.showMahasiswa', compact('data', 'breadcrumb'));
-}
+        return view('lomba.showMahasiswa', compact('data', 'breadcrumb'));
+    }
 
-public function setujui($id_lomba)
-{
-    $lomba = LombaModel::findOrFail($id_lomba);
-    $lomba->status_verifikasi = 1;
-    $lomba->save();
+    public function showInput($id)
+    {
+        $data = LombaModel::with(['kategori', 'tingkatPrestasi', 'pengusul', 'periode'])->find($id);
+        $activeMenu = 'lomba';
+        $breadcrumb = (object)[
+            'title' => 'Detail Lomba',
+            'list' => ['Detail Lomba']
+        ];
+        return view('lomba.showInput', compact('data', 'breadcrumb'));
+    }
 
-    return redirect()->back()->with('success', 'Data Lomba berhasil disetujui!');
-}
+    public function setujui($id_lomba)
+    {
+        $lomba = LombaModel::findOrFail($id_lomba);
+        $lomba->status_verifikasi = 1;
+        $lomba->save();
 
-public function tolak($id_lomba)
-{
-    $lomba = LombaModel::findOrFail($id_lomba);
-    $lomba->status_verifikasi = 0;
-    $lomba->save();
+        return redirect()->back()->with('success', 'Data Lomba berhasil disetujui!');
+    }
 
-    return redirect()->back()->with('success', 'Data Lomba berhasil ditolak!');
-}
+    public function tolak($id_lomba)
+    {
+        $lomba = LombaModel::findOrFail($id_lomba);
+        $lomba->status_verifikasi = 0;
+        $lomba->save();
+
+        return redirect()->back()->with('success', 'Data Lomba berhasil ditolak!');
+    }
 
     public function create()
     {
@@ -179,7 +247,7 @@ public function tolak($id_lomba)
             'id_kategori' => KategoriModel::all(),
             'id_tingkat_prestasi' => TingkatPrestasiModel::all(),
             'periode' => PeriodeModel::all(),
-            'added_by'=> PenggunaModel::all(),
+            'added_by' => PenggunaModel::all(),
             'role_pengusul' => RoleModel::all()
         ]);
     }
@@ -195,6 +263,7 @@ public function tolak($id_lomba)
             'periode' => 'required|integer',
             'link_pendaftaran' => 'required|url',
             'biaya_pendaftaran' => 'required|boolean',
+            'berhadiah' => 'required|boolean',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'deadline_pendaftaran' => 'required|date|before_or_equal:tanggal_mulai',
@@ -227,6 +296,7 @@ public function tolak($id_lomba)
             'periode',
             'link_pendaftaran',
             'biaya_pendaftaran',
+            'berhadiah',
             'tanggal_mulai',
             'tanggal_selesai',
             'deadline_pendaftaran',
@@ -245,7 +315,7 @@ public function tolak($id_lomba)
         $data['role_pengusul'] = auth()->user()->role_id;
         $data['status_verifikasi'] = auth()->user()->role_id == 1 ? true : null;
 
-        // Simpan ke database
+        
         LombaModel::create($data);
 
         return response()->json([
@@ -256,24 +326,24 @@ public function tolak($id_lomba)
 
 
     public function edit($id_lomba)
-{
-    $lomba = LombaModel::with(['kategori', 'tingkatPrestasi', 'periode'])->find($id_lomba);
+    {
+        $lomba = LombaModel::with(['kategori', 'tingkatPrestasi', 'periode'])->find($id_lomba);
 
-    if (!$lomba) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Data Lomba tidak ditemukan.'
-        ]);
+        if (!$lomba) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data Lomba tidak ditemukan.'
+            ]);
+        }
+
+
+        $id_kategori = KategoriModel::all();
+        $id_tingkat_prestasi = TingkatPrestasiModel::all();
+        $id_periode = PeriodeModel::all();
+
+
+        return view('lomba.edit', compact('lomba', 'id_kategori', 'id_tingkat_prestasi', 'id_periode'));
     }
-
-
-    $id_kategori = KategoriModel::all();
-    $id_tingkat_prestasi = TingkatPrestasiModel::all();
-    $id_periode = PeriodeModel::all();
-    
-    
-    return view('lomba.edit', compact('lomba', 'id_kategori', 'id_tingkat_prestasi', 'id_periode'));
-}
 
     public function update(Request $request, $id)
     {
@@ -302,6 +372,7 @@ public function tolak($id_lomba)
             'periode' => 'required|exists:periode,id_periode',
             'link_pendaftaran' => 'url',
             'biaya_pendaftaran' => 'required|in:0,1',
+            'berhadiah' => 'required|in:0,1',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'deadline_pendaftaran' => 'required|date|before_or_equal:tanggal_mulai',
@@ -324,6 +395,7 @@ public function tolak($id_lomba)
         $lomba->periode = $request->periode;
         $lomba->link_pendaftaran = $request->link_pendaftaran;
         $lomba->biaya_pendaftaran = $request->biaya_pendaftaran;
+        $lomba->berhadiah = $request->berhadiah;
         $lomba->tanggal_mulai = $request->tanggal_mulai;
         $lomba->tanggal_selesai = $request->tanggal_selesai;
         $lomba->deadline_pendaftaran = $request->deadline_pendaftaran;

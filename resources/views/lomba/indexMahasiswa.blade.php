@@ -66,7 +66,7 @@
         let kategori = $('#filterKategori').val();
 
         $.ajax({
-            url: "{{ url('lomba/listSemua') }}",
+            url: "{{ url('lomba/listLomba') }}",
             method: "POST",
             data: {
                 _token: "{{ csrf_token() }}",

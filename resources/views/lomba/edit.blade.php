@@ -78,6 +78,14 @@
                         <div class="text-danger error-text" id="error-biaya_pendaftaran"></div>
                     </div>
                     <div class="col-md-4">
+                        <label>Berhadiah</label>
+                        <select name="berhadiah" class="form-control">
+                            <option value="1" {{ $lomba->berhadiah ? 'selected' : '' }}>Berhadiah</option>
+                            <option value="0" {{ !$lomba->berhadiah ? 'selected' : '' }}>Tidak Berhadiah</option>
+                        </select>
+                        <div class="text-danger error-text" id="error-berhadiah"></div>
+                    </div>
+                    <div class="col-md-4">
                         <label>Tanggal Mulai</label>
                         <input type="date" name="tanggal_mulai" value="{{ $lomba->tanggal_mulai }}" class="form-control">
                         <div class="text-danger error-text" id="error-tanggal_mulai"></div>
@@ -87,12 +95,12 @@
                         <input type="date" name="tanggal_selesai" value="{{ $lomba->tanggal_selesai }}" class="form-control">
                         <div class="text-danger error-text" id="error-tanggal_selesai"></div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Deadline Pendaftaran</label>
                         <input type="date" name="deadline_pendaftaran" value="{{ $lomba->deadline_pendaftaran }}" class="form-control">
                         <div class="text-danger error-text" id="error-deadline_pendaftaran"></div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Foto</label>
                         <input type="file" name="foto" class="form-control">
                         <div class="text-danger error-text" id="error-foto"></div>
