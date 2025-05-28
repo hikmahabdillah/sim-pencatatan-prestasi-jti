@@ -18,14 +18,29 @@ class AuthController extends Controller
     public function postlogin(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
-            $credentials = $request->only('username', 'password');
-            if (Auth::attempt($credentials)) {
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Login Berhasil',
-                    'redirect' => url('/')
+            $request->validate([
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ]);
 
-                ]);
+            $credentials = $request->only('username', 'password');
+
+            if (Auth::attempt($credentials)) {
+                // Periksa status aktif pengguna setelah berhasil otentikasi
+                if (Auth::user()->status_aktif) {
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Login Berhasil',
+                        'redirect' => url('/')
+                    ]);
+                } else {
+                    // Logout pengguna jika status tidak aktif
+                    Auth::logout();
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Akun Anda tidak aktif'
+                    ]);
+                }
             }
             return response()->json([
                 'status' => false,

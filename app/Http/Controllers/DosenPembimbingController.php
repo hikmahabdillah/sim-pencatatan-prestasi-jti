@@ -37,6 +37,13 @@ class DosenPembimbingController extends Controller
     {
         $dosen = DosenPembimbingModel::with(['pengguna', 'prodi', 'kategori'])->get();
 
+        if ($request->filled('status_filter')) {
+            $status = $request->status_filter;
+            $dosen = $dosen->filter(function ($item) use ($status) {
+                return $item->pengguna && $item->pengguna->status_aktif == $status;
+            });
+        }
+
         return DataTables::of($dosen)
             ->addIndexColumn()
             ->addColumn('aksi', function ($dosen) {
@@ -386,6 +393,76 @@ class DosenPembimbingController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Gagal menonaktifkan data dosen',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getUpdatePassword($id)
+    {
+        $dospem = DosenPembimbingModel::with('pengguna')->find($id);
+        if (!$dospem) {
+            return redirect('/dospem/' . $id . '/profile')->with('error', 'Data dosen pembimbing tidak ditemukan');
+        }
+
+        return view('dospem.edit-password', ['data' => $dospem]);
+    }
+
+    public function updatePassword(Request $request, $id)
+    {
+        // Cari dospem beserta data pengguna
+        $dospem = DosenPembimbingModel::with('pengguna')->find($id);
+
+        if (!$dospem) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data dosen pembimbing tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'current_password' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use ($dospem) {
+                    if (!Hash::check($value, $dospem->pengguna->password)) {
+                        $fail('Password saat ini salah');
+                    }
+                }
+            ],
+            'new_password' => 'required|string|min:6|different:current_password',
+            'new_password_confirmation' => 'required|same:new_password'
+        ], [
+            'new_password.different' => 'Password baru harus berbeda dengan password saat ini',
+            'new_password_confirmation.same' => 'Konfirmasi password tidak cocok'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Update password pengguna
+            $dospem->pengguna->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal memperbarui password',
                 'error' => $e->getMessage()
             ], 500);
         }

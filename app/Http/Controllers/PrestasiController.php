@@ -45,6 +45,28 @@ class PrestasiController extends Controller
             $query->where('id_dospem', auth()->user()->dosen->id_dospem);
         }
 
+        if (auth()->user()->role_id == 1) {
+            if ($request->filled('status_filter')) {
+                $status = $request->status_filter;
+                if ($status === 'null') {
+                    $query->whereNull('status_verifikasi');
+                } else {
+                    $query->where('status_verifikasi', $status);
+                }
+            }
+        }
+
+        if (auth()->user()->role_id == 2) {
+            if ($request->filled('status_filter')) {
+                $status = $request->status_filter;
+                if ($status === 'null') {
+                    $query->whereNull('status_verifikasi_dospem');
+                } else {
+                    $query->where('status_verifikasi_dospem', $status);
+                }
+            }
+        }
+
         $prestasi = $query->get();
 
         return DataTables::of($prestasi)
