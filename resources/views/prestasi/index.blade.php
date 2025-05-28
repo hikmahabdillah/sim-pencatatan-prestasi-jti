@@ -3,9 +3,21 @@
 @section('content')
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
-        <button onclick="modalAction('{{ url('prestasi/create') }}')" class="btn bg-gradient-info mt-1">
-            Tambah Prestasi
-        </button>
+        <div class="d-flex gap-3 justify-content-between align-items-center mb-3">
+            <button onclick="modalAction('{{ url('prestasi/create') }}')" class="btn bg-gradient-info mt-1">
+                Tambah Prestasi
+            </button>
+            <div class="d-flex gap-3 align-items-center">
+                <p class="text-muted w-100">Filter status:</p>
+                <select id="status_filter" name="status_filter" class="form-select mb-3 w-100"
+                    style="min-width:150px; max-width: 200px;">
+                    <option value="">Semua Status</option>
+                    <option value="1">Terverifikasi</option>
+                    <option value="0">Ditolak</option>
+                    <option value="null">Belum Verifikasi</option>
+                </select>
+            </div>
+        </div>
         <div class="card p-3 table-responsive">
             <table id="prestasi-table" class="table table-hover">
                 <thead class="table-light">
@@ -44,6 +56,9 @@
                     ajax: {
                         url: "{{ url('prestasi/list') }}",
                         type: "POST",
+                        data: function(d) {
+                            d.status_filter = $('#status_filter').val(); // Send filter value
+                        }
                     },
                     columns: [{
                             data: 'DT_RowIndex',
@@ -82,9 +97,8 @@
                         }
                     ]
                 });
-
-                tablecrud.on('draw', function() {
-                    $('[data-bs-toggle="tooltip"]').tooltip();
+                $('#status_filter').change(function() {
+                    tablecrud.ajax.reload();
                 });
             });
         </script>

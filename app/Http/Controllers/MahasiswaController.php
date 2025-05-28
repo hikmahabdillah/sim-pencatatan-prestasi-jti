@@ -37,6 +37,13 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->get();
 
+        if ($request->filled('status_filter')) {
+            $status = $request->status_filter;
+            $mahasiswa = $mahasiswa->filter(function ($item) use ($status) {
+                return $item->pengguna && $item->pengguna->status_aktif == $status;
+            });
+        }
+
         return DataTables::of($mahasiswa)
             ->addIndexColumn()
             ->addColumn('aksi', function ($mhs) {
