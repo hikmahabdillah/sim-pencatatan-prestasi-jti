@@ -3,9 +3,20 @@
 @section('content')
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
-        <button onclick="modalAction('{{ url('mahasiswa/create') }}')" class="btn bg-gradient-info mt-1">
-            Tambah Mahasiswa
-        </button>
+        <div class="d-flex gap-3 justify-content-between align-items-center mb-3">
+            <button onclick="modalAction('{{ url('mahasiswa/create') }}')" class="btn bg-gradient-info mt-1">
+                Tambah Mahasiswa
+            </button>
+            <div class="d-flex gap-3 align-items-center">
+                <p class="text-muted w-100">Filter status:</p>
+                <select id="status_filter" name="status_filter" class="form-select mb-3 w-100"
+                    style="min-width:150px; max-width: 200px;">
+                    <option value="">Semua Status</option>
+                    <option value="1">Aktif</option>
+                    <option value="0">Non-Aktif</option>
+                </select>
+            </div>
+        </div>
         <div class="card p-3 table-responsive">
             <table id="mahasiswa-table" class="table table-hover">
                 <thead class="table-light">
@@ -39,12 +50,16 @@
             let tableMahasiswa;
 
             $(document).ready(function() {
+                console.log($('#status_filter').val());
                 tableMahasiswa = $('#mahasiswa-table').DataTable({
                     processing: true,
-                    serverSide: false,
+                    serverSide: true,
                     ajax: {
                         url: "{{ url('mahasiswa/list') }}",
                         type: "POST",
+                        data: function(d) {
+                            d.status_filter = $('#status_filter').val(); // Send filter value
+                        }
                     },
                     columns: [{
                             data: 'DT_RowIndex',
@@ -83,6 +98,9 @@
                             width: "10%"
                         }
                     ]
+                });
+                $('#status_filter').change(function() {
+                    tableMahasiswa.ajax.reload();
                 });
             });
         </script>

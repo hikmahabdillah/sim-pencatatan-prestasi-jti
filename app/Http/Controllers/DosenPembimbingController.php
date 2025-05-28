@@ -37,6 +37,13 @@ class DosenPembimbingController extends Controller
     {
         $dosen = DosenPembimbingModel::with(['pengguna', 'prodi', 'kategori'])->get();
 
+        if ($request->filled('status_filter')) {
+            $status = $request->status_filter;
+            $dosen = $dosen->filter(function ($item) use ($status) {
+                return $item->pengguna && $item->pengguna->status_aktif == $status;
+            });
+        }
+
         return DataTables::of($dosen)
             ->addIndexColumn()
             ->addColumn('aksi', function ($dosen) {
