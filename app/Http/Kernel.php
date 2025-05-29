@@ -57,6 +57,7 @@ class Kernel extends HttpKernel
         'authorize' => \App\Http\Middleware\AuthorizeUser::class,
         'check.access' => \App\Http\Middleware\CheckUserAccess::class,
         'check.prestasi' => \App\Http\Middleware\CheckPrestasiAccess::class,
+        'check.lomba' => \App\Http\Middleware\CheckLombaAccess::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
