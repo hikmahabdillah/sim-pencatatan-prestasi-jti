@@ -15,7 +15,12 @@ class Tingkat_prestasiSeeder extends Seeder
     {
         DB::table('tingkat_prestasi')->insert([
             [
-                'nama_tingkat_prestasi' => 'Kabupaten/Kota',
+                'nama_tingkat_prestasi' => 'Kampus',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_tingkat_prestasi' => 'Kota',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -26,11 +31,6 @@ class Tingkat_prestasiSeeder extends Seeder
             ],
             [
                 'nama_tingkat_prestasi' => 'Nasional',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama_tingkat_prestasi' => 'Regional',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
