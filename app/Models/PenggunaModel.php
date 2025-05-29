@@ -55,4 +55,9 @@ class PenggunaModel extends Authenticatable
     {
         return $this->role->nama_role == $role;
     }
+
+    public function getRole()
+    {
+        return $this->role->nama_role;
+    }
 }

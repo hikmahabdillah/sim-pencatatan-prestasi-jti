@@ -26,10 +26,6 @@ class CheckUserAccess
             if ($user->dosen->id_dospem != $id) {
                 abort(403, 'Gaboleh yaa ini punya dospem lain');
             }
-        } else if ($user->role_id === 1) {
-            if ($user->admin->id_admin != $id) {
-                abort(403, 'Gaboleh yaa ini punya admin lain');
-            }
         }
 
         return $next($request);
