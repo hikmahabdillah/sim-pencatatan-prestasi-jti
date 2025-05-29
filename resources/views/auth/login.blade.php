@@ -5,6 +5,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('argon/assets/img/apple-icon.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('image/Logo talenti bg.jpg') }}">
         <link rel="icon" type="image/png" href="{{ asset('argon/assets/img/favicon.png') }}">
         <link rel="icon" type="image/png" href="{{ asset('image/Logo talenti bg.jpg') }}">
         <title>Talenti | Talenta JTI</title>
@@ -48,10 +49,6 @@
                             </div>
                             <div class="d-grid mb-3">
                                 <button class="btn btn-primary btn-lg">Login</button>
-                            </div>
-                            <div class="text-center">
-                                {{-- <a href="#" class="small text-muted">Forgot password?</a> --}}
-                                <p class="mt-2">Don't have an account? <a href="#">Register here</a></p>
                             </div>
                         </form>
                     </div>
