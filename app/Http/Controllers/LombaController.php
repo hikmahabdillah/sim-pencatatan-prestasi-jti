@@ -9,6 +9,7 @@ use App\Models\TingkatPrestasiModel;
 use App\Models\PeriodeModel;
 use App\Models\RoleModel;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -117,6 +118,7 @@ class LombaController extends Controller
 
         $lomba = LombaModel::with('kategori')
             ->where('status_verifikasi', 1) // hanya lomba yang disetujui
+            ->whereDate('deadline_pendaftaran', '>=', Carbon::today()) // tambahkan ini
             ->when($filterKategori, function ($query, $filterKategori) {
                 return $query->where('id_kategori', $filterKategori);
             })
@@ -131,7 +133,6 @@ class LombaController extends Controller
             })
             ->get();
 
-        // Buat return sesuai kebutuhan front end
         $data = $lomba->map(function ($item) {
             return [
                 'id_lomba' => $item->id_lomba,

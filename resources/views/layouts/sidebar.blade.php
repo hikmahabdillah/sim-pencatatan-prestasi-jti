@@ -118,15 +118,6 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ $activeMenu == 'pendaftaran_lomba' ? 'active' : '' }}" href="/lomba/pendaftaran-lomba">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
-                        data-bs-toggle="tooltip" data-bs-placement="right" title="Pendaftaran Lomba">
-                        <i class="ni ni-book-bookmark text-sm opacity-10" style="color:rgb(71, 206, 255);"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Pendaftaran Lomba (Mahasiswa)</span>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link {{ $activeMenu == 'manajemen_lomba' ? 'active' : '' }}" href="/lomba/manajemen-lomba">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                         data-bs-toggle="tooltip" data-bs-placement="right" title="Manajemen Lomba">
