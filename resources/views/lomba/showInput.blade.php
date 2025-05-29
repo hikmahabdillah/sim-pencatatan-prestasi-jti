@@ -86,12 +86,12 @@
             <div class="mb-2 d-flex align-items-center gap-4">
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Status Verifikasi</p>
                 <p class="mb-0 fw-semibold">:
-                    @if ($data->status_verifikasi == 1)
+                    @if (is_null($data->status_verifikasi))
+                    Belum Diverifikasi
+                    @elseif ($data->status_verifikasi == 1)
                     Disetujui
                     @elseif ($data->status_verifikasi == 0)
                     Ditolak
-                    @elseif (is_null($data->status_verifikasi))
-                    Belum Diverifikasi
                     @endif
                 </p>
             </div>
