@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\KategoriModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Models\DosenPembimbingModel;
+use App\Models\MahasiswaModel;
+use App\Models\PrestasiMahasiswaModel;
+use App\Models\LombaModel;
+use App\Models\LaporanPrestasiModel;
 use Yajra\DataTables\Facades\DataTables;
 
 class KategoriController extends Controller
@@ -52,7 +57,7 @@ class KategoriController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'nama_kategori' => 'required|string|max:100',
+                'nama_kategori' => 'required|string|max:100|unique:kategori,nama_kategori',
                 'deskripsi' => 'required|string'
             ];
 
@@ -98,7 +103,7 @@ class KategoriController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'nama_kategori' => 'required|string|max:100',
+                'nama_kategori' => 'required|string|max:100|unique:kategori,nama_kategori',
                 'deskripsi' => 'required|string'
             ];
 
@@ -138,25 +143,42 @@ class KategoriController extends Controller
     }
 
 
-    // fungsi untuk menghapus data dari database
+    // fungsi untuk menghapus data dari database 
     public function delete(Request $request, $id)
     {
         if ($request->ajax() || $request->wantsJson()) {
             $kategori = KategoriModel::find($id);
-            if ($kategori) {
-                $kategori->delete();
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil dihapus'
-                ]);
-            } else {
+    
+            if (!$kategori) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Data tidak ditemukan'
                 ]);
             }
+    
+            // Cek apakah id_kategori digunakan di tabel lain
+            $digunakan = DosenPembimbingModel::where('bidang_keahlian', $id)->exists() ||
+                         MahasiswaModel::where('id_kategori', $id)->exists() ||
+                         PrestasiMahasiswaModel::where('id_kategori', $id)->exists() ||
+                         LombaModel::where('id_kategori', $id)->exists() ||
+                         LaporanPrestasiModel::where('kategori', $id)->exists();
+    
+            if ($digunakan) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Kategori tidak dapat dihapus karena masih digunakan di data lain.'
+                ]);
+            }
+    
+            // Jika tidak digunakan, hapus
+            $kategori->delete();
+    
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
         }
-
+    
         return redirect('/');
     }
 }

@@ -40,14 +40,14 @@
     @endsection
 
     @push('js')
-        <script>
-            function modalAction(url = '') {
-                $('#myModal').load(url, function() {
-                    $('#myModal').modal('show');
-                });
-            }
+    <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
+                $('#myModal').modal('show');
+            });
+        }
 
-            let tablecrud;
+        let tablecrud;
 
             $(document).ready(function() {
                 tablecrud = $('#prestasi-table').DataTable({
