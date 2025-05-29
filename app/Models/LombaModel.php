@@ -50,10 +50,10 @@ class LombaModel extends Model
         return $this->belongsTo(RoleModel::class, 'role_pengusul', 'role_id');
     }
 
-    public function pendaftaran()
-    {
-        return $this->hasMany(PendaftaranLombaModel::class, 'id_lomba', 'id_lomba');
-    }
+    // public function pendaftaran()
+    // {
+    //     return $this->hasMany(PendaftaranLombaModel::class, 'id_lomba', 'id_lomba');
+    // }
 
     public function periode()
     {
