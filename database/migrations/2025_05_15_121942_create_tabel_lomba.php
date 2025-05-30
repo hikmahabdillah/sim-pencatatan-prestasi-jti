@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_kategori')->index();
             $table->unsignedBigInteger('id_tingkat_prestasi')->index();
             $table->text('deskripsi');
-            $table->string('link_pendaftaran');
+            $table->string('link_pendaftaran')->nullable();
             $table->unsignedBigInteger('periode');
             $table->boolean('biaya_pendaftaran');
             $table->boolean('berhadiah');

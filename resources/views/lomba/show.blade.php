@@ -93,7 +93,11 @@
             <div class="mb-2 d-flex align-items-center gap-4">
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Link Pendaftaran</p>
                 <p class="mb-0 fw-semibold">:
-                    <a href="{{ $data->link_pendaftaran}}" target="_blank">{{ $data->link_pendaftaran }}</a>
+                    @if ($data->link_pendaftaran && $data->link_pendaftaran !== '-')
+                    <a href="{{ $data->link_pendaftaran }}" target="_blank">{{ $data->link_pendaftaran }}</a>
+                    @else
+                    -
+                    @endif
                 </p>
             </div>
             <div class="mb-2 d-flex align-items-center gap-4">

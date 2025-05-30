@@ -262,13 +262,13 @@ class LombaController extends Controller
             'id_tingkat_prestasi' => 'required|exists:tingkat_prestasi,id_tingkat_prestasi',
             'deskripsi' => 'required|string',
             'periode' => 'required|integer',
-            'link_pendaftaran' => 'required|url',
+            'link_pendaftaran' => 'nullable|url',
             'biaya_pendaftaran' => 'required|boolean',
             'berhadiah' => 'required|boolean',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'deadline_pendaftaran' => 'required|date|before_or_equal:tanggal_mulai',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -371,7 +371,7 @@ class LombaController extends Controller
             'id_tingkat_prestasi' => 'required|exists:tingkat_prestasi,id_tingkat_prestasi',
             'deskripsi' => 'required|string',
             'periode' => 'required|exists:periode,id_periode',
-            'link_pendaftaran' => 'url',
+            'link_pendaftaran' => 'nullable|url',
             'biaya_pendaftaran' => 'required|in:0,1',
             'berhadiah' => 'required|in:0,1',
             'tanggal_mulai' => 'required|date',
