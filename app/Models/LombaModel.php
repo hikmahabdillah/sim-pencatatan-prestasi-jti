@@ -59,9 +59,4 @@ class LombaModel extends Model
     {
         return $this->belongsTo(PeriodeModel::class, 'periode', 'id_periode');
     }
-
-    public function periode()
-    {
-        return $this->belongsTo(PeriodeModel::class, 'periode', 'id_periode');
-    }
 }
