@@ -18,7 +18,7 @@ class LombaController extends Controller
 {
     public function indexAdmin()
     {
-        $activeMenu = 'lomba';
+        $activeMenu = 'manajemen_lomba';
         $breadcrumb = (object)[
             'title' => 'Manajemen Lomba',
             'list' => [' Manajemen Lomba']
@@ -53,7 +53,7 @@ class LombaController extends Controller
 
     public function inputLomba()
     {
-        $activeMenu = 'lomba';
+        $activeMenu = 'input_lomba';
         $breadcrumb = (object)[
             'title' => 'Input Lomba',
             'list' => [' Input Lomba']
@@ -316,7 +316,7 @@ class LombaController extends Controller
         $data['role_pengusul'] = auth()->user()->role_id;
         $data['status_verifikasi'] = auth()->user()->role_id == 1 ? true : null;
 
-        
+
         LombaModel::create($data);
 
         return response()->json([
