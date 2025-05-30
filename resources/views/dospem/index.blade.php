@@ -7,6 +7,9 @@
             <button onclick="modalAction('{{ url('dospem/create') }}')" class="btn bg-gradient-info mt-1">
                 Tambah Dosen Pembimbing
             </button>
+            <button onclick="modalAction('{{ url('dospem/import') }}')" class="btn bg-gradient-success mt-1">
+                <i class="fas fa-file-import"></i> Import Excel
+            </button>
             <div class="d-flex gap-3 align-items-center">
                 <p class="text-muted w-100">Filter status:</p>
                 <select id="status_filter" name="status_filter" class="form-select mb-3 w-100"
@@ -37,67 +40,67 @@
         <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
             data-keyboard="false" data-width="75%" aria-hidden="true"></div>
         @include('layouts.footer')
-    @endsection
+@endsection
 
     @push('js')
         <script>
             function modalAction(url = '') {
-                $('#myModal').load(url, function() {
+                $('#myModal').load(url, function () {
                     $('#myModal').modal('show');
                 });
             }
 
             let tableDospem;
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 tableDospem = $('#dospem-table').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: {
                         url: "{{ url('dospem/list') }}",
                         type: "POST",
-                        data: function(d) {
+                        data: function (d) {
                             d.status_filter = $('#status_filter').val(); // Send filter value
                         }
                     },
                     columns: [{
-                            data: 'DT_RowIndex',
-                            className: 'text-center',
-                            orderable: false,
-                            searchable: false,
-                            width: "2%"
-                        },
-                        {
-                            data: 'nip',
-                            width: "10%"
-                        },
-                        {
-                            data: 'nama',
-                            width: "20%"
-                        },
-                        {
-                            data: 'prodi',
-                            width: "15%"
-                        },
-                        {
-                            data: 'kategori',
-                            width: "15%"
-                        },
-                        {
-                            data: 'status',
-                            className: 'text-center',
-                            width: "10%"
-                        },
-                        {
-                            data: 'aksi',
-                            className: 'text-center',
-                            orderable: false,
-                            searchable: false,
-                            width: "10%"
-                        }
+                        data: 'DT_RowIndex',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false,
+                        width: "2%"
+                    },
+                    {
+                        data: 'nip',
+                        width: "10%"
+                    },
+                    {
+                        data: 'nama',
+                        width: "20%"
+                    },
+                    {
+                        data: 'prodi',
+                        width: "15%"
+                    },
+                    {
+                        data: 'kategori',
+                        width: "15%"
+                    },
+                    {
+                        data: 'status',
+                        className: 'text-center',
+                        width: "10%"
+                    },
+                    {
+                        data: 'aksi',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false,
+                        width: "10%"
+                    }
                     ]
                 });
-                $('#status_filter').change(function() {
+                $('#status_filter').change(function () {
                     tableDospem.ajax.reload();
                 });
             });
