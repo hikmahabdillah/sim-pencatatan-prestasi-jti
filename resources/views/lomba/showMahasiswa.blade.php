@@ -76,17 +76,26 @@
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Deadline Pendaftaran</p>
                 <p class="mb-0 fw-semibold">: {{ \Carbon\Carbon::parse($data->deadline_pendaftaran)->translatedFormat('d F Y') }}</p>
             </div>
-
             <div class="mb-2 d-flex align-items-center gap-4">
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Link Pendaftaran</p>
                 <p class="mb-0 fw-semibold">:
-                    <a href="{{ $data->link_pendaftaran}}" target="_blank">{{ $data->link_pendaftaran }}</a>
+                    @if ($data->link_pendaftaran && $data->link_pendaftaran !== '-')
+                    <a href="{{ $data->link_pendaftaran }}" target="_blank">{{ $data->link_pendaftaran }}</a>
+                    @else
+                    -
+                    @endif
                 </p>
             </div>
             <div class="card-footer d-flex justify-content-between align-items-center bg-transparent">
                 <a href="{{ url()->previous() }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Kembali
                 </a>
+
+                @if (!empty($data->link_pendaftaran))
+                <a href="{{ $data->link_pendaftaran }}" class="btn btn-success" target="_blank">
+                    <i class="fas fa-external-link-alt me-2"></i>Daftar Lomba
+                </a>
+                @endif
             </div>
             @include('layouts.footer')
             @endsection

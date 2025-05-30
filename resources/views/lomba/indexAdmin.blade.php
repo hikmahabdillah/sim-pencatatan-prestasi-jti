@@ -137,9 +137,10 @@
                                 <p class="card-text text-sm mb-2">
                                     ${item.deskripsi.length > 100 ? item.deskripsi.substring(0, 100) + '...' : item.deskripsi}
                                 </p>
-                                <p class="card-text text-sm mb-2">
-                                    <a href="${item.link_pendaftaran}" target="_blank">${item.link_pendaftaran}</a>
-                                </p>
+                                 <p class="card-text text-sm mb-2">
+                                     ${item.link_pendaftaran && item.link_pendaftaran !== '-' ? 
+                                    `<a href="${item.link_pendaftaran}" target="_blank">${item.link_pendaftaran}</a>` :  '-'}
+                                    </p>
                                <p class="card-text text-sm mb-2">
                                      ${item.status_verifikasi === 1
                                         ? `<span class="text-success fw-bold">Disetujui</span>`

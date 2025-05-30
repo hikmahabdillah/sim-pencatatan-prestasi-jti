@@ -94,7 +94,8 @@
                                         ${item.deskripsi.length > 100 ? item.deskripsi.substring(0, 100) + '...' : item.deskripsi}
                                     </p>
                                     <p class="card-text text-sm mb-2">
-                                        <a href="${item.link_pendaftaran}" target="_blank">${item.link_pendaftaran}</a>
+                                     ${item.link_pendaftaran && item.link_pendaftaran !== '-' ? 
+                                    `<a href="${item.link_pendaftaran}" target="_blank">${item.link_pendaftaran}</a>` :  '-'}
                                     </p>
                                     <div class="mt-auto d-flex justify-content-end gap-2">
                                         ${item.aksi}

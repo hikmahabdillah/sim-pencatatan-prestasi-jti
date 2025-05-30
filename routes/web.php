@@ -233,6 +233,32 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
 
         Route::get('/{id}/show', [LombaController::class, 'show']);
     });
+
+    // Routes untuk LombaController
+    Route::prefix('lomba')->group(function () {
+        Route::get('/', [LombaController::class, 'indexMahasiswa']);
+        Route::get('/input-lomba', [LombaController::class, 'inputLomba']);
+        Route::get('/create', [LombaController::class, 'create']);
+        Route::post('/store', [LombaController::class, 'store']);
+        Route::post('/listLomba', [LombaController::class, 'listLomba']);
+        Route::post('/listInput', [LombaController::class, 'listInput']);
+
+        Route::middleware(['authorize:Admin'])->group(function () {
+            Route::get('/manajemen-lomba', [LombaController::class, 'indexAdmin'])->name('lomba.manajemen');
+            Route::post('/manajemen-lomba/{id}/setujui', [LombaController::class, 'setujui']);
+            Route::post('/manajemen-lomba/{id}/tolak', [LombaController::class, 'tolak']);
+            Route::post('/listAdmin', [LombaController::class, 'listAdmin']);
+        });
+
+        Route::get('/{id}/edit', [LombaController::class, 'edit']);
+        Route::put('/{id}/update', [LombaController::class, 'update']);
+        Route::get('/{id}/confirm_delete', [LombaController::class, 'confirm_delete']);
+        Route::delete('/{id}/delete', [LombaController::class, 'delete']);
+        Route::get('/{id}/showInput', [LombaController::class, 'showInput']);
+        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa']);
+
+        Route::get('/{id}/show', [LombaController::class, 'show']);
+    });
 });
 
 // contoh route untuk penerapannya
