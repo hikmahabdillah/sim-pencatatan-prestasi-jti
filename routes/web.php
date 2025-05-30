@@ -11,6 +11,7 @@ use App\Http\Controllers\DosenPembimbingController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PrestasiController;
 use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\LombaController;
 use App\Http\Controllers\TingkatPrestasiController;
 use App\Models\KategoriModel;
 
@@ -115,64 +116,146 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
     });
 
     Route::prefix('prestasi')->group(function () {
+        Route::middleware(['authorize:Admin,Dosen Pembimbing'])->group(function () {
+            Route::get('/', [PrestasiController::class, 'index']);
+            Route::post('/list', [PrestasiController::class, 'list']);
+        });
         Route::get('/tambah-prestasi', [PrestasiController::class, 'create']);
         Route::post('/store', [PrestasiController::class, 'store']);
-        Route::get('/{id}/edit-prestasi', [PrestasiController::class, 'getEditPrestasi']);
-        Route::put('/{id}/update-prestasi', [PrestasiController::class, 'updatePrestasi']);
-        Route::get('/{id}/confirm-delete-prestasi', [PrestasiController::class, 'confirmDeletePrestasi']);
-        Route::delete('/{id}/delete-prestasi', [PrestasiController::class, 'deletePrestasi']);
+        Route::middleware(['authorize:Admin'])->group(function () {
+            Route::get('/{id}/verifikasi-admin', [PrestasiController::class, 'getVerifikasiAdmin']); // id prestasi
+            Route::put('/{id}/update-verifikasi-admin', [PrestasiController::class, 'updateVerifikasiAdmin']); // id prestasi
+        });
+        Route::middleware(['check.prestasi'])->group(function () {
+            Route::get('/{id}/detail-prestasi', [PrestasiController::class, 'getDetailPrestasiMahasiswa']); // id prestasi
+            Route::middleware(['authorize:Dosen Pembimbing'])->group(function () {
+                Route::get('/{id}/verifikasi-dospem', [PrestasiController::class, 'getVerifikasiDospem']); // id prestasi
+                Route::put('/{id}/update-verifikasi-dospem', [PrestasiController::class, 'updateVerifikasiDospem']); // id prestasi
+            });
+            Route::middleware(['authorize:Mahasiswa'])->group(function () {
+                Route::get('/{id}/edit-prestasi', [PrestasiController::class, 'getEditPrestasi']);
+                Route::put('/{id}/update-prestasi', [PrestasiController::class, 'updatePrestasi']);
+                Route::get('/{id}/confirm-delete-prestasi', [PrestasiController::class, 'confirmDeletePrestasi']);
+                Route::delete('/{id}/delete-prestasi', [PrestasiController::class, 'deletePrestasi']);
+            });
+        });
     });
 
     // Routes untuk MahasiswaController
     Route::prefix('mahasiswa')->group(function () {
-        Route::get('/', [MahasiswaController::class, 'index']);
-        Route::post('/store', [MahasiswaController::class, 'store']);
-        Route::post('/list', [MahasiswaController::class, 'list']);
-        Route::get('/create', [MahasiswaController::class, 'create']);
-        Route::get('/{id}/show', [MahasiswaController::class, 'show']);
-        Route::get('/{id}/profile', [MahasiswaController::class, 'getProfile']);
-        Route::put('/{id}/update-foto', [MahasiswaController::class, 'updateFoto']);
-        Route::get('/{id}/edit-profile', [MahasiswaController::class, 'getUpdateProfile']);
-        Route::put('/{id}/update-profile', [MahasiswaController::class, 'updateProfile']);
-        Route::get('/{id}/edit', [MahasiswaController::class, 'edit']);
-        Route::put('/{id}/update', [MahasiswaController::class, 'update']);
-        Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
-        Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
-        Route::get('/{id}/prestasi', [PrestasiController::class, 'getPrestasiMahasiswa']);
-        Route::get('/{id}/detail-prestasi', [PrestasiController::class, 'getDetailPrestasiMahasiswa']);
+        Route::middleware(['authorize:Admin'])->group(function () {
+            Route::get('/', [MahasiswaController::class, 'index']);
+            Route::post('/store', [MahasiswaController::class, 'store']);
+            Route::post('/list', [MahasiswaController::class, 'list']);
+            Route::get('/create', [MahasiswaController::class, 'create']);
+            Route::get('/{id}/show', [MahasiswaController::class, 'show']);
+            Route::get('/{id}/edit', [MahasiswaController::class, 'edit']);
+            Route::put('/{id}/update', [MahasiswaController::class, 'update']);
+            Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
+            Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
+        });
+        Route::middleware(['check.access:Mahasiswa'])->group(function () {
+            Route::get('/{id}/edit-password', [MahasiswaController::class, 'getUpdatePassword']);
+            Route::put('/{id}/update-password', [MahasiswaController::class, 'updatePassword']);
+            Route::get('/{id}/profile', [MahasiswaController::class, 'getProfile']);
+            Route::put('/{id}/update-foto', [MahasiswaController::class, 'updateFoto']);
+            Route::get('/{id}/edit-profile', [MahasiswaController::class, 'getUpdateProfile']);
+            Route::put('/{id}/update-profile', [MahasiswaController::class, 'updateProfile']);
+            Route::get('/{id}/prestasi', [PrestasiController::class, 'getPrestasiMahasiswa']); // id mahasiswa
+        });
     });
 
     // Routes untuk DosenPembimbinController
     Route::prefix('dospem')->group(function () {
-        Route::get('/', [DosenPembimbingController::class, 'index']);
-        Route::post('/store', [DosenPembimbingController::class, 'store']);
-        Route::post('/list', [DosenPembimbingController::class, 'list']);
-        Route::get('/create', [DosenPembimbingController::class, 'create']);
-        Route::get('/{id}/show', [DosenPembimbingController::class, 'show']);
-        Route::get('/{id}/profile', [DosenPembimbingController::class, 'getProfile']);
-        Route::put('/{id}/update-foto', [DosenPembimbingController::class, 'updateFoto']);
-        Route::get('/{id}/edit-profile', [DosenPembimbingController::class, 'getUpdateProfile']);
-        Route::put('/{id}/update-profile', [DosenPembimbingController::class, 'updateProfile']);
-        Route::get('/{id}/edit', [DosenPembimbingController::class, 'edit']);
-        Route::put('/{id}/update', [DosenPembimbingController::class, 'update']);
-        Route::get('/{id}/confirm_delete', [DosenPembimbingController::class, 'confirm_delete']);
-        Route::delete('/{id}/delete', [DosenPembimbingController::class, 'delete']);
+        Route::middleware(['authorize:Admin'])->group(function () {
+            Route::get('/', [DosenPembimbingController::class, 'index']);
+            Route::post('/store', [DosenPembimbingController::class, 'store']);
+            Route::post('/list', [DosenPembimbingController::class, 'list']);
+            Route::get('/create', [DosenPembimbingController::class, 'create']);
+            Route::get('/{id}/show', [DosenPembimbingController::class, 'show']);
+            Route::get('/{id}/edit', [DosenPembimbingController::class, 'edit']);
+            Route::put('/{id}/update', [DosenPembimbingController::class, 'update']);
+            Route::get('/{id}/confirm_delete', [DosenPembimbingController::class, 'confirm_delete']);
+            Route::delete('/{id}/delete', [DosenPembimbingController::class, 'delete']);
+            Route::get('/import', [DosenPembimbingController::class, 'import']);
+            Route::post('/import', [DosenPembimbingController::class, 'import_ajax']);
+        });
+        Route::middleware(['check.access:Dosen Pembimbing'])->group(function () {
+            Route::get('/{id}/edit-password', [DosenPembimbingController::class, 'getUpdatePassword']); // id dospem
+            Route::put('/{id}/update-password', [DosenPembimbingController::class, 'updatePassword']);
+            Route::get('/{id}/profile', [DosenPembimbingController::class, 'getProfile']);
+            Route::put('/{id}/update-foto', [DosenPembimbingController::class, 'updateFoto']);
+            Route::get('/{id}/edit-profile', [DosenPembimbingController::class, 'getUpdateProfile']);
+            Route::put('/{id}/update-profile', [DosenPembimbingController::class, 'updateProfile']);
+        });
     });
-     // Routes untuk AdminController
+
+    // Routes untuk AdminController
     Route::prefix('admin')->group(function () {
-        Route::get('/', [AdminController::class, 'index']);
-        Route::post('/store', [AdminController::class, 'store']);
-        Route::post('/list', [AdminController::class, 'list']);
-        Route::get('/create', [AdminController::class, 'create']);
-        Route::get('/{id}/show', [AdminController::class, 'show']);
-        Route::get('/{id}/profile', [AdminController::class, 'getProfile']);
-        Route::put('/{id}/update-foto', [AdminController::class, 'updateFoto']);
-        Route::get('/{id}/edit-profile', [AdminController::class, 'getUpdateProfile']);
-        Route::put('/{id}/update-profile', [AdminController::class, 'updateProfile']);
-        Route::get('/{id}/edit', [AdminController::class, 'edit']);
-        Route::put('/{id}/update', [AdminController::class, 'update']);
-        Route::get('/{id}/confirm_delete', [AdminController::class, 'confirm_delete']);
-        Route::delete('/{id}/delete', [AdminController::class, 'delete']);
+        Route::middleware(['authorize:Admin'])->group(function () {
+            Route::get('/', [AdminController::class, 'index']);
+            Route::post('/store', [AdminController::class, 'store']);
+            Route::post('/list', [AdminController::class, 'list']);
+            Route::get('/create', [AdminController::class, 'create']);
+            Route::get('/{id}/show', [AdminController::class, 'show']);
+            Route::get('/{id}/edit-password', [AdminController::class, 'getUpdatePassword']); // id admin
+            Route::put('/{id}/update-password', [AdminController::class, 'updatePassword']);
+            Route::get('/{id}/profile', [AdminController::class, 'getProfile']);
+            Route::put('/{id}/update-foto', [AdminController::class, 'updateFoto']);
+            Route::get('/{id}/edit-profile', [AdminController::class, 'getUpdateProfile']);
+            Route::put('/{id}/update-profile', [AdminController::class, 'updateProfile']);
+            Route::get('/{id}/edit', [AdminController::class, 'edit']);
+            Route::put('/{id}/update', [AdminController::class, 'update']);
+            Route::get('/{id}/confirm_delete', [AdminController::class, 'confirm_delete']);
+            Route::delete('/{id}/delete', [AdminController::class, 'delete']);
+        });
+    });
+
+    // Routes untuk LombaController
+    Route::prefix('lomba')->group(function () {
+        Route::get('/', [LombaController::class, 'indexMahasiswa']);
+        Route::get('/input-lomba', [LombaController::class, 'inputLomba']);
+        Route::get('/create', [LombaController::class, 'create']);
+        Route::post('/store', [LombaController::class, 'store']);
+        Route::post('/listLomba', [LombaController::class, 'listLomba']);
+        Route::post('/listInput', [LombaController::class, 'listInput']);
+
+        Route::middleware(['authorize:Admin'])->group(function () {
+            Route::get('/manajemen-lomba', [LombaController::class, 'indexAdmin'])->name('lomba.manajemen');
+            Route::post('/manajemen-lomba/{id}/setujui', [LombaController::class, 'setujui']);
+            Route::post('/manajemen-lomba/{id}/tolak', [LombaController::class, 'tolak']);
+            Route::post('/listAdmin', [LombaController::class, 'listAdmin']);
+        });
+
+        Route::get('/{id}/edit', [LombaController::class, 'edit']);
+        Route::put('/{id}/update', [LombaController::class, 'update']);
+        Route::get('/{id}/confirm_delete', [LombaController::class, 'confirm_delete']);
+        Route::delete('/{id}/delete', [LombaController::class, 'delete']);
+        Route::get('/{id}/showInput', [LombaController::class, 'showInput']);
+        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa']);
+
+        Route::get('/{id}/show', [LombaController::class, 'show']);
+    });
+
+    // Routes untuk LombaController
+    Route::prefix('lomba')->group(function () {
+        Route::get('/manajemen-lomba', [LombaController::class, 'indexAdmin'])->name('lomba.manajemen');
+        Route::get('/', [LombaController::class, 'indexMahasiswa']);
+        Route::get('/input-lomba', [LombaController::class, 'inputLomba']);
+        Route::post('/store', [LombaController::class, 'store']);
+        Route::post('/listLomba', [LombaController::class, 'listLomba']);
+        Route::post('/listInput', [LombaController::class, 'listInput']);
+        Route::post('/listAdmin', [LombaController::class, 'listAdmin']);
+        Route::get('/create', [LombaController::class, 'create']);
+        Route::get('/{id}/show', [LombaController::class, 'show']);
+        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa']);
+        Route::get('/{id}/showInput', [LombaController::class, 'showInput']);
+        Route::post('/manajemen-lomba/{id}/setujui', [LombaController::class, 'setujui']);
+        Route::post('/manajemen-lomba/{id}/tolak', [LombaController::class, 'tolak']);
+        Route::get('/{id}/edit', [LombaController::class, 'edit']);
+        Route::put('/{id}/update', [LombaController::class, 'update']);
+        Route::get('/{id}/confirm_delete', [LombaController::class, 'confirm_delete']);
+        Route::delete('/{id}/delete', [LombaController::class, 'delete']);
     });
 });
 

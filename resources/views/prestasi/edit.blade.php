@@ -91,9 +91,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="keterangan" class="form-label">Keterangan</label>
-                            <textarea id="keterangan" name="keterangan" class="form-control">{{ $prestasi->keterangan }}</textarea>
-                            <div id="error-keterangan" class="text-danger error-text"></div>
+                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                            <textarea id="deskripsi" name="deskripsi" class="form-control">{{ $prestasi->deskripsi }}</textarea>
                         </div>
                     </div>
                 </div>

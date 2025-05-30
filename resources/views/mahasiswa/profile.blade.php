@@ -31,7 +31,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-7 ps-0 my-auto">
+                    <div class="col-lg-7 ps-0 my-auto flex-grow-1">
                         <div class="card-body text-left p-0">
                             <div class="p-md-0 pt-3 my-auto">
                                 <h5 class="font-weight-bolder mb-0 text-uppercase">{{ $data->nama }}</h5>
@@ -48,6 +48,10 @@
                             </div>
                         </div>
                     </div>
+                    <button type="button" onclick="modalAction('edit-password')"
+                        class="btn btn-primary align-self-top me-3 mb-0"
+                        style="width: max-content; height: max-content;">Ubah
+                        Password</button>
                 </div>
             </div>
         </form>
@@ -156,6 +160,10 @@
                             if (response.foto_url) {
                                 $('#fotoPreview').attr('src', response.foto_url);
                             }
+
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
                         } else {
                             // Handle validation errors
                             if (response.msgField) {

@@ -8,16 +8,21 @@
                 <div class="card">
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">Detail Prestasi Mahasiswa</h4>
-                        <div class="d-flex gap-2 align-items-center">
-                            <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/edit-prestasi')"
-                                class="btn btn-sm btn-primary">
-                                <i class="fas fa-edit me-1"></i> Edit
-                            </button>
-                            <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/confirm-delete-prestasi')"
-                                class="btn btn-sm btn-warning">
-                                <i class="fas fa-trash me-1"></i> Delete
-                            </button>
-                        </div>
+                        @if (auth()->user()->role_id == 3)
+                            <div class="d-flex gap-2 align-items-center">
+                                @if (!$prestasi->status_verifikasi)
+                                    <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/edit-prestasi')"
+                                        class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit me-1"></i> Edit
+                                    </button>
+                                @endif
+                                <button
+                                    onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/confirm-delete-prestasi')"
+                                    class="btn btn-sm btn-warning">
+                                    <i class="fas fa-trash me-1"></i> Delete
+                                </button>
+                            </div>
+                        @endif
                     </div>
                     <div class="card-body">
                         @if (!$prestasi)
@@ -27,7 +32,64 @@
                         @else
                             <div class="row">
                                 <!-- Main Information -->
-                                <div class="col-md-8">
+                                <div class="col-md-8 position-relative">
+                                    @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
+                                        <h5 class="text-dark mb-3">Mahasiswa: {{ $prestasi->mahasiswa->nama }}</h5>
+                                        @if ($prestasi->status_verifikasi === 1 && $prestasi->status_verifikasi_dospem === 1)
+                                            <span class="badge bg-gradient-success position-absolute end-2 top-2">
+                                                <i class="fas fa-check-circle me-1"></i> Terverifikasi (Admin & Dospem)
+                                            </span>
+                                        @elseif($prestasi->status_verifikasi === 1 && $prestasi->status_verifikasi_dospem === null)
+                                            <span class="badge bg-gradient-primary position-absolute end-2 top-2">
+                                                <i class="fas fa-check-circle me-1"></i> Terverifikasi Admin
+                                            </span>
+                                        @elseif($prestasi->status_verifikasi_dospem === 1 && $prestasi->status_verifikasi === null)
+                                            <span class="badge bg-gradient-info position-absolute end-2 top-2">
+                                                <i class="fas fa-check-circle me-1"></i> Terverifikasi Dospem
+                                            </span>
+                                        @elseif($prestasi->status_verifikasi === 0 || $prestasi->status_verifikasi_dospem === 0)
+                                            <span class="badge bg-gradient-danger position-absolute end-2 top-2">
+                                                <i class="fas fa-times-circle me-1"></i> Ditolak
+                                                @if ($prestasi->status_verifikasi_dospem === 0)
+                                                    (Dospem)
+                                                @elseif($prestasi->status_verifikasi === 0)
+                                                    (Admin)
+                                                @endif
+                                            </span>
+                                        @else
+                                            <span class="badge bg-gradient-secondary position-absolute end-2 top-2">
+                                                <i class="fas fa-clock me-1"></i> Menunggu Verifikasi
+                                            </span>
+                                        @endif
+                                    @endif
+
+                                    @if (auth()->user()->role_id == 3)
+                                        @if ($prestasi->status_verifikasi && $prestasi->status_verifikasi_dospem)
+                                            <span class="badge bg-gradient-success position-absolute end-2 top-2">
+                                                <i class="fas fa-check-circle me-1"></i> Terverifikasi (Admin & Dospem)
+                                            </span>
+                                        @elseif($prestasi->status_verifikasi_dospem === 1 && $prestasi->status_verifikasi === null)
+                                            <span class="badge bg-gradient-info position-absolute end-2 top-2">
+                                                <i class="fas fa-check-circle me-1"></i> Terverifikasi Dospem
+                                            </span>
+                                        @elseif($prestasi->status_verifikasi_dospem === 0 && $prestasi->status_verifikasi === null)
+                                            <span class="badge bg-gradient-danger position-absolute end-2 top-2">
+                                                <i class="fas fa-times-circle me-1"></i> Ditolak Dospem
+                                            </span>
+                                        @elseif ($prestasi->status_verifikasi === 1)
+                                            <span class="badge bg-gradient-success position-absolute end-2 top-2">
+                                                <i class="fas fa-check-circle me-1"></i> Terverifikasi Admin
+                                            </span>
+                                        @elseif($prestasi->status_verifikasi === 0)
+                                            <span class="badge bg-gradient-danger position-absolute end-2 top-2">
+                                                <i class="fas fa-times-circle me-1"></i> Ditolak Admin
+                                            </span>
+                                        @else
+                                            <span class="badge bg-gradient-secondary position-absolute end-2 top-2">
+                                                <i class="fas fa-clock me-1"></i> Menunggu Verifikasi
+                                            </span>
+                                        @endif
+                                    @endif
                                     <div class="mb-3">
                                         <h5 class="text-primary">{{ $prestasi->nama_prestasi }}</h5>
                                         <p class="text-muted mb-1">
@@ -68,6 +130,10 @@
                                         </div>
                                     </div>
 
+                                    <div class="border-top pt-3">
+                                        <h6 class="text-uppercase text-sm">Deskripsi</h6>
+                                        <p>{{ $prestasi->deskripsi ?? 'Tidak ada Deskripsi tambahan' }}</p>
+                                    </div>
                                     <div class="border-top pt-3">
                                         <h6 class="text-uppercase text-sm">Keterangan</h6>
                                         <p>{{ $prestasi->keterangan ?? 'Tidak ada keterangan tambahan' }}</p>
@@ -126,11 +192,37 @@
                             </div>
                         @endif
                     </div>
-                    <div class="card-footer bg-light pt-0">
-                        <a href="{{ url('/mahasiswa/' . auth()->user()->mahasiswa->id_mahasiswa . '/prestasi') }}"
+                    <div class="card-footer bg-light pt-0 d-flex justify-content-between align-items-center">
+                        <a href="{{ auth()->user()->role_id == 1 || auth()->user()->role_id == 2
+                            ? url('/prestasi')
+                            : url('/mahasiswa/' . auth()->user()->mahasiswa->id_mahasiswa . '/prestasi') }}"
                             class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Kembali
                         </a>
+                        <div class="d-flex gap-2 align-items-center">
+                            @if (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === 1)
+                                <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/verifikasi-admin')"
+                                    class="btn btn-md btn-primary">
+                                    <i class="fas fa-check me-1"></i>
+                                    {{ $prestasi->status_verifikasi != null ? 'Edit Verifikasi' : 'Verifikasi' }}
+                                </button>
+                            @elseif (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === null)
+                                <p class="text-dark">
+                                    Menunggu verifikasi dari Dosen Pembimbing
+                                </p>
+                            @elseif (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === 0)
+                                <p class="text-dark">
+                                    Verifikasi Dosen Pembimbing ditolak. Tidak bisa melakukan verifikasi
+                                </p>
+                            @endif
+                            @if (auth()->user()->role_id == 2 && $prestasi->status_verifikasi === null)
+                                <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/verifikasi-dospem')"
+                                    class="btn btn-md btn-primary">
+                                    <i class="fas fa-check me-1"></i>
+                                    {{ $prestasi->status_verifikasi_dospem != null ? 'Edit Verifikasi' : 'Verifikasi' }}
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

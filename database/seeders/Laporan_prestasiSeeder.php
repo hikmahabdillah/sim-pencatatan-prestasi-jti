@@ -13,19 +13,19 @@ class Laporan_prestasiSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 5; $i++) {
-            DB::table('laporan_prestasi')->insert([
-                'id_mahasiswa' => $i,
-                'nama_mahasiswa' => 'Mahasiswa ' . $i,
-                'prodi' => 1,
-                'nama_lomba' => 'Lomba Nasional ' . $i,
-                'tingkat' => 1,
-                'kategori' => 1,
-                'hasil' => 'Juara ' . $i,
-                'status_verifikasi' => 'Terverifikasi',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        // for ($i = 1; $i <= 5; $i++) {
+        //     DB::table('laporan_prestasi')->insert([
+        //         'id_mahasiswa' => $i,
+        //         'nama_mahasiswa' => 'Mahasiswa ' . $i,
+        //         'prodi' => 1,
+        //         'nama_lomba' => 'Lomba Nasional ' . $i,
+        //         'tingkat' => 1,
+        //         'kategori' => 1,
+        //         'hasil' => 'Juara ' . $i,
+        //         'status_verifikasi' => 'Terverifikasi',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ]);
+        // }
     }
 }

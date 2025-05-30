@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class DosenPembimbingController extends Controller
 {
@@ -36,6 +38,13 @@ class DosenPembimbingController extends Controller
     public function list(Request $request)
     {
         $dosen = DosenPembimbingModel::with(['pengguna', 'prodi', 'kategori'])->get();
+
+        if ($request->filled('status_filter')) {
+            $status = $request->status_filter;
+            $dosen = $dosen->filter(function ($item) use ($status) {
+                return $item->pengguna && $item->pengguna->status_aktif == $status;
+            });
+        }
 
         return DataTables::of($dosen)
             ->addIndexColumn()
@@ -93,7 +102,6 @@ class DosenPembimbingController extends Controller
                 'password' => Hash::make($request->nip),
                 'role_id' => 2, // Role dosen
                 'status_aktif' => true,
-                'foto' => 'default.jpg'
             ]);
 
             $dosen = DosenPembimbingModel::create([
@@ -390,5 +398,158 @@ class DosenPembimbingController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function getUpdatePassword($id)
+    {
+        $dospem = DosenPembimbingModel::with('pengguna')->find($id);
+        if (!$dospem) {
+            return redirect('/dospem/' . $id . '/profile')->with('error', 'Data dosen pembimbing tidak ditemukan');
+        }
+
+        return view('dospem.edit-password', ['data' => $dospem]);
+    }
+
+    public function updatePassword(Request $request, $id)
+    {
+        // Cari dospem beserta data pengguna
+        $dospem = DosenPembimbingModel::with('pengguna')->find($id);
+
+        if (!$dospem) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data dosen pembimbing tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'current_password' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use ($dospem) {
+                    if (!Hash::check($value, $dospem->pengguna->password)) {
+                        $fail('Password saat ini salah');
+                    }
+                }
+            ],
+            'new_password' => 'required|string|min:6|different:current_password',
+            'new_password_confirmation' => 'required|same:new_password'
+        ], [
+            'new_password.different' => 'Password baru harus berbeda dengan password saat ini',
+            'new_password_confirmation.same' => 'Konfirmasi password tidak cocok'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            // Update password pengguna
+            $dospem->pengguna->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Password berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal memperbarui password',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function import()
+    {
+        return view('dospem.import');
+    }
+
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_dospem' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ], 422);
+            }
+
+            $file = $request->file('file_dospem');
+            $reader = IOFactory::createReader('xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            DB::beginTransaction();
+            try {
+                if (count($data) > 1) {
+                    foreach ($data as $baris => $row) {
+                        if ($baris > 1) { // Skip header
+                            // Create user account first
+                            $pengguna = PenggunaModel::create([
+                                'username' => $row['A'], // NIP
+                                'password' => Hash::make($row['A']), // Password = NIP
+                                'role_id' => 2, // Role dosen
+                                'status_aktif' => true,
+                                'foto' => 'default.jpg',
+                                'created_at' => now()
+                            ]);
+
+                            // Create dosen data
+                            DosenPembimbingModel::create([
+                                'nip' => $row['A'],
+                                'id_pengguna' => $pengguna->id_pengguna,
+                                'nama' => $row['B'],
+                                'email' => $row['C'],
+                                'id_prodi' => $row['D'],
+                                'bidang_keahlian' => $row['E'],
+                                'created_at' => now()
+                            ]);
+                        }
+                    }
+
+                    DB::commit();
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Data dosen berhasil diimport'
+                    ]);
+                } else {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Tidak ada data yang diimport'
+                    ], 422);
+                }
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Gagal mengimport data',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+        }
+
+        return redirect('/dospem');
     }
 }

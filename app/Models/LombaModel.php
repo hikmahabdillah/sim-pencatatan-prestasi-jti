@@ -18,9 +18,13 @@ class LombaModel extends Model
         'id_tingkat_prestasi',
         'deskripsi',
         'link_pendaftaran',
+        'periode',
+        'biaya_pendaftaran',
+        'berhadiah',
         'tanggal_mulai',
         'tanggal_selesai',
         'deadline_pendaftaran',
+        'foto',
         'status_verifikasi',
         'added_by',
         'role_pengusul'
@@ -46,8 +50,13 @@ class LombaModel extends Model
         return $this->belongsTo(RoleModel::class, 'role_pengusul', 'role_id');
     }
 
-    public function pendaftaran()
+    // public function pendaftaran()
+    // {
+    //     return $this->hasMany(PendaftaranLombaModel::class, 'id_lomba', 'id_lomba');
+    // }
+
+    public function periode()
     {
-        return $this->hasMany(PendaftaranLombaModel::class, 'id_lomba', 'id_lomba');
+        return $this->belongsTo(PeriodeModel::class, 'periode', 'id_periode');
     }
 }

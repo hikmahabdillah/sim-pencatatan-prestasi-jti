@@ -18,7 +18,7 @@
                 @else
                     <div class="row">
                         @foreach ($prestasi as $item)
-                            <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="w-100 mb-4" style="max-width: 400px">
                                 <div class="card card-profile card-plain">
                                     <div class="card-body bg-white shadow border-radius-lg p-3">
                                         <!-- PDF Preview Image -->
@@ -54,7 +54,7 @@
                                         </p>
 
                                         <a class="btn btn-sm btn-info mt-2 w-100 mb-0"
-                                            href="/mahasiswa/{{ $item->id_prestasi }}/detail-prestasi">
+                                            href="/prestasi/{{ $item->id_prestasi }}/detail-prestasi">
                                             Detail
                                         </a>
                                     </div>

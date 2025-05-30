@@ -1,68 +1,74 @@
 <!-- Modal -->
-<form action="{{ url('/admin/' . $data->id_admin . '/update-profile') }}" method="POST" id="form-edit-profile">
+<form action="{{ url('/dospem/' . $data->id_dospem . '/update-password') }}" method="POST" id="form-edit-password">
     @csrf
     @method('PUT')
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Data Admin</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Ubah Password</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-control"
-                        value="{{ $data->username }}" readonly>
+                    <label for="current_password" class="form-label">Password Saat Ini</label>
+                    <input type="password" id="current_password" name="current_password" class="form-control" required>
+                    <div id="error-current_password" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
-                    <label for="nama_admin" class="form-label">Nama Lengkap</label>
-                    <input type="text" id="nama_admin" name="nama_admin" class="form-control"
-                        value="{{ $data->nama_admin }}" required>
-                    <div id="error-nama_admin" class="text-danger error-text"></div>
+                    <label for="new_password" class="form-label">Password Baru</label>
+                    <input type="password" id="new_password" name="new_password" class="form-control" required>
+                    <div id="error-new_password" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" value="{{ $data->email }}"
-                        required>
-                    <div id="error-email" class="text-danger error-text"></div>
-                </div>
-                <div class="form-group">
-                    <label for="status_aktif" class="form-label">Status Akun</label>
-                    <select id="status_aktif" name="status_aktif" class="form-control">
-                        <option value="1" {{ $data->pengguna->status_aktif ? 'selected' : '' }}>Aktif</option>
-                        <option value="0" {{ !$data->pengguna->status_aktif ? 'selected' : '' }}>Nonaktif</option>
-                    </select>
-                    <div id="error-status_aktif" class="text-danger error-text"></div>
+                    <label for="new_password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                    <input type="password" id="new_password_confirmation" name="new_password_confirmation"
+                        class="form-control" required>
+                    <div id="error-new_password_confirmation" class="text-danger error-text"></div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Kembali</button>
-                <button type="submit" class="btn bg-gradient-primary">Simpan Perubahan</button>
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn bg-gradient-primary">Simpan Password Baru</button>
             </div>
         </div>
     </div>
 </form>
 
 <script>
+    $.validator.addMethod("notEqualTo", function(value, element, param) {
+        return this.optional(element) || value !== $(param).val();
+    }, "Password baru harus berbeda dengan password saat ini");
+
     $(document).ready(function() {
-        $("#form-edit-profile").validate({
+        $("#form-edit-password").validate({
             rules: {
-                // username: {
-                //     required: true,
-                //     maxlength: 50
-                // },
-                nama_admin: {
+                current_password: {
                     required: true,
-                    maxlength: 200
+                    minlength: 6
                 },
-                email: {
+                new_password: {
                     required: true,
-                    email: true
+                    minlength: 6,
+                    notEqualTo: "#current_password"
+                },
+                new_password_confirmation: {
+                    required: true,
+                    equalTo: "#new_password"
+                }
+            },
+            messages: {
+                new_password: {
+                    notEqualTo: "Password baru harus berbeda dengan password saat ini"
+                },
+                new_password_confirmation: {
+                    equalTo: "Konfirmasi password tidak cocok"
                 }
             },
             submitHandler: function(form) {
+                console.log('Edit Password Dosen Pembimbing');
+
                 $.ajax({
                     url: form.action,
                     type: 'PUT',

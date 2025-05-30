@@ -7,14 +7,253 @@ use App\Models\TingkatPrestasiModel;
 use App\Models\KategoriModel;
 use App\Models\PeriodeModel;
 use App\Models\DosenPembimbingModel;
+use App\Models\LaporanPrestasiModel;
 use App\Models\MahasiswaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class PrestasiController extends Controller
 {
+    public function index()
+    {
+        $breadcrumb = (object)[
+            'title' => 'Prestasi Mahasiswa',
+            'list'  => ['Prestasi Mahasiswa']
+        ];
+        $activeMenu = 'prestasimhs';
+
+        return view('prestasi.index', [
+            'breadcrumb' => $breadcrumb,
+            'activeMenu' => $activeMenu,
+        ]);
+    }
+
+    public function list(Request $request)
+    {
+        $query = PrestasiMahasiswaModel::with([
+            'tingkatPrestasi',
+            'kategori',
+            'periode',
+            'dosenPembimbing',
+            'mahasiswa'
+        ]);
+
+        if (auth()->user()->role_id == 2) {
+            $query->where('id_dospem', auth()->user()->dosen->id_dospem);
+        }
+
+        if (auth()->user()->role_id == 1) {
+            if ($request->filled('status_filter')) {
+                $status = $request->status_filter;
+                if ($status === 'null') {
+                    $query->whereNull('status_verifikasi');
+                } else {
+                    $query->where('status_verifikasi', $status);
+                }
+            }
+        }
+
+        if (auth()->user()->role_id == 2) {
+            if ($request->filled('status_filter')) {
+                $status = $request->status_filter;
+                if ($status === 'null') {
+                    $query->whereNull('status_verifikasi_dospem');
+                } else {
+                    $query->where('status_verifikasi_dospem', $status);
+                }
+            }
+        }
+
+        $prestasi = $query->get();
+
+        return DataTables::of($prestasi)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($item) {
+                $btn = '';
+                if (auth()->user()->role_id == 1) {
+                    $btn  = '<a href="/prestasi/' . $item->id_prestasi . '/detail-prestasi" class="btn btn-info btn-sm">'
+                        . ($item->status_verifikasi == null ? "Verifikasi" : "Edit") .
+                        '</a>';
+                } else if (auth()->user()->role_id == 2) {
+                    $btn  = '<a href="/prestasi/' . $item->id_prestasi . '/detail-prestasi" class="btn btn-info btn-sm">'
+                        . ($item->status_verifikasi_dospem == null ? "Verifikasi" : "Edit") .
+                        '</a>';
+                }
+                return $btn;
+            })
+            ->addColumn('tingkat_prestasi', function ($item) {
+                return $item->tingkatPrestasi->nama_tingkat_prestasi ?? '-';
+            })
+            ->addColumn('kategori', function ($item) {
+                return $item->kategori->nama_kategori ?? '-';
+            })
+            ->addColumn('mahasiswa', function ($item) {
+                return $item->mahasiswa->nama ?? '-';
+            })
+            ->addColumn('status_verifikasi', function ($item) {
+                if (auth()->user()->role_id == 1) {
+                    if ($item->status_verifikasi === 1) {
+                        return '<span class="badge bg-gradient-success">Terverifikasi</span>';
+                    } elseif ($item->status_verifikasi === 0) {
+                        return '<span class="badge bg-gradient-danger">Ditolak</span>';
+                    } else {
+                        return '<span class="badge bg-gradient-secondary">Belum Diverifikasi</span>';
+                    }
+                } elseif (auth()->user()->role_id == 2) {
+                    if ($item->status_verifikasi_dospem === 1) {
+                        return '<span class="badge bg-gradient-success">Terverifikasi</span>';
+                    } elseif ($item->status_verifikasi_dospem === 0) {
+                        return '<span class="badge bg-gradient-danger">Ditolak</span>';
+                    } else {
+                        return '<span class="badge bg-gradient-secondary">Belum Diverifikasi</span>';
+                    }
+                }
+                return '-';
+            })
+            ->rawColumns(['aksi', 'status_verifikasi'])
+            ->make(true);
+    }
+
+    public function getVerifikasiDospem($id)
+    {
+        $prestasi = PrestasiMahasiswaModel::with([
+            'dosenPembimbing'
+        ])
+            ->where('id_prestasi', $id)
+            ->first();
+
+        return view('prestasi.verif-dospem', [
+            'prestasi' => $prestasi
+        ]);
+    }
+
+    public function getVerifikasiAdmin($id)
+    {
+        $prestasi = PrestasiMahasiswaModel::where('id_prestasi', $id)->first();
+
+        return view('prestasi.verif-admin', [
+            'prestasi' => $prestasi
+        ]);
+    }
+
+    public function updateVerifikasiAdmin(Request $request, $id)
+    {
+        $prestasi = PrestasiMahasiswaModel::find($id);
+        $laporanPrestasi = LaporanPrestasiModel::where('id_prestasi', $id);
+
+        if (!$prestasi) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data prestasi tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'status_verifikasi' => 'required|boolean',
+            'keterangan' => 'nullable|string|max:255'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $prestasi->status_verifikasi = $request->status_verifikasi;
+            $prestasi->keterangan = $request->keterangan;
+            $prestasi->save();
+
+            // Jika prestasi diverifikasi, buat laporan prestasi
+            if ($prestasi->status_verifikasi == 1) {
+                $laporanData = [
+                    'id_mahasiswa' => $prestasi->id_mahasiswa,
+                    'id_prestasi' => $prestasi->id_prestasi,
+                    'id_prodi' => $prestasi->mahasiswa->id_prodi,
+                    'id_tingkat_prestasi' => $prestasi->id_tingkat_prestasi,
+                    'id_kategori' => $prestasi->id_kategori,
+                ];
+
+                LaporanPrestasiModel::updateOrCreate(
+                    ['id_prestasi' => $prestasi->id_prestasi],
+                    $laporanData
+                );
+            } else {
+                // Jika prestasi ditolak, hapus laporan prestasi jika ada
+                if ($prestasi->status_verifikasi == 0 && $laporanPrestasi) {
+                    $laporanPrestasi->delete();
+                }
+            }
+            // Commit the transaction
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Verifikasi berhasil',
+                'redirect_url' => '/prestasi/' . $prestasi->id_prestasi . '/detail-prestasi'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal melakukan verifikasi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateVerifikasiDospem(Request $request, $id)
+    {
+        $prestasi = PrestasiMahasiswaModel::find($id);
+
+        if (!$prestasi) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data prestasi tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'status_verifikasi_dospem' => 'required|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $prestasi->status_verifikasi_dospem = $request->status_verifikasi_dospem;
+            $prestasi->keterangan = $request->keterangan;
+            $prestasi->save();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Verifikasi berhasil',
+                'redirect_url' => '/prestasi/' . $prestasi->id_prestasi . '/detail-prestasi'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal melakukan verifikasi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function create()
     {
         $tingkatPrestasi = TingkatPrestasiModel::all();
@@ -42,7 +281,7 @@ class PrestasiController extends Controller
             'juara' => 'required|string|max:100',
             'tanggal_prestasi' => 'required|date',
             'id_periode' => 'required|exists:periode,id_periode',
-            'keterangan' => 'nullable|string',
+            'deskripsi' => 'nullable|string',
             'foto_kegiatan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'bukti_sertifikat' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:2048',
             'surat_tugas' => 'nullable|file|mimes:pdf|max:2048',
@@ -100,7 +339,6 @@ class PrestasiController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Data prestasi berhasil disimpan',
-                'data' => $prestasi,
                 'redirect_url' => '/mahasiswa/' . $prestasi->id_mahasiswa . '/prestasi',
             ], 201);
         } catch (\Exception $e) {
@@ -120,7 +358,7 @@ class PrestasiController extends Controller
         }
     }
 
-    public function getPrestasiMahasiswa($id)
+    public function getPrestasiMahasiswa($id) // id = id mahasiswa
     {
         $breadcrumb = (object)[
             'title' => 'Prestasi Mahasiswa',
@@ -148,7 +386,7 @@ class PrestasiController extends Controller
         ]);
     }
 
-    public function getDetailPrestasiMahasiswa($id)
+    public function getDetailPrestasiMahasiswa($id) // id = id prestasi
     {
         $breadcrumb = (object)[
             'title' => 'Prestasi Mahasiswa',
@@ -173,7 +411,7 @@ class PrestasiController extends Controller
         ]);
     }
 
-    public function getEditPrestasi($id)
+    public function getEditPrestasi($id) // id = id prestasi
     {
         $prestasi = PrestasiMahasiswaModel::with([
             'tingkatPrestasi',
@@ -201,7 +439,7 @@ class PrestasiController extends Controller
         ]);
     }
 
-    public function updatePrestasi(Request $request, $id)
+    public function updatePrestasi(Request $request, $id) // id = id prestasi
     {
         $prestasi = PrestasiMahasiswaModel::find($id);
 
@@ -220,7 +458,7 @@ class PrestasiController extends Controller
             'tanggal_prestasi' => 'required|date',
             'id_periode' => 'required|exists:periode,id_periode',
             'id_dospem' => 'nullable|exists:dosen_pembimbing,id_dospem',
-            'keterangan' => 'nullable|string',
+            'deskripsi' => 'nullable|string',
             'foto_kegiatan' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'bukti_sertifikat' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'surat_tugas' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
@@ -261,7 +499,7 @@ class PrestasiController extends Controller
                 'tanggal_prestasi',
                 'id_periode',
                 'id_dospem',
-                'keterangan'
+                'deskripsi'
             ]);
 
             // Handle file uploads
@@ -293,7 +531,6 @@ class PrestasiController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Prestasi berhasil diperbarui',
-                'data' => $prestasi,
                 'redirect_url' => '/mahasiswa/' . $prestasi->id_mahasiswa . '/prestasi',
             ]);
         } catch (\Exception $e) {
@@ -306,7 +543,7 @@ class PrestasiController extends Controller
         }
     }
 
-    public function confirmDeletePrestasi($id)
+    public function confirmDeletePrestasi($id) // id = id prestasi
     {
         $prestasi = PrestasiMahasiswaModel::find($id);
 
@@ -319,7 +556,7 @@ class PrestasiController extends Controller
         ]);
     }
 
-    public function deletePrestasi($id)
+    public function deletePrestasi($id) // id = id prestasi
     {
         $prestasi = PrestasiMahasiswaModel::find($id);
 
