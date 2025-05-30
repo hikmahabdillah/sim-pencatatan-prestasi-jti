@@ -88,7 +88,7 @@
 
                 <div class="form-group col-md-4">
                     <label for="link_pendaftaran">Link Pendaftaran</label>
-                    <input type="url" name="link_pendaftaran" class="form-control" value="{{ old('link_pendaftaran') }}" required>
+                    <input type="url" name="link_pendaftaran" class="form-control" value="{{ old('link_pendaftaran') }}" >
                     <div class="text-danger error-text" id="error-link_pendaftaran"></div>
                 </div>
 
@@ -112,7 +112,7 @@
 
                 <div class="form-group col-md-8">
                     <label for="foto">Foto Lomba (Opsional)</label>
-                    <input type="file" name="foto" class="form-control" accept=".jpg,.jpeg,.png">
+                    <input type="file" name="foto" class="form-control" accept=".jpg,.jpeg,.png" required>
                     <div class="text-danger error-text" id="error-foto"></div>
                 </div>
             </div>
