@@ -177,6 +177,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::put('/{id}/update', [DosenPembimbingController::class, 'update']);
             Route::get('/{id}/confirm_delete', [DosenPembimbingController::class, 'confirm_delete']);
             Route::delete('/{id}/delete', [DosenPembimbingController::class, 'delete']);
+            Route::get('/import', [DosenPembimbingController::class, 'import']);
+            Route::post('/import', [DosenPembimbingController::class, 'import_ajax']);
         });
         Route::middleware(['check.access:Dosen Pembimbing'])->group(function () {
             Route::get('/{id}/edit-password', [DosenPembimbingController::class, 'getUpdatePassword']); // id dospem
@@ -187,6 +189,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::put('/{id}/update-profile', [DosenPembimbingController::class, 'updateProfile']);
         });
     });
+
     // Routes untuk AdminController
     Route::prefix('admin')->group(function () {
         Route::middleware(['authorize:Admin'])->group(function () {
