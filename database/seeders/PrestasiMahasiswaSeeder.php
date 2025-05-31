@@ -19,7 +19,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'id_tingkat_prestasi' => 1,
                 'id_dospem' => $i,
                 'nama_prestasi' => 'Lomba Kejuaraan ' . $i,
-                'id_kategori' => 1,
+                'id_kategori' => $i,
                 'juara' => 'Juara ' . $i,
                 'tanggal_prestasi' => now()->subDays($i * 10),
                 'id_periode' => 1,

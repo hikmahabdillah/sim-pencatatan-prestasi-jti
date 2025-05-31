@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CobacrudController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
@@ -26,7 +27,7 @@ use App\Models\KategoriModel;
 |
 */
 
-Route::get('/', function () {
+Route::get('/welcome', function () {
     return view('welcome');
 });
 
@@ -49,6 +50,7 @@ Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+    Route::get('/', [DashboardController::class, 'index']);
     Route::middleware(['authorize:Admin'])->group(function () {
         Route::prefix('kategori')->group(function () {
             Route::get('/', [KategoriController::class, 'index']);
@@ -235,27 +237,6 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa']);
 
         Route::get('/{id}/show', [LombaController::class, 'show']);
-    });
-
-    // Routes untuk LombaController
-    Route::prefix('lomba')->group(function () {
-        Route::get('/manajemen-lomba', [LombaController::class, 'indexAdmin'])->name('lomba.manajemen');
-        Route::get('/', [LombaController::class, 'indexMahasiswa']);
-        Route::get('/input-lomba', [LombaController::class, 'inputLomba']);
-        Route::post('/store', [LombaController::class, 'store']);
-        Route::post('/listLomba', [LombaController::class, 'listLomba']);
-        Route::post('/listInput', [LombaController::class, 'listInput']);
-        Route::post('/listAdmin', [LombaController::class, 'listAdmin']);
-        Route::get('/create', [LombaController::class, 'create']);
-        Route::get('/{id}/show', [LombaController::class, 'show']);
-        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa']);
-        Route::get('/{id}/showInput', [LombaController::class, 'showInput']);
-        Route::post('/manajemen-lomba/{id}/setujui', [LombaController::class, 'setujui']);
-        Route::post('/manajemen-lomba/{id}/tolak', [LombaController::class, 'tolak']);
-        Route::get('/{id}/edit', [LombaController::class, 'edit']);
-        Route::put('/{id}/update', [LombaController::class, 'update']);
-        Route::get('/{id}/confirm_delete', [LombaController::class, 'confirm_delete']);
-        Route::delete('/{id}/delete', [LombaController::class, 'delete']);
     });
 });
 
