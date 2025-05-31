@@ -13,4 +13,9 @@ class KategoriModel extends Model
     protected $primaryKey = 'id_kategori';
 
     protected $fillable = ['nama_kategori', 'deskripsi'];
+
+    public function prestasi()
+    {
+        return $this->hasMany(PrestasiMahasiswaModel::class, 'id_kategori');
+    }
 }
