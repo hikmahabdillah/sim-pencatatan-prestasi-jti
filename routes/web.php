@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CobacrudController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
@@ -26,7 +27,7 @@ use App\Models\KategoriModel;
 |
 */
 
-Route::get('/', function () {
+Route::get('/welcome', function () {
     return view('welcome');
 });
 
@@ -49,6 +50,7 @@ Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+    Route::get('/', [DashboardController::class, 'index']);
     Route::middleware(['authorize:Admin'])->group(function () {
         Route::prefix('kategori')->group(function () {
             Route::get('/', [KategoriController::class, 'index']);
@@ -177,6 +179,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::put('/{id}/update', [DosenPembimbingController::class, 'update']);
             Route::get('/{id}/confirm_delete', [DosenPembimbingController::class, 'confirm_delete']);
             Route::delete('/{id}/delete', [DosenPembimbingController::class, 'delete']);
+            Route::get('/import', [DosenPembimbingController::class, 'import']);
+            Route::post('/import', [DosenPembimbingController::class, 'import_ajax']);
         });
         Route::middleware(['check.access:Dosen Pembimbing'])->group(function () {
             Route::get('/{id}/edit-password', [DosenPembimbingController::class, 'getUpdatePassword']); // id dospem
@@ -187,6 +191,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::put('/{id}/update-profile', [DosenPembimbingController::class, 'updateProfile']);
         });
     });
+
     // Routes untuk AdminController
     Route::prefix('admin')->group(function () {
         Route::middleware(['authorize:Admin'])->group(function () {

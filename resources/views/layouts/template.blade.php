@@ -33,7 +33,7 @@
 
     <body class="g-sidenav-show bg-light">
 
-        @if (Request::is('/'))
+        @if (Request::is('/welcome'))
             <div class="min-height-300 bg-primary position-absolute w-100"></div>
             <div class="position-absolute w-100 min-height-300 top-0"
                 style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
