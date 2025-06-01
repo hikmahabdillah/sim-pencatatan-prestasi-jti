@@ -59,7 +59,7 @@ class RoleController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'nama_role' => 'required|string|max:100'
+                'nama_role' => 'required|string|max:100|unique:role'
             ];
 
             $validator = Validator::make($request->all(), [
@@ -98,7 +98,7 @@ class RoleController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'nama_role' => 'required|string|max:100'
+                'nama_role' => 'required|string|max:100|unique:role'
             ];
 
             $validator = Validator::make($request->all(), ['updated_at' => now(),], $rules);

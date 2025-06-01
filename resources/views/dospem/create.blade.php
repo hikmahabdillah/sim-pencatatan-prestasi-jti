@@ -12,17 +12,20 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="nip" class="form-label">NIP</label>
-                    <input type="text" id="nip" name="nip" class="form-control" placeholder="Masukkan NIP" required>
+                    <input type="text" id="nip" name="nip" class="form-control" placeholder="Masukkan NIP"
+                        required>
                     <div id="error-nip" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
                     <label for="nama" class="form-label">Nama Lengkap</label>
-                    <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
+                    <input type="text" id="nama" name="nama" class="form-control"
+                        placeholder="Masukkan nama lengkap" required>
                     <div id="error-nama" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email" required>
+                    <input type="email" id="email" name="email" class="form-control"
+                        placeholder="Masukkan email" required>
                     <div id="error-email" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
@@ -101,9 +104,30 @@
                                 text: response.message
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        // Handle error response
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $('.error-text').text('');
+                            $.each(errors, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
+                            });
+                        }
                     }
                 });
                 return false;
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
             }
         });
     });

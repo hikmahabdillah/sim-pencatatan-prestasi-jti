@@ -81,6 +81,16 @@
                                 text: response.message
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        // Handle error response
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $('.error-text').text('');
+                            $.each(errors, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
+                            });
+                        }
                     }
                 });
                 return false;

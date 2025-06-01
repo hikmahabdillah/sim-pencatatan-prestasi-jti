@@ -218,15 +218,17 @@
                 },
                 bukti_sertifikat: {
                     accept: "application/pdf,image/jpeg,image/png,image/jpg",
-                    filesize: 2
+                    filesize: 2,
+                    required: true
                 },
                 surat_tugas: {
                     accept: "application/pdf",
-                    filesize: 2
+                    filesize: 2,
                 },
                 karya: {
                     accept: "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation",
-                    filesize: 5
+                    filesize: 5,
+                    required: true
                 }
             },
             messages: {
