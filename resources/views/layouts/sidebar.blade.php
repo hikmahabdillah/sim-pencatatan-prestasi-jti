@@ -32,7 +32,7 @@
             </li>
 
             <!-- Administrasi -->
-            @if (auth()->user()->role_id == 1)
+            @if (auth()->user() && auth()->user()->role_id == 1)
                 <li class="nav-item mt-3">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Administrasi</h6>
                 </li>
@@ -69,7 +69,7 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Prestasi Mahasiswa</h6>
             </li>
-            @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
+            @if ((auth()->user() && auth()->user()->role_id == 1) || (auth()->user() && auth()->user()->role_id == 2))
                 <li class="nav-item">
                     <a class="nav-link {{ $activeMenu == 'prestasimhs' ? 'active' : '' }}" href="/prestasi">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
@@ -80,7 +80,7 @@
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->role_id == 1)
+            @if (auth()->user() && auth()->user()->role_id == 1)
                 <li class="nav-item">
                     <a class="nav-link {{ $activeMenu == 'tingkat_prestasi' ? 'active' : '' }}"
                         href="/tingkat_prestasi">
@@ -92,7 +92,7 @@
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 3)
+            @if ((auth()->user() && auth()->user()->role_id == 1) || (auth()->user() && auth()->user()->role_id == 3))
                 <li class="nav-item">
                     <a class="nav-link {{ $activeMenu == 'laporan_prestasi' ? 'active' : '' }}"
                         href="/laporan-prestasi">
@@ -109,7 +109,7 @@
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Lomba</h6>
             </li>
-            @if (auth()->user()->role_id == 2 || auth()->user()->role_id == 3)
+            @if ((auth()->user() && auth()->user()->role_id == 2) || (auth()->user() && auth()->user()->role_id == 3))
                 <li class="nav-item">
                     <a class="nav-link {{ $activeMenu == 'lomba' ? 'active' : '' }}" href="/lomba">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
@@ -129,7 +129,7 @@
                     </a>
                 </li>
             @endif
-            @if (auth()->user()->role_id == 1)
+            @if (auth()->user() && auth()->user()->role_id == 1)
                 <li class="nav-item">
                     <a class="nav-link {{ $activeMenu == 'manajemen_lomba' ? 'active' : '' }}"
                         href="/lomba/manajemen-lomba">
@@ -152,7 +152,7 @@
             @endif
 
             <!-- Lainnya -->
-            @if (auth()->user()->role_id == 1)
+            @if (auth()->user() && auth()->user()->role_id == 1)
                 <li class="nav-item mt-3">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Lainnya</h6>
                 </li>

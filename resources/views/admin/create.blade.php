@@ -12,17 +12,20 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan username" required>
+                    <input type="text" id="username" name="username" class="form-control"
+                        placeholder="Masukkan username" required>
                     <div id="error-username" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
                     <label for="nama_admin" class="form-label">Nama Lengkap</label>
-                    <input type="text" id="nama_admin" name="nama_admin" class="form-control" placeholder="Masukkan nama lengkap" required>
+                    <input type="text" id="nama_admin" name="nama_admin" class="form-control"
+                        placeholder="Masukkan nama lengkap" required>
                     <div id="error-nama_admin" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email" required>
+                    <input type="email" id="email" name="email" class="form-control"
+                        placeholder="Masukkan email" required>
                     <div id="error-email" class="text-danger error-text"></div>
                 </div>
             </div>
@@ -82,6 +85,16 @@
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan',
                                 text: response.message
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Handle error response
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $('.error-text').text('');
+                            $.each(errors, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
                             });
                         }
                     }

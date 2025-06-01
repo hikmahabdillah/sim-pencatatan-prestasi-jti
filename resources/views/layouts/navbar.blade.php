@@ -1,5 +1,6 @@
 <!-- Navbar -->
 @php
+    // function untuk mendapatkan url sesuai dengan role
     function getRoleUrl()
     {
         try {
@@ -19,6 +20,7 @@
         }
     }
 
+    // function untuk mendapatkan username
     function getuserName()
     {
         try {
@@ -42,6 +44,7 @@
         }
     }
 
+    // function untuk mendapatkan id dari masing" role
     function getIdUser()
     {
         try {
@@ -65,7 +68,7 @@
         }
     }
 
-    // Handle foto profile
+    // function untuk mendapatkan foto profile user
     function getProfilePhoto()
     {
         try {

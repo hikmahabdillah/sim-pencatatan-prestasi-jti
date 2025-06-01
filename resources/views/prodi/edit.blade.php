@@ -27,7 +27,7 @@
 </form>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#form-edit").validate({
             rules: {
                 nama_prodi: {
@@ -35,12 +35,12 @@
                     maxlength: 100
                 }
             },
-            submitHandler: function (form) {
+            submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
-                    success: function (response) {
+                    success: function(response) {
                         if (response.status) {
                             $('#myModal').modal('hide');
                             Swal.fire({
@@ -51,7 +51,7 @@
                             tablecrud.ajax.reload();
                         } else {
                             $('.error-text').text('');
-                            $.each(response.msgField, function (prefix, val) {
+                            $.each(response.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
                             });
                             Swal.fire({
@@ -60,19 +60,29 @@
                                 text: response.message
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        // Handle error response
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $('.error-text').text('');
+                            $.each(errors, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
+                            });
+                        }
                     }
                 });
                 return false;
             },
             errorElement: 'span',
-            errorPlacement: function (error, element) {
+            errorPlacement: function(error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: function (element, errorClass, validClass) {
+            highlight: function(element, errorClass, validClass) {
                 $(element).addClass('is-invalid');
             },
-            unhighlight: function (element, errorClass, validClass) {
+            unhighlight: function(element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
             }
         });

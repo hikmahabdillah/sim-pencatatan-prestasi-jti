@@ -15,7 +15,9 @@ class AuthorizeUser
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
+        // get nama role
         $user_role = $request->user()->getRole();
+        // jika nama role sesuai dengan yang ada di array
         if (in_array($user_role, $roles)) {
             return $next($request);
         }
