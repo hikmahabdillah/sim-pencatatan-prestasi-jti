@@ -1,9 +1,9 @@
-<form action="{{ url('/dospem/import_ajax') }}" method="POST" id="form-import" enctype="multipart/form-data">
+<form action="{{ url('/mahasiswa/import_ajax') }}" method="POST" id="form-import" enctype="multipart/form-data">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Import Data Dosen Pembimbing</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Import Data Mahasiswa</h5>
                 {{-- <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span
                         aria-hidden="true">&times;</span></button> --}}
             </div>
@@ -11,7 +11,7 @@
                 <div class="form-group">
                     <label>Download Template</label>
                     <div class="input-group">
-                        <a href="{{ asset('template_dospem.xlsx') }}" class="btn btn-info btn-sm" download>
+                        <a href="{{ asset('template_mahasiswa.xlsx') }}" class="btn btn-info btn-sm" download>
                             <i class="fa fa-file-excel"></i> Download Template
                         </a>
                     </div>
@@ -19,8 +19,8 @@
                 </div>
                 <div class="form-group">
                     <label>Pilih File</label>
-                    <input type="file" name="file_dospem" id="file_dospem" class="form-control" required>
-                    <small id="error-file_dospem" class="error-text form-text text-danger"></small>
+                    <input type="file" name="file_mahasiswa" id="file_mahasiswa" class="form-control" required>
+                    <small id="error-file_mahasiswa" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -33,6 +33,20 @@
 <script>
     $(document).ready(function () {
         $("#form-import").validate({
+            // rules: {
+            //     file_mahasiswa: {
+            //         required: true,
+            //         extension: "xlsx|xls",
+            //         filesize: 1024 // 1MB
+            //     }
+            // },
+            // messages: {
+            //     file_mahasiswa: {
+            //         required: "File wajib diupload",
+            //         extension: "Hanya file Excel (.xlsx, .xls) yang diperbolehkan",
+            //         filesize: "Ukuran file maksimal 1MB"
+            //     }
+            // },
             submitHandler: function (form) {
                 var formData = new FormData(form);
                 var submitBtn = $(form).find('button[type="submit"]');
@@ -56,7 +70,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            tableDospem.ajax.reload();
+                            tableMahasiswa.ajax.reload();
                         } else {
                             showValidationErrors(response);
                         }
