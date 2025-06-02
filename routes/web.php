@@ -155,6 +155,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::put('/{id}/update', [MahasiswaController::class, 'update']);
             Route::get('/{id}/confirm_delete', [MahasiswaController::class, 'confirm_delete']);
             Route::delete('/{id}/delete', [MahasiswaController::class, 'delete']);
+            Route::get('/import', [MahasiswaController::class, 'import']); // ajax form uplod excel
+            Route::post('/import_ajax', [MahasiswaController::class, 'import_ajax']); //ajax import excel
         });
         Route::middleware(['check.access:Mahasiswa'])->group(function () {
             Route::get('/{id}/edit-password', [MahasiswaController::class, 'getUpdatePassword']);
@@ -180,7 +182,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::get('/{id}/confirm_delete', [DosenPembimbingController::class, 'confirm_delete']);
             Route::delete('/{id}/delete', [DosenPembimbingController::class, 'delete']);
             Route::get('/import', [DosenPembimbingController::class, 'import']);
-            Route::post('/import', [DosenPembimbingController::class, 'import_ajax']);
+            Route::post('/import_ajax', [DosenPembimbingController::class, 'import_ajax']);
         });
         Route::middleware(['check.access:Dosen Pembimbing'])->group(function () {
             Route::get('/{id}/edit-password', [DosenPembimbingController::class, 'getUpdatePassword']); // id dospem
