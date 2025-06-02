@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class MahasiswaController extends Controller
 {
@@ -489,5 +490,114 @@ class MahasiswaController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+    public function import()
+    {
+        $menuAktif = 'mahasiswa';
+        $breadcrumb = (object)[
+            'title' => 'Import Data Mahasiswa',
+            'list'  => ['Mahasiswa', 'Import']
+        ];
+
+        return view('mahasiswa.import', [
+            'breadcrumb' => $breadcrumb,
+            'menuAktif' => $menuAktif
+        ]);
+    }
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_mahasiswa' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+
+            $validator = Validator::make($request->all(), [
+            //     'file_mahasiswa' => 'required|mimes:xlsx,xls|max:1024'
+            // ], [
+            //     'file_mahasiswa.required' => 'File wajib diupload',
+            //     'file_mahasiswa.mimes' => 'Hanya file Excel (.xlsx, .xls) yang diperbolehkan',
+            //     'file_mahasiswa.max' => 'Ukuran file maksimal 1MB'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $file = $request->file('file_mahasiswa');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            DB::beginTransaction();
+            try {
+                $insertMahasiswa = [];
+
+                if (count($data) > 1) {
+                    foreach ($data as $baris => $row) {
+                        if ($baris > 1) { // Skip header
+                            // Validasi data wajib
+
+                            // Siapkan data pengguna
+                            $pengguna = PenggunaModel::create([
+                                'username' => $row['A'],
+                                'password' => Hash::make($row['A']),
+                                'role_id' => 3,
+                                'status_aktif' => true,
+                                'created_at' => now()
+                            ]);
+
+                            // Siapkan data mahasiswa
+                            $insertMahasiswa[] = [
+                                'nim' => $row['A'],
+                                'id_pengguna' => $pengguna->id_pengguna,
+                                'nama' => $row['B'],
+                                'angkatan' => $row['C'] ,
+                                'email' => $row['D'] ,
+                                'no_hp' => $row['E'] ,
+                                'alamat' => $row['F'] ,
+                                'tanggal_lahir' => $row['G'] ,
+                                'jenis_kelamin' => $row['H'] ,
+                                'id_prodi' => $row['I'] ,
+                                'id_kategori' => $row['J'] ,
+                                'created_at' => now()
+                            ];
+                        }
+                    }
+
+                    // Insert data mahasiswa sekaligus
+                    if (!empty($insertMahasiswa)) {
+                        MahasiswaModel::insert($insertMahasiswa);
+                    }
+
+                    DB::commit();
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Data mahasiswa berhasil diimport',
+                        'total' => count($insertMahasiswa)
+                    ]);
+                } else {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Tidak ada data yang diimport'
+                    ], 422);
+                }
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Gagal mengimport data',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+        }
+        return redirect('/mahasiswa');
     }
 }

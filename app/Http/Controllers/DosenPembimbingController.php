@@ -475,6 +475,83 @@ class DosenPembimbingController extends Controller
         return view('dospem.import');
     }
 
+    // public function import_ajax(Request $request)
+    // {
+    //     if ($request->ajax() || $request->wantsJson()) {
+    //         $rules = [
+    //             'file_dospem' => ['required', 'mimes:xlsx', 'max:1024']
+    //         ];
+
+    //         $validator = Validator::make($request->all(), $rules);
+
+    //         if ($validator->fails()) {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => 'Validasi Gagal',
+    //                 'msgField' => $validator->errors()
+    //             ], 422);
+    //         }
+
+    //         $file = $request->file('file_dospem');
+    //         $reader = IOFactory::createReader('xlsx');
+    //         $reader->setReadDataOnly(true);
+    //         $spreadsheet = $reader->load($file->getRealPath());
+    //         $sheet = $spreadsheet->getActiveSheet();
+    //         $data = $sheet->toArray(null, false, true, true);
+
+    //         DB::beginTransaction();
+    //         try {
+    //             if (count($data) > 1) {
+    //                 foreach ($data as $baris => $row) {
+    //                     if ($baris > 1) { // Skip header
+    //                         // Create user account first
+    //                         $pengguna = PenggunaModel::create([
+    //                             'username' => $row['A'], // NIP
+    //                             'password' => Hash::make($row['A']), // Password = NIP
+    //                             'role_id' => 2, // Role dosen
+    //                             'status_aktif' => true,
+    //                             'foto' => 'default.jpg',
+    //                             'created_at' => now()
+    //                         ]);
+
+    //                         // Create dosen data
+    //                         DosenPembimbingModel::create([
+    //                             'nip' => $row['A'],
+    //                             'id_pengguna' => $pengguna->id_pengguna,
+    //                             'nama' => $row['B'],
+    //                             'email' => $row['C'],
+    //                             'id_prodi' => $row['D'],
+    //                             'bidang_keahlian' => $row['E'],
+    //                             'created_at' => now()
+    //                         ]);
+    //                     }
+    //                 }
+
+    //                 DB::commit();
+
+    //                 return response()->json([
+    //                     'status' => true,
+    //                     'message' => 'Data dosen berhasil diimport'
+    //                 ]);
+    //             } else {
+    //                 DB::rollBack();
+    //                 return response()->json([
+    //                     'status' => false,
+    //                     'message' => 'Tidak ada data yang diimport'
+    //                 ], 422);
+    //             }
+    //         } catch (\Exception $e) {
+    //             DB::rollBack();
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => 'Gagal mengimport data',
+    //                 'error' => $e->getMessage()
+    //             ], 500);
+    //         }
+    //     }
+
+    //     return redirect('/dospem');
+    // }
     public function import_ajax(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -488,12 +565,12 @@ class DosenPembimbingController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors()
+                    'errors' => $validator->errors()
                 ], 422);
             }
 
             $file = $request->file('file_dospem');
-            $reader = IOFactory::createReader('xlsx');
+            $reader = IOFactory::createReader('Xlsx');
             $reader->setReadDataOnly(true);
             $spreadsheet = $reader->load($file->getRealPath());
             $sheet = $spreadsheet->getActiveSheet();
@@ -501,21 +578,24 @@ class DosenPembimbingController extends Controller
 
             DB::beginTransaction();
             try {
+                $insertDospem = [];
+
                 if (count($data) > 1) {
                     foreach ($data as $baris => $row) {
                         if ($baris > 1) { // Skip header
-                            // Create user account first
+                            // Validasi data wajib
+
+                            // Siapkan data pengguna
                             $pengguna = PenggunaModel::create([
-                                'username' => $row['A'], // NIP
-                                'password' => Hash::make($row['A']), // Password = NIP
-                                'role_id' => 2, // Role dosen
+                                'username' => $row['A'],
+                                'password' => Hash::make($row['A']),
+                                'role_id' => 2,
                                 'status_aktif' => true,
-                                'foto' => 'default.jpg',
                                 'created_at' => now()
                             ]);
 
-                            // Create dosen data
-                            DosenPembimbingModel::create([
+                            // Siapkan data mahasiswa
+                            $insertDospem[] = [
                                 'nip' => $row['A'],
                                 'id_pengguna' => $pengguna->id_pengguna,
                                 'nama' => $row['B'],
@@ -523,15 +603,21 @@ class DosenPembimbingController extends Controller
                                 'id_prodi' => $row['D'],
                                 'bidang_keahlian' => $row['E'],
                                 'created_at' => now()
-                            ]);
+                            ];
                         }
+                    }
+
+                    // Insert data Dospem sekaligus
+                    if (!empty($insertDospem)) {
+                        DosenPembimbingModel::insert($insertDospem);
                     }
 
                     DB::commit();
 
                     return response()->json([
                         'status' => true,
-                        'message' => 'Data dosen berhasil diimport'
+                        'message' => 'Data Dospem berhasil diimport',
+                        'total' => count($insertDospem)
                     ]);
                 } else {
                     DB::rollBack();
@@ -549,7 +635,6 @@ class DosenPembimbingController extends Controller
                 ], 500);
             }
         }
-
         return redirect('/dospem');
     }
 }
