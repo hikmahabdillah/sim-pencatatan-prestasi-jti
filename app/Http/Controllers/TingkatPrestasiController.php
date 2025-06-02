@@ -58,7 +58,7 @@ class TingkatPrestasiController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'tingkat_prestasi' => 'required|string|max:15',
+                'nama_tingkat_prestasi' => 'required|unique:tingkat_prestasi|string|max:15',
             ];
 
             $validator = Validator::make($request->all(), [
@@ -71,7 +71,7 @@ class TingkatPrestasiController extends Controller
                     'status' => false,
                     'message' => 'Validasi Gagal',
                     'msgField' => $validator->errors(),
-                ]);
+                ], 422);
             }
 
             TingkatPrestasiModel::create($request->all());
@@ -97,7 +97,7 @@ class TingkatPrestasiController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'tingkat_prestasi' => 'required|string|max:15',
+                'nama_tingkat_prestasi' => 'required|unique:tingkat_prestasi|string|max:15',
             ];
 
             $validator = Validator::make($request->all(), ['updated_at' => now(),], $rules);
@@ -107,7 +107,7 @@ class TingkatPrestasiController extends Controller
                     'status' => false,
                     'message' => 'Validasi gagal.',
                     'msgField' => $validator->errors()
-                ]);
+                ], 422);
             }
 
             $data = TingkatPrestasiModel::find($id);

@@ -1,9 +1,8 @@
 @extends('layouts.template', ['page' => $breadcrumb->title])
-
 @section('content')
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
-        <h3 class="text-dark">Selamat Datang Hikmah!</h3>
+        <h3 class="text-dark">Selamat Datang {{ getuserName() }}!</h3>
         <div class="col mx-auto d-flex flex-column gap-3 mt-4 w-100" style="max-width: 1300px">
             <!-- Row 1: Statistik dan Doughnut Chart -->
             <div class="row text-center">

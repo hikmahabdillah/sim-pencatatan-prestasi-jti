@@ -88,7 +88,7 @@ class ProdiController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'nama_prodi' => 'required|string|max:100|unique:prodi,nama_prodi,'.$id.',id_prodi'
+                'nama_prodi' => 'required|string|max:100|unique:prodi,nama_prodi,' . $id . ',id_prodi'
             ];
 
             $validator = Validator::make($request->all(), $rules);

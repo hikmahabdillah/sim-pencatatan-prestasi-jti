@@ -39,10 +39,6 @@ Route::get('/modal', function () {
     return view('modal');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
-});
-
 Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter {id}, maka harus berupa angka
 
 Route::get('login', [AuthController::class, 'login'])->name('login');
@@ -50,7 +46,10 @@ Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+    // dashboard untuk semua user
     Route::get('/', [DashboardController::class, 'index']);
+
+    // route yang hanya boleh diakses oleh admin
     Route::middleware(['authorize:Admin'])->group(function () {
         Route::prefix('kategori')->group(function () {
             Route::get('/', [KategoriController::class, 'index']);
@@ -117,17 +116,18 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         });
     });
 
+    // routes untuk prestasi controller
     Route::prefix('prestasi')->group(function () {
         Route::middleware(['authorize:Admin,Dosen Pembimbing'])->group(function () {
             Route::get('/', [PrestasiController::class, 'index']);
             Route::post('/list', [PrestasiController::class, 'list']);
         });
-        Route::get('/tambah-prestasi', [PrestasiController::class, 'create']);
-        Route::post('/store', [PrestasiController::class, 'store']);
         Route::middleware(['authorize:Admin'])->group(function () {
             Route::get('/{id}/verifikasi-admin', [PrestasiController::class, 'getVerifikasiAdmin']); // id prestasi
             Route::put('/{id}/update-verifikasi-admin', [PrestasiController::class, 'updateVerifikasiAdmin']); // id prestasi
         });
+        Route::get('/tambah-prestasi', [PrestasiController::class, 'create']);
+        Route::post('/store', [PrestasiController::class, 'store']);
         Route::middleware(['check.prestasi'])->group(function () {
             Route::get('/{id}/detail-prestasi', [PrestasiController::class, 'getDetailPrestasiMahasiswa']); // id prestasi
             Route::middleware(['authorize:Dosen Pembimbing'])->group(function () {
