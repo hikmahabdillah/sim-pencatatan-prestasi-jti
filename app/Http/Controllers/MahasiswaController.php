@@ -511,13 +511,7 @@ class MahasiswaController extends Controller
                 'file_mahasiswa' => ['required', 'mimes:xlsx', 'max:1024']
             ];
 
-            $validator = Validator::make($request->all(), [
-            //     'file_mahasiswa' => 'required|mimes:xlsx,xls|max:1024'
-            // ], [
-            //     'file_mahasiswa.required' => 'File wajib diupload',
-            //     'file_mahasiswa.mimes' => 'Hanya file Excel (.xlsx, .xls) yang diperbolehkan',
-            //     'file_mahasiswa.max' => 'Ukuran file maksimal 1MB'
-            ]);
+            $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
                 return response()->json([
@@ -541,38 +535,39 @@ class MahasiswaController extends Controller
                 if (count($data) > 1) {
                     foreach ($data as $baris => $row) {
                         if ($baris > 1) { // Skip header
-                            // Validasi data wajib
-
-                            // Siapkan data pengguna
-                            $pengguna = PenggunaModel::create([
-                                'username' => $row['A'],
-                                'password' => Hash::make($row['A']),
-                                'role_id' => 3,
-                                'status_aktif' => true,
-                                'created_at' => now()
-                            ]);
+                            // Cek apakah pengguna sudah ada berdasarkan username (NIM)
+                            $pengguna = PenggunaModel::where('username', $row['A'])->first();
+                            if (!$pengguna) {
+                                $pengguna = PenggunaModel::create([
+                                    'username' => $row['A'],
+                                    'password' => Hash::make($row['A']),
+                                    'role_id' => 3,
+                                    'status_aktif' => true,
+                                    'created_at' => now()
+                                ]);
+                            }
 
                             // Siapkan data mahasiswa
                             $insertMahasiswa[] = [
                                 'nim' => $row['A'],
                                 'id_pengguna' => $pengguna->id_pengguna,
                                 'nama' => $row['B'],
-                                'angkatan' => $row['C'] ,
-                                'email' => $row['D'] ,
-                                'no_hp' => $row['E'] ,
-                                'alamat' => $row['F'] ,
-                                'tanggal_lahir' => $row['G'] ,
-                                'jenis_kelamin' => $row['H'] ,
-                                'id_prodi' => $row['I'] ,
-                                'id_kategori' => $row['J'] ,
+                                'angkatan' => $row['C'],
+                                'email' => $row['D'],
+                                'no_hp' => $row['E'],
+                                'alamat' => $row['F'],
+                                'tanggal_lahir' => $row['G'],
+                                'jenis_kelamin' => $row['H'],
+                                'id_prodi' => $row['I'],
+                                'id_kategori' => $row['J'],
                                 'created_at' => now()
                             ];
                         }
                     }
 
-                    // Insert data mahasiswa sekaligus
+                    // Insert data mahasiswa sekaligus, abaikan jika duplikat
                     if (!empty($insertMahasiswa)) {
-                        MahasiswaModel::insert($insertMahasiswa);
+                        MahasiswaModel::insertOrIgnore($insertMahasiswa);
                     }
 
                     DB::commit();
