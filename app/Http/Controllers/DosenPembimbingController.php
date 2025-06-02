@@ -583,18 +583,19 @@ class DosenPembimbingController extends Controller
                 if (count($data) > 1) {
                     foreach ($data as $baris => $row) {
                         if ($baris > 1) { // Skip header
-                            // Validasi data wajib
+                            // Cek apakah pengguna sudah ada berdasarkan username
+                            $pengguna = PenggunaModel::where('username', $row['A'])->first();
+                            if (!$pengguna) {
+                                $pengguna = PenggunaModel::create([
+                                    'username' => $row['A'],
+                                    'password' => Hash::make($row['A']),
+                                    'role_id' => 2,
+                                    'status_aktif' => true,
+                                    'created_at' => now()
+                                ]);
+                            }
 
-                            // Siapkan data pengguna
-                            $pengguna = PenggunaModel::create([
-                                'username' => $row['A'],
-                                'password' => Hash::make($row['A']),
-                                'role_id' => 2,
-                                'status_aktif' => true,
-                                'created_at' => now()
-                            ]);
-
-                            // Siapkan data mahasiswa
+                            // Siapkan data dospem
                             $insertDospem[] = [
                                 'nip' => $row['A'],
                                 'id_pengguna' => $pengguna->id_pengguna,
@@ -607,9 +608,9 @@ class DosenPembimbingController extends Controller
                         }
                     }
 
-                    // Insert data Dospem sekaligus
-                    if (!empty($insertDospem)) {
-                        DosenPembimbingModel::insert($insertDospem);
+                    if (count($insertDospem) > 0) {
+                        // insert data ke database, jika data sudah ada, maka diabaikan
+                        DosenPembimbingModel::insertOrIgnore($insertDospem);
                     }
 
                     DB::commit();
