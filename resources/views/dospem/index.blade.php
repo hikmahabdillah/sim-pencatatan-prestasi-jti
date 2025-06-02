@@ -4,12 +4,14 @@
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
         <div class="d-flex gap-3 justify-content-between align-items-center mb-3">
-            <button onclick="modalAction('{{ url('dospem/create') }}')" class="btn bg-gradient-info mt-1">
-                Tambah Dosen Pembimbing
-            </button>
-            <button onclick="modalAction('{{ url('dospem/import') }}')" class="btn bg-gradient-success mt-1">
-                <i class="fas fa-file-import"></i> Import Excel
-            </button>
+            <div class="card-tools">
+                <button onclick="modalAction('{{ url('dospem/create') }}')" class="btn bg-gradient-info mt-1">
+                    Tambah Dosen Pembimbing
+                </button>
+                <button onclick="modalAction('{{ url('dospem/import') }}')" class="btn bg-gradient-info mt-1">
+                    Import Data
+                </button>
+            </div>
             <div class="d-flex gap-3 align-items-center">
                 <p class="text-muted w-100">Filter status:</p>
                 <select id="status_filter" name="status_filter" class="form-select mb-3 w-100"
