@@ -19,7 +19,10 @@
                 </div>
                 <div class="form-group">
                     <label>Pilih File</label>
-                    <input type="file" name="file_dospem" id="file_dospem" class="form-control" required>
+                    <input type="file" name="file_dospem" id="file_dospem" class="form-control"
+                        accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        required>
+                    <p class="text-muted text-small mt-2">Format: xlsx</p>
                     <small id="error-file_dospem" class="error-text form-text text-danger"></small>
                 </div>
             </div>
@@ -31,14 +34,15 @@
     </div>
 </form>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#form-import").validate({
-            submitHandler: function (form) {
+            submitHandler: function(form) {
                 var formData = new FormData(form);
                 var submitBtn = $(form).find('button[type="submit"]');
 
                 // Tampilkan loading
-                submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
+                submitBtn.prop('disabled', true).html(
+                    '<i class="fa fa-spinner fa-spin"></i> Processing...');
 
                 $.ajax({
                     url: form.action,
@@ -46,7 +50,7 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function (response) {
+                    success: function(response) {
                         // Tutup modal yang benar
                         $('#myModal').modal('hide');
 
@@ -61,33 +65,36 @@
                             showValidationErrors(response);
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
-                            showValidationErrors({ msgField: errors });
+                            showValidationErrors({
+                                msgField: errors
+                            });
                         } else {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error ' + xhr.status,
-                                text: xhr.responseJSON?.message || 'Terjadi kesalahan server'
+                                text: xhr.responseJSON?.message ||
+                                    'Terjadi kesalahan server'
                             });
                         }
                     },
-                    complete: function () {
+                    complete: function() {
                         submitBtn.prop('disabled', false).html('Upload');
                     }
                 });
                 return false;
             },
             errorElement: 'span',
-            errorPlacement: function (error, element) {
+            errorPlacement: function(error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: function (element, errorClass, validClass) {
+            highlight: function(element, errorClass, validClass) {
                 $(element).addClass('is-invalid');
             },
-            unhighlight: function (element, errorClass, validClass) {
+            unhighlight: function(element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
             }
         });
@@ -95,7 +102,7 @@
         function showValidationErrors(response) {
             $('.error-text').text('');
             if (response.msgField) {
-                $.each(response.msgField, function (prefix, val) {
+                $.each(response.msgField, function(prefix, val) {
                     $('#error-' + prefix).text(val[0]);
                 });
             }
