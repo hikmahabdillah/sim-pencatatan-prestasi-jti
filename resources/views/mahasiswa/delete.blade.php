@@ -32,6 +32,10 @@
                         <td>{{ $data->kategori->nama_kategori }}</td>
                     </tr>
                 </table>
+                <div class="form-group">
+                    <label for="keterangan_nonaktif" class="form-label">Keterangan nonaktif</label>
+                    <textarea id="keterangan_nonaktif" name="keterangan_nonaktif" class="form-control">{{ $data->pengguna->keterangan_nonaktif }}</textarea>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Kembali</button>
