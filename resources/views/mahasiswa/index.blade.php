@@ -4,9 +4,14 @@
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
         <div class="d-flex gap-3 justify-content-between align-items-center mb-3">
-            <button onclick="modalAction('{{ url('mahasiswa/create') }}')" class="btn bg-gradient-info mt-1">
-                Tambah Mahasiswa
-            </button>
+            <div class="card-tools">
+                <button onclick="modalAction('{{ url('mahasiswa/create') }}')" class="btn bg-gradient-info mt-1">
+                    Tambah Mahasiswa
+                </button>
+                <button onclick="modalAction('{{ url('mahasiswa/import') }}')" class="btn bg-gradient-info mt-1">
+                    Import Data
+                </button>
+            </div>
             <div class="d-flex gap-3 align-items-center">
                 <p class="text-muted w-100">Filter status:</p>
                 <select id="status_filter" name="status_filter" class="form-select mb-3 w-100"
@@ -37,19 +42,19 @@
         <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
             data-keyboard="false" data-width="75%" aria-hidden="true"></div>
         @include('layouts.footer')
-    @endsection
+@endsection
 
     @push('js')
         <script>
             function modalAction(url = '') {
-                $('#myModal').load(url, function() {
+                $('#myModal').load(url, function () {
                     $('#myModal').modal('show');
                 });
             }
 
             let tableMahasiswa;
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 console.log($('#status_filter').val());
                 tableMahasiswa = $('#mahasiswa-table').DataTable({
                     processing: true,
@@ -57,49 +62,49 @@
                     ajax: {
                         url: "{{ url('mahasiswa/list') }}",
                         type: "POST",
-                        data: function(d) {
+                        data: function (d) {
                             d.status_filter = $('#status_filter').val(); // Send filter value
                         }
                     },
                     columns: [{
-                            data: 'DT_RowIndex',
-                            className: 'text-center',
-                            orderable: false,
-                            searchable: false,
-                            width: "2%"
-                        },
-                        {
-                            data: 'nim',
-                            width: "10%"
-                        },
-                        {
-                            data: 'nama',
-                            width: "20%"
-                        },
-                        {
-                            data: 'angkatan',
-                            className: 'text-center',
-                            width: "8%"
-                        },
-                        {
-                            data: 'prodi',
-                            width: "15%"
-                        },
-                        {
-                            data: 'status',
-                            className: 'text-center',
-                            width: "10%"
-                        },
-                        {
-                            data: 'aksi',
-                            className: 'text-center',
-                            orderable: false,
-                            searchable: false,
-                            width: "10%"
-                        }
+                        data: 'DT_RowIndex',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false,
+                        width: "2%"
+                    },
+                    {
+                        data: 'nim',
+                        width: "10%"
+                    },
+                    {
+                        data: 'nama',
+                        width: "20%"
+                    },
+                    {
+                        data: 'angkatan',
+                        className: 'text-center',
+                        width: "8%"
+                    },
+                    {
+                        data: 'prodi',
+                        width: "15%"
+                    },
+                    {
+                        data: 'status',
+                        className: 'text-center',
+                        width: "10%"
+                    },
+                    {
+                        data: 'aksi',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false,
+                        width: "10%"
+                    }
                     ]
                 });
-                $('#status_filter').change(function() {
+                $('#status_filter').change(function () {
                     tableMahasiswa.ajax.reload();
                 });
             });
