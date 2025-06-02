@@ -110,9 +110,30 @@
                                 text: response.message
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        // Handle error response
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $('.error-text').text('');
+                            $.each(errors, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
+                            });
+                        }
                     }
                 });
                 return false;
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
             }
         });
     });

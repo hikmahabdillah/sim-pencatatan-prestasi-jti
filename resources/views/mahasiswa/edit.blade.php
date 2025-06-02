@@ -15,6 +15,7 @@
                     <label for="nim" class="form-label">NIM</label>
                     <input type="text" id="nim" name="nim" class="form-control"
                         value="{{ $data->nim }}">
+                    <div id="error-nim" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
                     <label for="nama" class="form-label">Nama Lengkap</label>
@@ -175,6 +176,16 @@
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan',
                                 text: response.message
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Handle error response
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $('.error-text').text('');
+                            $.each(errors, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
                             });
                         }
                     }

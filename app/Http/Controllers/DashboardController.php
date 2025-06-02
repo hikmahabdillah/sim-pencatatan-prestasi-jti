@@ -16,25 +16,26 @@ class DashboardController extends Controller
         $prestasi = PrestasiMahasiswaModel::all();
         $auth = auth()->user();
 
-        if ($auth->role_id == 3) {
-            $jmlPrestasi = $prestasi->where('id_mahasiswa', $auth->mahasiswa->id_mahasiswa)->count();
+        if ($auth->role_id == 3) { //jika role mahasiswa
+            $jmlPrestasi = $prestasi->where('id_mahasiswa', $auth->mahasiswa->id_mahasiswa)->count(); // hitung prestasi by id_mahasiswa yang sedang login
             return $jmlPrestasi;
-        } else if ($auth->role_id == 2) {
-            $jmlPrestasi = $prestasi->where('id_dospem', $auth->dosen->id_dospem)->count();
+        } else if ($auth->role_id == 2) { // jika role dospem
+            $jmlPrestasi = $prestasi->where('id_dospem', $auth->dosen->id_dospem)->count(); // hitung  prestasi by id_dospem yang sedang login(prestasi mahasiswa bimbingan)
             return $jmlPrestasi;
-        } else if ($auth->role_id == 1) {
-            $jmlPrestasi = $prestasi->count();
+        } else if ($auth->role_id == 1) { // jika role admin
+            $jmlPrestasi = $prestasi->count(); // hitung semua prestasi mahasiswa
             return $jmlPrestasi;
         }
     }
 
     // diagram
+    // jumlah prestasi per kategori
     private function jumlahPrestasiByKategori()
     {
         $data = DB::table('kategori')
             ->leftJoin('prestasi_mahasiswa', 'kategori.id_kategori', '=', 'prestasi_mahasiswa.id_kategori')
             ->select('kategori.nama_kategori', DB::raw('COUNT(prestasi_mahasiswa.id_prestasi) as jumlah'))
-            ->groupBy('kategori.id_kategori', 'kategori.nama_kategori')
+            ->groupBy('kategori.id_kategori', 'kategori.nama_kategori') //Mengelompokkan hasil berdasarkan id_kategori dan nama_kategori
             ->get();
 
         return $data;
@@ -42,6 +43,7 @@ class DashboardController extends Controller
 
 
     // diagram
+    // distribusi tingkat prestasi yang dicapai
     private function tingkatPrestasiDicapai()
     {
         $data = DB::table('tingkat_prestasi')
@@ -74,6 +76,7 @@ class DashboardController extends Controller
     }
 
     //diagram
+    // jumlah lomba per kategori
     private function LombaByKategori()
     {
         $jumlahPerKategori = LombaModel::select('id_kategori')
@@ -123,6 +126,7 @@ class DashboardController extends Controller
         prestasi_mahasiswa.id_mahasiswa,
         COUNT(prestasi_mahasiswa.id_prestasi) as total_prestasi
     ')
+            // ->where('status_verifikasi', 1)
             ->groupBy('prestasi_mahasiswa.id_mahasiswa')
             ->with(['mahasiswa.pengguna']) // eager load relasi mahasiswa dan pengguna untuk ambil nama + foto
             ->orderByDesc('total_prestasi')

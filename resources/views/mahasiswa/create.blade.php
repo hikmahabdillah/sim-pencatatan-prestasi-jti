@@ -47,7 +47,8 @@
                 </div>
                 <div class="form-group">
                     <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" class="form-control" required>
+                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" class="form-control" max="2008-12-31"
+                        required>
                     <div id="error-tanggal_lahir" class="text-danger error-text"></div>
                 </div>
                 <div class="form-group">
@@ -159,6 +160,16 @@
                                 icon: 'error',
                                 title: 'Terjadi Kesalahan',
                                 text: response.message
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Handle error response
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $('.error-text').text('');
+                            $.each(errors, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
                             });
                         }
                     }

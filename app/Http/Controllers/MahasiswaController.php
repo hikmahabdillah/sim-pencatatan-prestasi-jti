@@ -85,7 +85,7 @@ class MahasiswaController extends Controller
             'nama' => 'required|string|max:200',
             'angkatan' => 'required|integer',
             'email' => 'required|email|unique:mahasiswa,email',
-            'no_hp' => 'required|string|max:20',
+            'no_hp' => 'required|string|max:20|unique:mahasiswa,no_hp',
             'alamat' => 'required|string',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
@@ -103,7 +103,7 @@ class MahasiswaController extends Controller
 
         DB::beginTransaction();
         try {
-            // Create user account first
+            // Create aku pengguna
             $pengguna = PenggunaModel::create([
                 'username' => $request->nim,
                 'password' => Hash::make($request->nim),

@@ -24,7 +24,7 @@ class CheckUserAccess
             }
         } elseif ($user->role_id === 2) {
             if ($user->dosen->id_dospem != $id) {
-                abort(403, 'Gaboleh yaa ini punya dospem lain');
+                abort(403, 'Data ini milik dosen pembimbing lain');
             }
         }
 
