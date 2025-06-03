@@ -128,7 +128,6 @@
         </div>
     </div>
 </form>
-
 <script>
     $(document).ready(function() {
         // Add custom validation method for file types
