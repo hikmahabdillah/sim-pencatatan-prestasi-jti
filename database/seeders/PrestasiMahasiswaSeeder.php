@@ -16,13 +16,13 @@ class PrestasiMahasiswaSeeder extends Seeder
         for ($i = 1; $i <= 5; $i++) {
             DB::table('prestasi_mahasiswa')->insert([
                 'id_mahasiswa' => $i,
-                'id_tingkat_prestasi' => 1,
+                'id_tingkat_prestasi' => $i,
                 'id_dospem' => $i,
                 'nama_prestasi' => 'Lomba Kejuaraan ' . $i,
                 'id_kategori' => $i,
                 'juara' => 'Juara ' . $i,
                 'tanggal_prestasi' => now()->subDays($i * 10),
-                'id_periode' => 1,
+                'id_periode' => $i,
                 'deskripsi' => 'Prestasi yang bagus! pertahankan!' . $i,
                 'foto_kegiatan' => 'foto' . $i . '.jpg',
                 'bukti_sertifikat' => 'sertifikat' . $i . '.pdf',

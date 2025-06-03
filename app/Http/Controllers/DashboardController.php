@@ -17,13 +17,13 @@ class DashboardController extends Controller
         $auth = auth()->user();
 
         if ($auth->role_id == 3) { //jika role mahasiswa
-            $jmlPrestasi = $prestasi->where('id_mahasiswa', $auth->mahasiswa->id_mahasiswa)->count(); // hitung prestasi by id_mahasiswa yang sedang login
+            $jmlPrestasi = $prestasi->where('id_mahasiswa', $auth->mahasiswa->id_mahasiswa)->where('status_verifikasi', 1)->count(); // hitung prestasi by id_mahasiswa yang sedang login
             return $jmlPrestasi;
         } else if ($auth->role_id == 2) { // jika role dospem
-            $jmlPrestasi = $prestasi->where('id_dospem', $auth->dosen->id_dospem)->count(); // hitung  prestasi by id_dospem yang sedang login(prestasi mahasiswa bimbingan)
+            $jmlPrestasi = $prestasi->where('id_dospem', $auth->dosen->id_dospem)->where('status_verifikasi', 1)->count(); // hitung  prestasi by id_dospem yang sedang login(prestasi mahasiswa bimbingan)
             return $jmlPrestasi;
         } else if ($auth->role_id == 1) { // jika role admin
-            $jmlPrestasi = $prestasi->count(); // hitung semua prestasi mahasiswa
+            $jmlPrestasi = $prestasi->where('status_verifikasi', 1)->count(); // hitung semua prestasi mahasiswa
             return $jmlPrestasi;
         }
     }
@@ -126,7 +126,7 @@ class DashboardController extends Controller
         prestasi_mahasiswa.id_mahasiswa,
         COUNT(prestasi_mahasiswa.id_prestasi) as total_prestasi
     ')
-            // ->where('status_verifikasi', 1)
+            ->where('status_verifikasi', 1)
             ->groupBy('prestasi_mahasiswa.id_mahasiswa')
             ->with(['mahasiswa.pengguna']) // eager load relasi mahasiswa dan pengguna untuk ambil nama + foto
             ->orderByDesc('total_prestasi')

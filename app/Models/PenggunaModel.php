@@ -19,6 +19,7 @@ class PenggunaModel extends Authenticatable
         'password',
         'role_id',
         'status_aktif',
+        'keterangan_nonaktif',
         'foto'
     ];
     protected $hidden = [

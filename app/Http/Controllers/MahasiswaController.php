@@ -38,6 +38,7 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->get();
 
+        // jika ada isi dari requests front end maka filter
         if ($request->filled('status_filter')) {
             $status = $request->status_filter;
             $mahasiswa = $mahasiswa->filter(function ($item) use ($status) {
@@ -45,6 +46,7 @@ class MahasiswaController extends Controller
             });
         }
 
+        // Tampilkan Data Mahasiswa ke dalam DataTables
         return DataTables::of($mahasiswa)
             ->addIndexColumn()
             ->addColumn('aksi', function ($mhs) {
@@ -86,7 +88,7 @@ class MahasiswaController extends Controller
             'nama' => 'required|string|max:200',
             'angkatan' => 'required|integer',
             'email' => 'required|email|unique:mahasiswa,email',
-            'no_hp' => 'required|string|max:20|unique:mahasiswa,no_hp',
+            'no_hp' => 'required|numeric|digits_between:10,20|unique:mahasiswa,no_hp',
             'alamat' => 'required|string',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
@@ -101,7 +103,7 @@ class MahasiswaController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
+        // Untuk memastikan kalau ada error, semua perubahan akan dibatalkan
         DB::beginTransaction();
         try {
             // Create aku pengguna
@@ -127,6 +129,7 @@ class MahasiswaController extends Controller
                 'id_kategori' => $request->id_kategori
             ]);
 
+            // Jika semua proses berhasil, commit transaksi 
             DB::commit();
 
             return response()->json([
@@ -134,6 +137,7 @@ class MahasiswaController extends Controller
                 'message' => 'Data mahasiswa berhasil disimpan',
             ], 201);
         } catch (\Exception $e) {
+            // Jika terjadi error saat menyimpan data, batalkan semua perubahan dan kirim pesan gagal beserta error-nya.
             DB::rollBack();
             return response()->json([
                 'status' => false,
@@ -175,7 +179,7 @@ class MahasiswaController extends Controller
             'nama' => 'required|string|max:200',
             'angkatan' => 'required|integer',
             'email' => 'required|email|unique:mahasiswa,email,' . $id . ',id_mahasiswa',
-            'no_hp' => 'required|string|max:20',
+            'no_hp' => 'required|numeric|digits_between:3,20',
             'alamat' => 'required|string',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
@@ -213,9 +217,17 @@ class MahasiswaController extends Controller
                 $mahasiswa->pengguna->update(['password' => Hash::make($request->nim)]);
             }
 
-            $mahasiswa->pengguna->update([
-                'status_aktif' => $request->status_aktif,
-            ]);
+            if ($request->status_aktif == 0) {
+                $mahasiswa->pengguna->update([
+                    'status_aktif' => $request->status_aktif,
+                    'keterangan_nonaktif' => $request->keterangan_nonaktif,
+                ]);
+            } else {
+                $mahasiswa->pengguna->update([
+                    'status_aktif' => $request->status_aktif,
+                    'keterangan_nonaktif' => null,
+                ]);
+            }
             DB::commit();
 
             return response()->json([
@@ -245,7 +257,7 @@ class MahasiswaController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:200',
             'email' => 'required|email|unique:mahasiswa,email,' . $id . ',id_mahasiswa',
-            'no_hp' => 'required|string|max:20',
+            'no_hp' => 'required|numeric|digits_between:10,20',
             'alamat' => 'required|string',
             'tanggal_lahir' => 'required|date',
             'id_kategori' => 'required|exists:kategori,id_kategori'
@@ -313,7 +325,7 @@ class MahasiswaController extends Controller
         return view('mahasiswa.delete', ['data' => $mahasiswa]);
     }
 
-    public function delete(string $id)
+    public function delete(string $id, Request $request)
     {
         $mahasiswa = MahasiswaModel::find($id);
         if (!$mahasiswa) {
@@ -330,6 +342,7 @@ class MahasiswaController extends Controller
             if ($pengguna) {
                 $pengguna->update([
                     'status_aktif' => false,
+                    'keterangan_nonaktif' => $request->keterangan_nonaktif,
                 ]);
             }
 
@@ -390,17 +403,18 @@ class MahasiswaController extends Controller
 
         DB::beginTransaction();
         try {
-            $file = request()->file('foto');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file = request()->file('foto'); //ambil foto yang diupload
+            $filename = time() . '.' . $file->getClientOriginalExtension(); //Beri nama file berdasarkan waktu saat ini + ekstensi asli,  agar nama file unik
 
             // Hapus foto lama jika ada
             $fotoLama = $mahasiswa->pengguna->foto;
             $fotoPath = public_path('storage/' . $fotoLama);
+            // Cari file lama di folder storage/
             if ($fotoLama && file_exists($fotoPath)) {
-                unlink($fotoPath);
+                unlink($fotoPath); //jika ada hapus file lama tersebut di penyimpanan
             }
 
-            // Simpan foto baru
+            // Simpan foto baru ke storage
             $file->move(public_path('storage'), $filename);
 
             // Update foto pengguna
@@ -448,7 +462,12 @@ class MahasiswaController extends Controller
             'current_password' => [
                 'required',
                 'string',
+                // $value = password yang diinput oleh user
+                // $attribute: nama field yang sedang divalidasi ('current_password').
+                // use Digunakan untuk membawa variabel dari luar fungsi ke dalam fungsi.
+                // Kenapa perlu use? Karena variabel $mahasiswa tidak tersedia langsung di dalam fungsi, jadi perlu dibawa masuk dengan use.
                 function ($attribute, $value, $fail) use ($mahasiswa) {
+                    // digunakan untuk membandingkan password input (plaintext) dengan password yang tersimpan di database (sudah di-hash).
                     if (!Hash::check($value, $mahasiswa->pengguna->password)) {
                         $fail('Password saat ini salah');
                     }
@@ -511,13 +530,7 @@ class MahasiswaController extends Controller
                 'file_mahasiswa' => ['required', 'mimes:xlsx', 'max:1024']
             ];
 
-            $validator = Validator::make($request->all(), [
-            //     'file_mahasiswa' => 'required|mimes:xlsx,xls|max:1024'
-            // ], [
-            //     'file_mahasiswa.required' => 'File wajib diupload',
-            //     'file_mahasiswa.mimes' => 'Hanya file Excel (.xlsx, .xls) yang diperbolehkan',
-            //     'file_mahasiswa.max' => 'Ukuran file maksimal 1MB'
-            ]);
+            $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
                 return response()->json([
@@ -541,38 +554,39 @@ class MahasiswaController extends Controller
                 if (count($data) > 1) {
                     foreach ($data as $baris => $row) {
                         if ($baris > 1) { // Skip header
-                            // Validasi data wajib
-
-                            // Siapkan data pengguna
-                            $pengguna = PenggunaModel::create([
-                                'username' => $row['A'],
-                                'password' => Hash::make($row['A']),
-                                'role_id' => 3,
-                                'status_aktif' => true,
-                                'created_at' => now()
-                            ]);
+                            // Cek apakah pengguna sudah ada berdasarkan username (NIM)
+                            $pengguna = PenggunaModel::where('username', $row['A'])->first();
+                            if (!$pengguna) {
+                                $pengguna = PenggunaModel::create([
+                                    'username' => $row['A'],
+                                    'password' => Hash::make($row['A']),
+                                    'role_id' => 3,
+                                    'status_aktif' => true,
+                                    'created_at' => now()
+                                ]);
+                            }
 
                             // Siapkan data mahasiswa
                             $insertMahasiswa[] = [
                                 'nim' => $row['A'],
                                 'id_pengguna' => $pengguna->id_pengguna,
                                 'nama' => $row['B'],
-                                'angkatan' => $row['C'] ,
-                                'email' => $row['D'] ,
-                                'no_hp' => $row['E'] ,
-                                'alamat' => $row['F'] ,
-                                'tanggal_lahir' => $row['G'] ,
-                                'jenis_kelamin' => $row['H'] ,
-                                'id_prodi' => $row['I'] ,
-                                'id_kategori' => $row['J'] ,
+                                'angkatan' => $row['C'],
+                                'email' => $row['D'],
+                                'no_hp' => $row['E'],
+                                'alamat' => $row['F'],
+                                'tanggal_lahir' => $row['G'],
+                                'jenis_kelamin' => $row['H'],
+                                'id_prodi' => $row['I'],
+                                'id_kategori' => $row['J'],
                                 'created_at' => now()
                             ];
                         }
                     }
 
-                    // Insert data mahasiswa sekaligus
+                    // Insert data mahasiswa sekaligus, abaikan jika duplikat
                     if (!empty($insertMahasiswa)) {
-                        MahasiswaModel::insert($insertMahasiswa);
+                        MahasiswaModel::insertOrIgnore($insertMahasiswa);
                     }
 
                     DB::commit();
