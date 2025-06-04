@@ -15,13 +15,11 @@ return new class extends Migration
             $table->string('nama', 200);
             $table->string('email');
             $table->unsignedBigInteger('id_prodi')->index();
-            $table->unsignedBigInteger('bidang_keahlian')->index();
             $table->timestamps();
 
             // Foreign keys
             $table->foreign('id_prodi')->references('id_prodi')->on('prodi');
             $table->foreign('id_pengguna')->references('id_pengguna')->on('pengguna');
-            $table->foreign('bidang_keahlian')->references('id_kategori')->on('kategori');
         });
     }
 

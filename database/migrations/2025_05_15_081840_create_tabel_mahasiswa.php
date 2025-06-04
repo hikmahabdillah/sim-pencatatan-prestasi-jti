@@ -20,12 +20,10 @@ return new class extends Migration
             $table->date('tanggal_lahir');
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->unsignedBigInteger('id_prodi')->index();
-            $table->unsignedBigInteger('id_kategori')->index();
             $table->timestamps();
 
             // Foreign keys
             $table->foreign('id_prodi')->references('id_prodi')->on('prodi');
-            $table->foreign('id_kategori')->references('id_kategori')->on('kategori');
             $table->foreign('id_pengguna')->references('id_pengguna')->on('pengguna');
         });
     }
