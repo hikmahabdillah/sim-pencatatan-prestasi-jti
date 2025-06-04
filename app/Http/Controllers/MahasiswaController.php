@@ -37,7 +37,9 @@ class MahasiswaController extends Controller
     public function list(Request $request)
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
+        
         // jika ada isi dari requests front end maka filter
+
         if ($request->filled('status_filter')) {
             $status = $request->status_filter;
             $mahasiswa = $mahasiswa->filter(function ($item) use ($status) {
@@ -69,7 +71,7 @@ class MahasiswaController extends Controller
 
     public function show(string $id)
     {
-        $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->find($id);
+        $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna'])->find($id);
         return view('mahasiswa.show', ['data' => $mahasiswa]);
     }
 
@@ -152,7 +154,7 @@ class MahasiswaController extends Controller
 
     public function edit(string $id)
     {
-        $mahasiswa = MahasiswaModel::with(['pengguna', 'prodi', 'kategori'])->find($id);
+        $mahasiswa = MahasiswaModel::with(['pengguna', 'prodi'])->find($id);
         if (!$mahasiswa) {
             return redirect('/mahasiswa')->with('error', 'Data mahasiswa tidak ditemukan');
         }
@@ -237,7 +239,7 @@ class MahasiswaController extends Controller
                     'keterangan_nonaktif' => null,
                 ]);
             }
-          
+
             DB::commit();
 
             return response()->json([
@@ -311,7 +313,7 @@ class MahasiswaController extends Controller
 
     public function getUpdateProfile(string $id)
     {
-        $mahasiswa = MahasiswaModel::with(['pengguna', 'prodi', 'kategori'])->find($id);
+        $mahasiswa = MahasiswaModel::with(['pengguna', 'prodi'])->find($id);
         if (!$mahasiswa) {
             return redirect('/mahasiswa')->with('error', 'Data mahasiswa tidak ditemukan');
         }
@@ -379,7 +381,7 @@ class MahasiswaController extends Controller
             'title' => 'Profile Mahasiswa',
             'list'  => ['Profile Mahasiswa']
         ];
-        $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->where('id_mahasiswa', $id)->first();
+        $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna'])->where('id_mahasiswa', $id)->first();
         if (!$mahasiswa) {
             return redirect('/mahasiswa/' . $id . '/profile')->with('error', 'Data mahasiswa tidak ditemukan');
         }
