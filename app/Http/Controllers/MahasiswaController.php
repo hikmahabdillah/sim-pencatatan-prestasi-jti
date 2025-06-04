@@ -37,8 +37,7 @@ class MahasiswaController extends Controller
     public function list(Request $request)
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
-
-        // Filter by status if requested
+        // jika ada isi dari requests front end maka filter
         if ($request->filled('status_filter')) {
             $status = $request->status_filter;
             $mahasiswa = $mahasiswa->filter(function ($item) use ($status) {
@@ -46,6 +45,7 @@ class MahasiswaController extends Controller
             });
         }
 
+        // Tampilkan Data Mahasiswa ke dalam DataTables
         return DataTables::of($mahasiswa)
             ->addIndexColumn()
             ->addColumn('aksi', function ($mhs) {
@@ -132,7 +132,6 @@ class MahasiswaController extends Controller
             ]);
 
             $pengguna->minatBakat()->sync($request->minat_bakat);
-
             // Jika semua proses berhasil, commit transaksi 
             DB::commit();
 
@@ -238,7 +237,7 @@ class MahasiswaController extends Controller
                     'keterangan_nonaktif' => null,
                 ]);
             }
-
+          
             DB::commit();
 
             return response()->json([

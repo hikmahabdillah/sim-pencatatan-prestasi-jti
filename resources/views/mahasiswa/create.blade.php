@@ -90,8 +90,6 @@
                             <small class="text-muted">Pilih 1-3 minat bakat</small>
                             <div id="error-minat_bakat" class="text-danger error-text"></div>
                         </div>
-
-
                         <div class="form-group mb-3">
                             <label for="alamat" class="form-label">Alamat</label>
                             <textarea id="alamat" name="alamat" class="form-control" placeholder="Masukkan alamat" rows="3" required></textarea>
@@ -107,6 +105,7 @@
         </div>
     </div>
 </form>
+
 <script>
     $(document).ready(function() {
         $('.select2').select2({
