@@ -37,12 +37,9 @@ class MahasiswaController extends Controller
     public function list(Request $request)
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
-
-<<<<<<<<< Temporary merge branch 1
+        
         // jika ada isi dari requests front end maka filter
-=========
-        // Filter by status if requested
->>>>>>>>> Temporary merge branch 2
+
         if ($request->filled('status_filter')) {
             $status = $request->status_filter;
             $mahasiswa = $mahasiswa->filter(function ($item) use ($status) {
@@ -136,11 +133,7 @@ class MahasiswaController extends Controller
                 'id_prodi' => $request->id_prodi,
             ]);
 
-<<<<<<<<< Temporary merge branch 1
-=========
             $pengguna->minatBakat()->sync($request->minat_bakat);
-
->>>>>>>>> Temporary merge branch 2
             // Jika semua proses berhasil, commit transaksi 
             DB::commit();
 
@@ -246,10 +239,7 @@ class MahasiswaController extends Controller
                     'keterangan_nonaktif' => null,
                 ]);
             }
-<<<<<<<<< Temporary merge branch 1
-=========
 
->>>>>>>>> Temporary merge branch 2
             DB::commit();
 
             return response()->json([
