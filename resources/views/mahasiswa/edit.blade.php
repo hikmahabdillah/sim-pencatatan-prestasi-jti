@@ -138,7 +138,6 @@
             allowClear: true,
             maximumSelectionLength: 3
         });
-
         $('#status_aktif').change(function() {
             if ($(this).val() === '0') {
                 $('#keterangan-nonaktif-group').show();

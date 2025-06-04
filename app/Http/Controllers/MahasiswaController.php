@@ -36,9 +36,8 @@ class MahasiswaController extends Controller
 
     public function list(Request $request)
     {
-        $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
+        $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->get();
 
-        // Filter by status if requested
         if ($request->filled('status_filter')) {
             $status = $request->status_filter;
             $mahasiswa = $mahasiswa->filter(function ($item) use ($status) {
@@ -46,6 +45,7 @@ class MahasiswaController extends Controller
             });
         }
 
+        // Tampilkan Data Mahasiswa ke dalam DataTables
         return DataTables::of($mahasiswa)
             ->addIndexColumn()
             ->addColumn('aksi', function ($mhs) {
@@ -131,9 +131,6 @@ class MahasiswaController extends Controller
                 'id_prodi' => $request->id_prodi,
             ]);
 
-            $pengguna->minatBakat()->sync($request->minat_bakat);
-
-            // Jika semua proses berhasil, commit transaksi 
             DB::commit();
 
             return response()->json([
@@ -227,18 +224,9 @@ class MahasiswaController extends Controller
                 $mahasiswa->pengguna->update(['password' => Hash::make($request->nim)]);
             }
 
-            if ($request->status_aktif == 0) {
-                $mahasiswa->pengguna->update([
-                    'status_aktif' => $request->status_aktif,
-                    'keterangan_nonaktif' => $request->keterangan_nonaktif,
-                ]);
-            } else {
-                $mahasiswa->pengguna->update([
-                    'status_aktif' => $request->status_aktif,
-                    'keterangan_nonaktif' => null,
-                ]);
-            }
-
+            $mahasiswa->pengguna->update([
+                'status_aktif' => $request->status_aktif,
+            ]);
             DB::commit();
 
             return response()->json([
