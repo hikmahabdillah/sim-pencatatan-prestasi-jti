@@ -27,9 +27,9 @@
 
                         <div id="error-status_verifikasi" class="text-danger error-text"></div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="keterangan-group">
                         <label for="keterangan" class="form-label">Keterangan</label>
-                        <textarea id="keterangan" name="keterangan" class="form-control">{{ $prestasi->keterangan }}</textarea>
+                        <textarea id="keterangan" name="keterangan" class="form-control" {{ !$prestasi->status_verifikasi ? 'required' : '' }}>{{ $prestasi->keterangan }}</textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -42,17 +42,33 @@
 
 <script>
     $(document).ready(function() {
+        $('#status_verifikasi').change(function() {
+            if ($(this).val() === '0') {
+                $('#keterangan').prop('required', true);
+            } else {
+                $('#keterangan').prop('required', false);
+            }
+        });
+
         // Initialize validation
         $("#form-edit").validate({
             rules: {
-                status_verifikasi_admin: {
+                status_verifikasi: {
                     required: true
                 },
+                keterangan: {
+                    required: function() {
+                        return $('#status_verifikasi').val() === '0';
+                    }
+                }
             },
             messages: {
-                status_verifikasi_admin: {
+                status_verifikasi: {
                     required: "Status verifikasi wajib dipilih"
                 },
+                keterangan: {
+                    required: "Keterangan wajib diisi ketika prestasi ditolak"
+                }
             },
             errorElement: 'span',
             errorPlacement: function(error, element) {

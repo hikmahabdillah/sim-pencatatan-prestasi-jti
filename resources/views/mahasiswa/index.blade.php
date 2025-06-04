@@ -31,6 +31,7 @@
                         <th class="text-center">Nama</th>
                         <th class="text-center">Angkatan</th>
                         <th class="text-center">Program Studi</th>
+                        {{-- <th class="text-center">Minat Bakat</th> --}}
                         <th class="text-center">Status</th>
                         <th class="text-center">Aksi</th>
                     </tr>
@@ -55,7 +56,6 @@
             let tableMahasiswa;
 
             $(document).ready(function() {
-                console.log($('#status_filter').val());
                 tableMahasiswa = $('#mahasiswa-table').DataTable({
                     processing: true,
                     serverSide: true,
@@ -63,7 +63,7 @@
                         url: "{{ url('mahasiswa/list') }}",
                         type: "POST",
                         data: function(d) {
-                            d.status_filter = $('#status_filter').val(); // Send filter value
+                            d.status_filter = $('#status_filter').val();
                         }
                     },
                     columns: [{

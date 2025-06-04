@@ -18,4 +18,14 @@ class KategoriModel extends Model
     {
         return $this->hasMany(PrestasiMahasiswaModel::class, 'id_kategori');
     }
+
+    public function pengguna()
+    {
+        return $this->belongsToMany(
+            PenggunaModel::class,
+            'minat_bakat_pengguna',
+            'id_kategori',
+            'id_pengguna'
+        )->withTimestamps();
+    }
 }

@@ -36,9 +36,9 @@ class MahasiswaController extends Controller
 
     public function list(Request $request)
     {
-        $mahasiswa = MahasiswaModel::with(['prodi', 'kategori', 'pengguna'])->get();
+        $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
 
-        // jika ada isi dari requests front end maka filter
+        // Filter by status if requested
         if ($request->filled('status_filter')) {
             $status = $request->status_filter;
             $mahasiswa = $mahasiswa->filter(function ($item) use ($status) {
@@ -46,7 +46,6 @@ class MahasiswaController extends Controller
             });
         }
 
-        // Tampilkan Data Mahasiswa ke dalam DataTables
         return DataTables::of($mahasiswa)
             ->addIndexColumn()
             ->addColumn('aksi', function ($mhs) {
@@ -58,8 +57,8 @@ class MahasiswaController extends Controller
             ->addColumn('prodi', function ($mhs) {
                 return $mhs->prodi->nama_prodi;
             })
-            ->addColumn('kategori', function ($mhs) {
-                return $mhs->kategori->nama_kategori;
+            ->addColumn('minat_bakat', function ($mhs) {
+                return $mhs->pengguna->minatBakat->pluck('nama_kategori');
             })
             ->addColumn('status', function ($mhs) {
                 return $mhs->pengguna->status_aktif ? 'Aktif' : 'Non-Aktif';
@@ -93,7 +92,11 @@ class MahasiswaController extends Controller
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'id_prodi' => 'required|exists:prodi,id_prodi',
-            'id_kategori' => 'required|exists:kategori,id_kategori'
+            'minat_bakat' => 'required|array|max:3',
+            'minat_bakat.*' => 'exists:kategori,id_kategori'
+        ], [
+            'minat_bakat.max' => 'Maksimal memilih 3 minat bakat',
+            'minat_bakat.required' => 'Pilih minimal satu minat bakat'
         ]);
 
         if ($validator->fails()) {
@@ -126,8 +129,9 @@ class MahasiswaController extends Controller
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'id_prodi' => $request->id_prodi,
-                'id_kategori' => $request->id_kategori
             ]);
+
+            $pengguna->minatBakat()->sync($request->minat_bakat);
 
             // Jika semua proses berhasil, commit transaksi 
             DB::commit();
@@ -184,7 +188,11 @@ class MahasiswaController extends Controller
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'id_prodi' => 'required|exists:prodi,id_prodi',
-            'id_kategori' => 'required|exists:kategori,id_kategori'
+            'minat_bakat' => 'required|array|max:3',
+            'minat_bakat.*' => 'exists:kategori,id_kategori'
+        ], [
+            'minat_bakat.max' => 'Maksimal memilih 3 minat bakat',
+            'minat_bakat.required' => 'Pilih minimal satu minat bakat'
         ]);
 
         if ($validator->fails()) {
@@ -208,8 +216,10 @@ class MahasiswaController extends Controller
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'id_prodi' => $request->id_prodi,
-                'id_kategori' => $request->id_kategori
             ]);
+
+            // Update minat bakat
+            $mahasiswa->pengguna->minatBakat()->sync($request->minat_bakat);
 
             // Update username pengguna jika NIM berubah
             if ($mahasiswa->pengguna->username !== $request->nim) {
@@ -228,6 +238,7 @@ class MahasiswaController extends Controller
                     'keterangan_nonaktif' => null,
                 ]);
             }
+
             DB::commit();
 
             return response()->json([
@@ -260,7 +271,6 @@ class MahasiswaController extends Controller
             'no_hp' => 'required|numeric|digits_between:10,20',
             'alamat' => 'required|string',
             'tanggal_lahir' => 'required|date',
-            'id_kategori' => 'required|exists:kategori,id_kategori'
         ]);
 
         if ($validator->fails()) {
@@ -280,8 +290,10 @@ class MahasiswaController extends Controller
                 'no_hp' => $request->no_hp,
                 'alamat' => $request->alamat,
                 'tanggal_lahir' => $request->tanggal_lahir,
-                'id_kategori' => $request->id_kategori
             ]);
+
+            $mahasiswa->pengguna->minatBakat()->sync($request->minat_bakat);
+
             DB::commit();
 
             return response()->json([
@@ -566,6 +578,22 @@ class MahasiswaController extends Controller
                                 ]);
                             }
 
+                            // Handle multiple categories (assuming they're comma-separated in column J)
+                            $categories = explode(',', $row['J']);
+                            $categoryIds = [];
+                            foreach ($categories as $category) {
+                                $category = trim($category);
+                                $kategori = KategoriModel::where('nama_kategori', $category)->first();
+                                if ($kategori) {
+                                    $categoryIds[] = $kategori->id_kategori;
+                                }
+                            }
+
+                            // Attach categories
+                            if (!empty($categoryIds)) {
+                                $pengguna->minatBakat()->sync($categoryIds);
+                            }
+
                             // Siapkan data mahasiswa
                             $insertMahasiswa[] = [
                                 'nim' => $row['A'],
@@ -578,11 +606,11 @@ class MahasiswaController extends Controller
                                 'tanggal_lahir' => $row['G'],
                                 'jenis_kelamin' => $row['H'],
                                 'id_prodi' => $row['I'],
-                                'id_kategori' => $row['J'],
                                 'created_at' => now()
                             ];
                         }
                     }
+
 
                     // Insert data mahasiswa sekaligus, abaikan jika duplikat
                     if (!empty($insertMahasiswa)) {

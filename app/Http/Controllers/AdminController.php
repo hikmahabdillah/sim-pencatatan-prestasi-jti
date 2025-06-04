@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AdminModel;
 use App\Models\PenggunaModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -28,7 +29,9 @@ class AdminController extends Controller
 
     public function list(Request $request)
     {
-        $admin = AdminModel::with(['pengguna'])->get();
+        $admin = AdminModel::with('pengguna')
+            ->where('id_admin', '!=', Auth::user()->admin->id_admin)
+            ->get();
 
         return DataTables::of($admin)
             ->addIndexColumn()
