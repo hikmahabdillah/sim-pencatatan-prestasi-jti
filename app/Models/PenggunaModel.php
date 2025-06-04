@@ -19,6 +19,7 @@ class PenggunaModel extends Authenticatable
         'password',
         'role_id',
         'status_aktif',
+        'keterangan_nonaktif',
         'foto'
     ];
     protected $hidden = [
@@ -59,5 +60,15 @@ class PenggunaModel extends Authenticatable
     public function getRole()
     {
         return $this->role->nama_role;
+    }
+
+    public function minatBakat()
+    {
+        return $this->belongsToMany(
+            KategoriModel::class,
+            'minat_bakat_pengguna',
+            'id_pengguna',
+            'id_kategori'
+        )->withTimestamps();
     }
 }

@@ -26,7 +26,6 @@ class MahasiswaSeeder extends Seeder
                 'tanggal_lahir' => '2000-01-15',
                 'jenis_kelamin' => 'L',
                 'id_prodi' => 1,
-                'id_kategori' => 1,
             ],
             [
                 'nim' => '20210002',
@@ -38,7 +37,6 @@ class MahasiswaSeeder extends Seeder
                 'tanggal_lahir' => '2000-05-20',
                 'jenis_kelamin' => 'P',
                 'id_prodi' => 2,
-                'id_kategori' => 2,
             ],
             [
                 'nim' => '20210003',
@@ -50,7 +48,6 @@ class MahasiswaSeeder extends Seeder
                 'tanggal_lahir' => '1999-11-10',
                 'jenis_kelamin' => 'L',
                 'id_prodi' => 1,
-                'id_kategori' => 3,
             ],
             [
                 'nim' => '20220001',
@@ -62,7 +59,6 @@ class MahasiswaSeeder extends Seeder
                 'tanggal_lahir' => '2001-03-25',
                 'jenis_kelamin' => 'P',
                 'id_prodi' => 1,
-                'id_kategori' => 4,
             ],
             [
                 'nim' => '20220002',
@@ -74,7 +70,6 @@ class MahasiswaSeeder extends Seeder
                 'tanggal_lahir' => '2001-07-12',
                 'jenis_kelamin' => 'L',
                 'id_prodi' => 2,
-                'id_kategori' => 5,
             ],
             [
                 'nim' => '20220003',
@@ -86,7 +81,6 @@ class MahasiswaSeeder extends Seeder
                 'tanggal_lahir' => '2001-09-30',
                 'jenis_kelamin' => 'P',
                 'id_prodi' => 2,
-                'id_kategori' => 1,
             ],
             [
                 'nim' => '20230001',
@@ -98,7 +92,6 @@ class MahasiswaSeeder extends Seeder
                 'tanggal_lahir' => '2002-02-14',
                 'jenis_kelamin' => 'L',
                 'id_prodi' => 1,
-                'id_kategori' => 2,
             ],
         ];
 
@@ -116,7 +109,6 @@ class MahasiswaSeeder extends Seeder
                 'tanggal_lahir' => $mhs['tanggal_lahir'],
                 'jenis_kelamin' => $mhs['jenis_kelamin'],
                 'id_prodi' => $mhs['id_prodi'],
-                'id_kategori' => $mhs['id_kategori'],
             ]);
         }
     }

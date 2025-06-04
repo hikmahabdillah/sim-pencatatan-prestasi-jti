@@ -66,7 +66,7 @@
                         <div class="form-group">
                             <label for="tanggal_prestasi" class="form-label">Tanggal Prestasi</label>
                             <input type="date" id="tanggal_prestasi" name="tanggal_prestasi" class="form-control"
-                                required>
+                                required max="">
                             <div id="error-tanggal_prestasi" class="text-danger error-text"></div>
                         </div>
                         <div class="form-group">
@@ -91,29 +91,32 @@
 
                         <div class="form-group">
                             <label for="foto_kegiatan" class="form-label">Foto Kegiatan</label>
-                            <input type="file" id="foto_kegiatan" name="foto_kegiatan" class="form-control">
+                            <input type="file" id="foto_kegiatan" name="foto_kegiatan" class="form-control"
+                                accept="image/jpeg,image/png,image/jpg,image/gif">
                             <small class="text-muted">Format: jpeg, png, jpg, gif (max 2MB)</small>
                             <div id="error-foto_kegiatan" class="text-danger error-text"></div>
                         </div>
 
                         <div class="form-group">
                             <label for="bukti_sertifikat" class="form-label">Bukti Sertifikat</label>
-                            <input type="file" id="bukti_sertifikat" name="bukti_sertifikat"
-                                class="form-control">
+                            <input type="file" id="bukti_sertifikat" name="bukti_sertifikat" class="form-control"
+                                accept="application/pdf,image/jpeg,image/png,image/jpg">
                             <small class="text-muted">Format: pdf, jpeg, png, jpg (max 2MB)</small>
                             <div id="error-bukti_sertifikat" class="text-danger error-text"></div>
                         </div>
 
                         <div class="form-group">
                             <label for="surat_tugas" class="form-label">Surat Tugas</label>
-                            <input type="file" id="surat_tugas" name="surat_tugas" class="form-control">
+                            <input type="file" id="surat_tugas" name="surat_tugas" class="form-control"
+                                accept="application/pdf">
                             <small class="text-muted">Format: pdf (max 2MB)</small>
                             <div id="error-surat_tugas" class="text-danger error-text"></div>
                         </div>
 
                         <div class="form-group">
                             <label for="karya" class="form-label">Karya</label>
-                            <input type="file" id="karya" name="karya" class="form-control">
+                            <input type="file" id="karya" name="karya" class="form-control"
+                                accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation">
                             <small class="text-muted">Format: pdf, doc, docx, ppt, pptx (max 5MB)</small>
                             <div id="error-karya" class="text-danger error-text"></div>
                         </div>
@@ -128,9 +131,11 @@
         </div>
     </div>
 </form>
-
 <script>
     $(document).ready(function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('tanggal_prestasi').setAttribute('max', today);
+
         // Add custom validation method for file types
         $.validator.addMethod("accept", function(value, element, param) {
             // If no file is selected, skip validation (use 'required' if file is mandatory)
@@ -207,7 +212,8 @@
                 },
                 tanggal_prestasi: {
                     required: true,
-                    date: true
+                    date: true,
+                    max: today
                 },
                 id_periode: {
                     required: true
@@ -251,7 +257,8 @@
                 },
                 tanggal_prestasi: {
                     required: "Tanggal prestasi wajib diisi",
-                    date: "Format tanggal tidak valid"
+                    date: "Format tanggal tidak valid",
+                    max: "Tanggal prestasi tidak boleh melebihi hari ini"
                 },
                 id_periode: {
                     required: "Periode wajib dipilih"

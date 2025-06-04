@@ -25,6 +25,7 @@ class AuthController extends Controller
 
             $credentials = $request->only('username', 'password');
 
+            // Coba login dengan username dan password yang dimasukkan.
             if (Auth::attempt($credentials)) {
                 // Periksa status aktif pengguna setelah berhasil otentikasi
                 if (Auth::user()->status_aktif) {
@@ -34,11 +35,12 @@ class AuthController extends Controller
                         'redirect' => url('/')
                     ]);
                 } else {
+                    $keterangan = Auth::user()->keterangan_nonaktif;
                     // Logout pengguna jika status tidak aktif
                     Auth::logout();
                     return response()->json([
                         'status' => false,
-                        'message' => 'Akun Anda tidak aktif'
+                        'message' => 'Akun Anda tidak aktif, karena ' . $keterangan
                     ]);
                 }
             }
@@ -52,6 +54,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        // keluar dari sesi login
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

@@ -4,9 +4,6 @@
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
         <div class="d-flex gap-3 justify-content-between align-items-center mb-3">
-            <button onclick="modalAction('{{ url('prestasi/create') }}')" class="btn bg-gradient-info mt-1">
-                Tambah Prestasi
-            </button>
             <div class="d-flex gap-3 align-items-center">
                 <p class="text-muted w-100">Filter status:</p>
                 <select id="status_filter" name="status_filter" class="form-select mb-3 w-100"
@@ -40,14 +37,14 @@
     @endsection
 
     @push('js')
-    <script>
-        function modalAction(url = '') {
-            $('#myModal').load(url, function() {
-                $('#myModal').modal('show');
-            });
-        }
+        <script>
+            function modalAction(url = '') {
+                $('#myModal').load(url, function() {
+                    $('#myModal').modal('show');
+                });
+            }
 
-        let tablecrud;
+            let tablecrud;
 
             $(document).ready(function() {
                 tablecrud = $('#prestasi-table').DataTable({

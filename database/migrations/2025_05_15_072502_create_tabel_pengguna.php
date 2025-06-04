@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id')->index();
             $table->boolean('status_aktif')->default(true);
             $table->string('foto')->nullable();
+            $table->text('keterangan_nonaktif')->nullable();
             $table->rememberToken();
             $table->timestamps();
 
