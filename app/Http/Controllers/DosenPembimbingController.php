@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Hash;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class DosenPembimbingController extends Controller
 {
@@ -37,7 +36,7 @@ class DosenPembimbingController extends Controller
 
     public function list(Request $request)
     {
-        $dosen = DosenPembimbingModel::with(['pengguna', 'prodi', 'kategori'])->get();
+        $dosen = DosenPembimbingModel::with(['prodi', 'pengguna.minatBakat'])->get();
 
         if ($request->filled('status_filter')) {
             $status = $request->status_filter;
@@ -57,8 +56,8 @@ class DosenPembimbingController extends Controller
             ->addColumn('prodi', function ($dosen) {
                 return $dosen->prodi->nama_prodi;
             })
-            ->addColumn('kategori', function ($dosen) {
-                return $dosen->kategori->nama_kategori;
+            ->addColumn('bidang_keahlian', function ($dosen) {
+                return $dosen->pengguna->minatBakat->pluck('nama_kategori')->implode(', ');
             })
             ->addColumn('status', function ($dosen) {
                 return $dosen->pengguna->status_aktif ? 'Aktif' : 'Non-Aktif';
@@ -84,7 +83,11 @@ class DosenPembimbingController extends Controller
             'nama' => 'required|string|max:200',
             'email' => 'required|email|unique:dosen_pembimbing,email',
             'id_prodi' => 'required|exists:prodi,id_prodi',
-            'bidang_keahlian' => 'required|exists:kategori,id_kategori'
+            'bidang_keahlian' => 'required|array|max:3',
+            'bidang_keahlian.*' => 'exists:kategori,id_kategori'
+        ], [
+            'bidang_keahlian.max' => 'Maksimal memilih 3 bidang keahlian',
+            'bidang_keahlian.required' => 'Pilih minimal satu bidang keahlian'
         ]);
 
         if ($validator->fails()) {
@@ -110,8 +113,9 @@ class DosenPembimbingController extends Controller
                 'nama' => $request->nama,
                 'email' => $request->email,
                 'id_prodi' => $request->id_prodi,
-                'bidang_keahlian' => $request->bidang_keahlian
             ]);
+
+            $pengguna->minatBakat()->sync($request->bidang_keahlian);
 
             DB::commit();
 
@@ -132,8 +136,99 @@ class DosenPembimbingController extends Controller
 
     public function show(string $id)
     {
-        $dosen = DosenPembimbingModel::with(['pengguna', 'prodi', 'kategori'])->find($id);
+        $dosen = DosenPembimbingModel::with(['prodi', 'pengguna.minatBakat'])->find($id);
         return view('dospem.show', ['data' => $dosen]);
+    }
+
+    public function edit(string $id)
+    {
+        $dosen = DosenPembimbingModel::with(['pengguna.minatBakat', 'prodi'])->find($id);
+        if (!$dosen) {
+            return redirect('/dospem')->with('error', 'Data dosen tidak ditemukan');
+        }
+
+        $prodi = ProdiModel::all();
+        $kategori = KategoriModel::all();
+
+        return view('dospem.edit', [
+            'data' => $dosen,
+            'prodi' => $prodi,
+            'kategori' => $kategori
+        ]);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $dosen = DosenPembimbingModel::find($id);
+        if (!$dosen) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data dosen tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nip' => 'required|string|max:20|unique:dosen_pembimbing,nip,' . $id . ',id_dospem',
+            'nama' => 'required|string|max:200',
+            'email' => 'required|email|unique:dosen_pembimbing,email,' . $id . ',id_dospem',
+            'id_prodi' => 'required|exists:prodi,id_prodi',
+            'bidang_keahlian' => 'required|array|max:3',
+            'bidang_keahlian.*' => 'exists:kategori,id_kategori'
+        ], [
+            'bidang_keahlian.max' => 'Maksimal memilih 3 bidang keahlian',
+            'bidang_keahlian.required' => 'Pilih minimal satu bidang keahlian'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $dosen->update([
+                'nip' => $request->nip,
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'id_prodi' => $request->id_prodi,
+            ]);
+
+            $dosen->pengguna->minatBakat()->sync($request->bidang_keahlian);
+
+            if ($dosen->pengguna->username !== $request->nip) {
+                $dosen->pengguna->update(['username' => $request->nip]);
+                $dosen->pengguna->update(['password' => Hash::make($request->nip)]);
+            }
+
+            if ($request->status_aktif == 0) {
+                $dosen->pengguna->update([
+                    'status_aktif' => $request->status_aktif,
+                    'keterangan_nonaktif' => $request->keterangan_nonaktif,
+                ]);
+            } else {
+                $dosen->pengguna->update([
+                    'status_aktif' => $request->status_aktif,
+                    'keterangan_nonaktif' => null,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data dosen berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal memperbarui data dosen',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function getProfile($id)
@@ -143,7 +238,7 @@ class DosenPembimbingController extends Controller
             'list'  => ['Dosen Pembimbing']
         ];
 
-        $dosen = DosenPembimbingModel::with(['prodi', 'kategori', 'pengguna'])
+        $dosen = DosenPembimbingModel::with(['prodi', 'pengguna.minatBakat'])
             ->where('id_dospem', $id)
             ->first();
 
@@ -157,7 +252,7 @@ class DosenPembimbingController extends Controller
         ]);
     }
 
-    public function updateFoto(Request $request, $id)
+    public function updateFoto($id)
     {
         $dosen = DosenPembimbingModel::find($id);
         if (!$dosen) {
@@ -167,7 +262,7 @@ class DosenPembimbingController extends Controller
             ], 404);
         }
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make(request()->all(), [
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -181,28 +276,24 @@ class DosenPembimbingController extends Controller
 
         DB::beginTransaction();
         try {
-            $file = $request->file('foto');
+            $file = request()->file('foto');
             $filename = time() . '.' . $file->getClientOriginalExtension();
 
-            // Hapus foto lama jika ada
             $fotoLama = $dosen->pengguna->foto;
             $fotoPath = public_path('storage/' . $fotoLama);
-            if ($fotoLama && file_exists($fotoPath) && $fotoLama != 'default.jpg') {
+            if ($fotoLama && file_exists($fotoPath)) {
                 unlink($fotoPath);
             }
 
-            // Simpan foto baru
             $file->move(public_path('storage'), $filename);
 
-            // Update foto pengguna
             $dosen->pengguna->update(['foto' => $filename]);
 
             DB::commit();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Foto berhasil diperbarui',
-                'foto_url' => asset('storage/' . $filename)
+                'message' => 'Foto berhasil diperbarui'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -216,7 +307,7 @@ class DosenPembimbingController extends Controller
 
     public function getUpdateProfile(string $id)
     {
-        $dosen = DosenPembimbingModel::with(['pengguna', 'prodi', 'kategori'])->find($id);
+        $dosen = DosenPembimbingModel::with(['pengguna.minatBakat', 'prodi'])->find($id);
         if (!$dosen) {
             return redirect('/dospem')->with('error', 'Data dosen tidak ditemukan');
         }
@@ -244,7 +335,6 @@ class DosenPembimbingController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:200',
             'email' => 'required|email|unique:dosen_pembimbing,email,' . $id . ',id_dospem',
-            'bidang_keahlian' => 'required|exists:kategori,id_kategori'
         ]);
 
         if ($validator->fails()) {
@@ -260,8 +350,9 @@ class DosenPembimbingController extends Controller
             $dosen->update([
                 'nama' => $request->nama,
                 'email' => $request->email,
-                'bidang_keahlian' => $request->bidang_keahlian
             ]);
+
+            $dosen->pengguna->minatBakat()->sync($request->bidang_keahlian);
 
             DB::commit();
 
@@ -279,81 +370,6 @@ class DosenPembimbingController extends Controller
         }
     }
 
-    public function edit(string $id)
-    {
-        $dosen = DosenPembimbingModel::with(['pengguna', 'prodi', 'kategori'])->find($id);
-        $prodi = ProdiModel::all();
-        $kategori = KategoriModel::all();
-
-        return view('dospem.edit', [
-            'data' => $dosen,
-            'prodi' => $prodi,
-            'kategori' => $kategori
-        ]);
-    }
-
-    public function update(Request $request, string $id)
-    {
-        $dosen = DosenPembimbingModel::find($id);
-        if (!$dosen) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Data dosen tidak ditemukan'
-            ], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'nip' => 'required|string|max:20|unique:dosen_pembimbing,nip,' . $id . ',id_dospem',
-            'nama' => 'required|string|max:200',
-            'email' => 'required|email|unique:dosen_pembimbing,email,' . $id . ',id_dospem',
-            'id_prodi' => 'required|exists:prodi,id_prodi',
-            'bidang_keahlian' => 'required|exists:kategori,id_kategori'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        DB::beginTransaction();
-        try {
-            $dosen->update([
-                'nip' => $request->nip,
-                'nama' => $request->nama,
-                'email' => $request->email,
-                'id_prodi' => $request->id_prodi,
-                'bidang_keahlian' => $request->bidang_keahlian
-            ]);
-
-            if ($dosen->pengguna->username !== $request->nip) {
-                $dosen->pengguna->update([
-                    'username' => $request->nip,
-                    'password' => Hash::make($request->nip)
-                ]);
-            }
-
-            $dosen->pengguna->update([
-                'status_aktif' => $request->status_aktif,
-            ]);
-            DB::commit();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Data dosen berhasil diperbarui'
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'status' => false,
-                'message' => 'Gagal memperbarui data dosen',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     public function confirm_delete(string $id)
     {
         $dosen = DosenPembimbingModel::find($id);
@@ -364,7 +380,7 @@ class DosenPembimbingController extends Controller
         return view('dospem.delete', ['data' => $dosen]);
     }
 
-    public function delete(string $id)
+    public function delete(string $id, Request $request)
     {
         $dosen = DosenPembimbingModel::find($id);
         if (!$dosen) {
@@ -381,6 +397,7 @@ class DosenPembimbingController extends Controller
             if ($pengguna) {
                 $pengguna->update([
                     'status_aktif' => false,
+                    'keterangan_nonaktif' => $request->keterangan_nonaktif,
                 ]);
             }
 
@@ -412,7 +429,6 @@ class DosenPembimbingController extends Controller
 
     public function updatePassword(Request $request, $id)
     {
-        // Cari dospem beserta data pengguna
         $dospem = DosenPembimbingModel::with('pengguna')->find($id);
 
         if (!$dospem) {
@@ -449,7 +465,6 @@ class DosenPembimbingController extends Controller
 
         DB::beginTransaction();
         try {
-            // Update password pengguna
             $dospem->pengguna->update([
                 'password' => Hash::make($request->new_password)
             ]);
@@ -472,86 +487,18 @@ class DosenPembimbingController extends Controller
 
     public function import()
     {
-        return view('dospem.import');
+        $menuAktif = 'dospem';
+        $breadcrumb = (object)[
+            'title' => 'Import Data Dosen Pembimbing',
+            'list'  => ['Dosen Pembimbing', 'Import']
+        ];
+
+        return view('dospem.import', [
+            'breadcrumb' => $breadcrumb,
+            'menuAktif' => $menuAktif
+        ]);
     }
 
-    // public function import_ajax(Request $request)
-    // {
-    //     if ($request->ajax() || $request->wantsJson()) {
-    //         $rules = [
-    //             'file_dospem' => ['required', 'mimes:xlsx', 'max:1024']
-    //         ];
-
-    //         $validator = Validator::make($request->all(), $rules);
-
-    //         if ($validator->fails()) {
-    //             return response()->json([
-    //                 'status' => false,
-    //                 'message' => 'Validasi Gagal',
-    //                 'msgField' => $validator->errors()
-    //             ], 422);
-    //         }
-
-    //         $file = $request->file('file_dospem');
-    //         $reader = IOFactory::createReader('xlsx');
-    //         $reader->setReadDataOnly(true);
-    //         $spreadsheet = $reader->load($file->getRealPath());
-    //         $sheet = $spreadsheet->getActiveSheet();
-    //         $data = $sheet->toArray(null, false, true, true);
-
-    //         DB::beginTransaction();
-    //         try {
-    //             if (count($data) > 1) {
-    //                 foreach ($data as $baris => $row) {
-    //                     if ($baris > 1) { // Skip header
-    //                         // Create user account first
-    //                         $pengguna = PenggunaModel::create([
-    //                             'username' => $row['A'], // NIP
-    //                             'password' => Hash::make($row['A']), // Password = NIP
-    //                             'role_id' => 2, // Role dosen
-    //                             'status_aktif' => true,
-    //                             'foto' => 'default.jpg',
-    //                             'created_at' => now()
-    //                         ]);
-
-    //                         // Create dosen data
-    //                         DosenPembimbingModel::create([
-    //                             'nip' => $row['A'],
-    //                             'id_pengguna' => $pengguna->id_pengguna,
-    //                             'nama' => $row['B'],
-    //                             'email' => $row['C'],
-    //                             'id_prodi' => $row['D'],
-    //                             'bidang_keahlian' => $row['E'],
-    //                             'created_at' => now()
-    //                         ]);
-    //                     }
-    //                 }
-
-    //                 DB::commit();
-
-    //                 return response()->json([
-    //                     'status' => true,
-    //                     'message' => 'Data dosen berhasil diimport'
-    //                 ]);
-    //             } else {
-    //                 DB::rollBack();
-    //                 return response()->json([
-    //                     'status' => false,
-    //                     'message' => 'Tidak ada data yang diimport'
-    //                 ], 422);
-    //             }
-    //         } catch (\Exception $e) {
-    //             DB::rollBack();
-    //             return response()->json([
-    //                 'status' => false,
-    //                 'message' => 'Gagal mengimport data',
-    //                 'error' => $e->getMessage()
-    //             ], 500);
-    //         }
-    //     }
-
-    //     return redirect('/dospem');
-    // }
     public function import_ajax(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -583,7 +530,6 @@ class DosenPembimbingController extends Controller
                 if (count($data) > 1) {
                     foreach ($data as $baris => $row) {
                         if ($baris > 1) { // Skip header
-                            // Cek apakah pengguna sudah ada berdasarkan username
                             $pengguna = PenggunaModel::where('username', $row['A'])->first();
                             if (!$pengguna) {
                                 $pengguna = PenggunaModel::create([
@@ -595,21 +541,34 @@ class DosenPembimbingController extends Controller
                                 ]);
                             }
 
-                            // Siapkan data dospem
+                            // Handle multiple categories (assuming they're comma-separated in column E)
+                            $categories = explode(',', $row['E']);
+                            $categoryIds = [];
+                            foreach ($categories as $category) {
+                                $category = trim($category);
+                                $kategori = KategoriModel::where('nama_kategori', $category)->first();
+                                if ($kategori) {
+                                    $categoryIds[] = $kategori->id_kategori;
+                                }
+                            }
+
+                            // Attach categories
+                            if (!empty($categoryIds)) {
+                                $pengguna->minatBakat()->sync($categoryIds);
+                            }
+
                             $insertDospem[] = [
                                 'nip' => $row['A'],
                                 'id_pengguna' => $pengguna->id_pengguna,
                                 'nama' => $row['B'],
                                 'email' => $row['C'],
                                 'id_prodi' => $row['D'],
-                                'bidang_keahlian' => $row['E'],
                                 'created_at' => now()
                             ];
                         }
                     }
 
-                    if (count($insertDospem) > 0) {
-                        // insert data ke database, jika data sudah ada, maka diabaikan
+                    if (!empty($insertDospem)) {
                         DosenPembimbingModel::insertOrIgnore($insertDospem);
                     }
 
@@ -617,7 +576,7 @@ class DosenPembimbingController extends Controller
 
                     return response()->json([
                         'status' => true,
-                        'message' => 'Data Dospem berhasil diimport',
+                        'message' => 'Data dosen berhasil diimport',
                         'total' => count($insertDospem)
                     ]);
                 } else {

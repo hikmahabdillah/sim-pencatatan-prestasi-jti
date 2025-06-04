@@ -30,7 +30,6 @@
                         <th class="text-center">NIP</th>
                         <th class="text-center">Nama</th>
                         <th class="text-center">Program Studi</th>
-                        <th class="text-center">Bidang Keahlian</th>
                         <th class="text-center">Status</th>
                         <th class="text-center">Aksi</th>
                     </tr>
@@ -82,10 +81,6 @@
                         },
                         {
                             data: 'prodi',
-                            width: "15%"
-                        },
-                        {
-                            data: 'kategori',
                             width: "15%"
                         },
                         {
