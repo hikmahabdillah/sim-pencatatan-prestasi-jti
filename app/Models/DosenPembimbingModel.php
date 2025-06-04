@@ -17,7 +17,6 @@ class DosenPembimbingModel extends Model
         'nama',
         'email',
         'id_prodi',
-        'bidang_keahlian'
     ];
 
     public function pengguna()
@@ -28,10 +27,5 @@ class DosenPembimbingModel extends Model
     public function prodi()
     {
         return $this->belongsTo(ProdiModel::class, 'id_prodi', 'id_prodi');
-    }
-
-    public function kategori()
-    {
-        return $this->belongsTo(KategoriModel::class, 'bidang_keahlian', 'id_kategori');
     }
 }

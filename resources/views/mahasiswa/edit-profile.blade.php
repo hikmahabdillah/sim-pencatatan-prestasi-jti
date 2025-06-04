@@ -78,16 +78,18 @@
                             <div id="error-id_prodi" class="text-danger error-text"></div>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="id_kategori" class="form-label">Minat Bakat</label>
-                            <select id="id_kategori" name="id_kategori" class="form-control" required>
+                            <label for="minat_bakat" class="form-label">Minat Bakat (Maksimal 3)</label>
+                            <select id="minat_bakat" name="minat_bakat[]" class="form-control select2"
+                                multiple="multiple" required>
                                 @foreach ($kategori as $k)
                                     <option value="{{ $k->id_kategori }}"
-                                        {{ $k->id_kategori == $data->id_kategori ? 'selected' : '' }}>
+                                        {{ in_array($k->id_kategori, $data->pengguna->minatBakat->pluck('id_kategori')->toArray()) ? 'selected' : '' }}>
                                         {{ $k->nama_kategori }}
                                     </option>
                                 @endforeach
                             </select>
-                            <div id="error-id_kategori" class="text-danger error-text"></div>
+                            <small class="text-muted">Pilih 1-3 minat bakat</small>
+                            <div id="error-minat_bakat" class="text-danger error-text"></div>
                         </div>
                         <div class="form-group mb-3">
                             <label for="status_aktif" class="form-label">Status Akun</label>
@@ -112,6 +114,12 @@
 
 <script>
     $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Pilih Minat Bakat",
+            allowClear: true,
+            maximumSelectionLength: 3
+        });
+
         $("#form-edit-profile").validate({
             rules: {
                 nama: {
@@ -135,6 +143,18 @@
                 },
                 id_kategori: {
                     required: true
+                },
+                'minat_bakat[]': {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 3
+                }
+            },
+            messages: {
+                'minat_bakat[]': {
+                    required: "Pilih minimal satu minat bakat",
+                    minlength: "Pilih minimal satu minat bakat",
+                    maxlength: "Maksimal memilih 3 minat bakat"
                 }
             },
             submitHandler: function(form) {
