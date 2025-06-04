@@ -34,7 +34,7 @@
                 </table>
                 <div class="form-group">
                     <label for="keterangan_nonaktif" class="form-label">Keterangan nonaktif</label>
-                    <textarea id="keterangan_nonaktif" name="keterangan_nonaktif" class="form-control">{{ $data->pengguna->keterangan_nonaktif }}</textarea>
+                    <textarea id="keterangan_nonaktif" name="keterangan_nonaktif" class="form-control" required>{{ $data->pengguna->keterangan_nonaktif }}</textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -47,6 +47,16 @@
 <script>
     $(document).ready(function() {
         $("#form-delete").validate({
+            rules: {
+                keterangan_nonaktif: {
+                    required: true
+                }
+            },
+            messages: {
+                keterangan_nonaktif: {
+                    required: "Keterangan nonaktif wajib diisi ketika status nonaktif"
+                }
+            },
             submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
@@ -68,9 +78,29 @@
                                 text: response.message
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $('.error-text').text('');
+                            $.each(errors, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
+                            });
+                        }
                     }
                 });
                 return false;
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
             }
         });
     });

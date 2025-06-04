@@ -61,4 +61,14 @@ class PenggunaModel extends Authenticatable
     {
         return $this->role->nama_role;
     }
+
+    public function minatBakat()
+    {
+        return $this->belongsToMany(
+            KategoriModel::class,
+            'minat_bakat_pengguna',
+            'id_pengguna',
+            'id_kategori'
+        )->withTimestamps();
+    }
 }

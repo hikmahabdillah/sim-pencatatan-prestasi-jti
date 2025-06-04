@@ -22,17 +22,11 @@ class MahasiswaModel extends Model
         'tanggal_lahir',
         'jenis_kelamin',
         'id_prodi',
-        'id_kategori'
     ];
 
     public function prodi()
     {
         return $this->belongsTo(ProdiModel::class, 'id_prodi', 'id_prodi');
-    }
-
-    public function kategori()
-    {
-        return $this->belongsTo(KategoriModel::class, 'id_kategori', 'id_kategori');
     }
 
     public function pengguna()

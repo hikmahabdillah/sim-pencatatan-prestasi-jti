@@ -31,7 +31,9 @@
                                     {{ $data->nip }}</p>
                                 <p class="text-dark mb-0 mb-0">
                                     <strong>Bidang Keahlian: </strong>
-                                    {{ $data->kategori->nama_kategori }}
+                                    @foreach ($data->pengguna->minatBakat as $kategori)
+                                        <span class="badge bg-primary">{{ $kategori->nama_kategori }}</span>
+                                    @endforeach
                                 </p>
                                 <p class="text-dark mb-0">
                                     <strong>Email: </strong>

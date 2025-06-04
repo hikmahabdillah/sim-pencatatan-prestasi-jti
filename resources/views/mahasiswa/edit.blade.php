@@ -90,16 +90,18 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="id_kategori" class="form-label">Minat Bakat</label>
-                            <select id="id_kategori" name="id_kategori" class="form-control" required>
+                            <label for="minat_bakat" class="form-label">Minat Bakat (Maksimal 3)</label>
+                            <select id="minat_bakat" name="minat_bakat[]" class="form-control select2"
+                                multiple="multiple" required>
                                 @foreach ($kategori as $k)
                                     <option value="{{ $k->id_kategori }}"
-                                        {{ $k->id_kategori == $data->id_kategori ? 'selected' : '' }}>
+                                        {{ in_array($k->id_kategori, $data->pengguna->minatBakat->pluck('id_kategori')->toArray()) ? 'selected' : '' }}>
                                         {{ $k->nama_kategori }}
                                     </option>
                                 @endforeach
                             </select>
-                            <div id="error-id_kategori" class="text-danger error-text"></div>
+                            <small class="text-muted">Pilih 1-3 minat bakat</small>
+                            <div id="error-minat_bakat" class="text-danger error-text"></div>
                         </div>
 
                         <div class="form-group mb-3">
@@ -115,7 +117,8 @@
                         <div class="form-group mb-3" id="keterangan-nonaktif-group"
                             style="{{ $data->pengguna->status_aktif ? 'display: none;' : '' }}">
                             <label for="keterangan_nonaktif" class="form-label">Keterangan Nonaktif</label>
-                            <textarea id="keterangan_nonaktif" name="keterangan_nonaktif" class="form-control">{{ $data->pengguna->keterangan_nonaktif }}</textarea>
+                            <textarea id="keterangan_nonaktif" name="keterangan_nonaktif" class="form-control"
+                                {{ !$data->pengguna->status_aktif ? 'required' : '' }}>{{ $data->pengguna->keterangan_nonaktif }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -130,6 +133,11 @@
 
 <script>
     $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Pilih Minat Bakat",
+            allowClear: true,
+            maximumSelectionLength: 3
+        });
         $('#status_aktif').change(function() {
             if ($(this).val() === '0') {
                 $('#keterangan-nonaktif-group').show();
@@ -142,6 +150,11 @@
 
         $("#form-edit").validate({
             rules: {
+                'minat_bakat[]': {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 3
+                },
                 nim: {
                     required: true,
                     maxlength: 20
@@ -196,6 +209,11 @@
                 },
                 keterangan_nonaktif: {
                     required: "Keterangan nonaktif wajib diisi ketika status nonaktif"
+                },
+                'minat_bakat[]': {
+                    required: "Pilih minimal satu minat bakat",
+                    minlength: "Pilih minimal satu minat bakat",
+                    maxlength: "Maksimal memilih 3 minat bakat"
                 }
             },
             submitHandler: function(form) {
