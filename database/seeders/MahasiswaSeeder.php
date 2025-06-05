@@ -93,6 +93,17 @@ class MahasiswaSeeder extends Seeder
                 'jenis_kelamin' => 'L',
                 'id_prodi' => 1,
             ],
+            [
+                'nim' => '23417200100',
+                'nama' => 'Ryan',
+                'angkatan' => 2023,
+                'email' => 'Ryan@example.com',
+                'no_hp' => '081234567896',
+                'alamat' => 'Jl. Pahlawan No. 7',
+                'tanggal_lahir' => '2002-02-14',
+                'jenis_kelamin' => 'L',
+                'id_prodi' => 1,
+            ],
         ];
 
         foreach ($mahasiswas as $mhs) {

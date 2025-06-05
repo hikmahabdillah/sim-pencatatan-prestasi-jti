@@ -111,6 +111,12 @@ class PenggunaSeeder extends Seeder
                 'role_id' => 3,
                 'status_aktif' => true,
             ],
+            [
+                'username' => '23417200100',
+                'password' => Hash::make('23417200100'),
+                'role_id' => 3,
+                'status_aktif' => true,
+            ],
         ];
 
         foreach ($penggunas as $pengguna) {
