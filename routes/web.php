@@ -14,6 +14,7 @@ use App\Http\Controllers\PrestasiController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\LombaController;
 use App\Http\Controllers\TingkatPrestasiController;
+use App\Http\Controllers\RekomendasiLombaController;
 use App\Models\KategoriModel;
 
 /*
@@ -262,6 +263,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::delete('/{id}/delete', [LombaController::class, 'delete']);
     });
 });
+Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])
+    ->name('rekomendasi.detail');
 
 // contoh route untuk penerapannya
 Route::prefix('cobacrud')->group(function () {

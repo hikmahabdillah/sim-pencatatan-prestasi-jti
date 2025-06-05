@@ -16,106 +16,127 @@ class LombaSeeder extends Seeder
         DB::table('lomba')->insert([
             [
                 'id_lomba' => 1,
-                'nama_lomba' => 'Lomba Debat Mahasiswa Nasional',
-                'penyelenggara' => 'Kementerian Pendidikan',
-                'id_kategori' => 4, // Pastikan ada kategori dengan id_kategori = 1
-                'id_tingkat_prestasi' => 3, // Pastikan ada tingkat prestasi dengan id_tingkat_prestasi = 1
-                'deskripsi' => 'Kompetisi debat tingkat nasional untuk mahasiswa aktif.',
-                'link_pendaftaran' => 'https://lombadebat.com',
-                'periode'=>'1',
-                'biaya_pendaftaran'=>true,
+                'nama_lomba' => 'UI / UX Fest 2025',
+                'penyelenggara' => 'Panitia UI/UX Fest',
+                'id_kategori' => 11, // UI/UX
+                'id_tingkat_prestasi' => 3, // Provinsi
+                'deskripsi' => 'Kompetisi desain UI/UX tingkat Provinsi.',
+                'link_pendaftaran' => 'https://uifest2025.com',
+                'periode' => '1',
+                'biaya_pendaftaran' => true,
                 'berhadiah' => true,
-                'tanggal_mulai' => '2025-04-01',
-                'tanggal_selesai' => '2025-04-07',
-                'deadline_pendaftaran' => '2025-03-31',
-                'foto'=> 'fotolomba.jpg',
+                'tanggal_mulai' => now()->addDays(21),
+                'tanggal_selesai' => now()->addDays(25),
+                'deadline_pendaftaran' => now()->addDays(20),
+                'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
-                'added_by' => 1, // Pastikan ada pengguna dengan id_pengguna = '22410001'
-                'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
+                'added_by' => 1,
+                'role_pengusul' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id_lomba' => 2,
-                'nama_lomba' => 'Olimpics Games',
-                'penyelenggara' => 'International Olympic Committee',
-                'id_kategori' => 2, // Pastikan ada kategori dengan id_kategori = 3
-                'id_tingkat_prestasi' => 5, // Pastikan ada tingkat prestasi dengan id_tingkat_prestasi = 2
-                'deskripsi' => 'Kompetisi Kejuaraan Internasional dibidang olahraga',
-                'link_pendaftaran' => 'https://olympicgames.com',
-                'periode'=>'1',
-                'biaya_pendaftaran'=>false,
+                'nama_lomba' => 'Hacknation Malang',
+                'penyelenggara' => 'Hacknation Indonesia',
+                'id_kategori' => 12, // Keamanan Siber
+                'id_tingkat_prestasi' => 2, // Kota
+                'deskripsi' => 'Kompetisi hacking dan keamanan siber tingkat kota.',
+                'link_pendaftaran' => 'https://hacknation.id/malang',
+                'periode' => '1',
+                'biaya_pendaftaran' => true,
                 'berhadiah' => true,
-                'tanggal_mulai' => '2025-08-15',
-                'tanggal_selesai' => '2025-10-15',
-                'deadline_pendaftaran' => '2025-04-21',
+                'tanggal_mulai' => now()->addDays(28),
+                'tanggal_selesai' => now()->addDays(31),
+                'deadline_pendaftaran' => now()->addDays(27),
                 'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
-                'added_by' => 2, // Pastikan ada pengguna dengan id_pengguna = '22410002'
-                'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
+                'added_by' => 1,
+                'role_pengusul' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id_lomba' => 3,
-                'nama_lomba' => 'Lomba Kejuaraan Tari Tradisional',
-                'penyelenggara' => 'Pemerintah Kabupaten Malang',
-                'id_kategori' => 3, // Pastikan ada kategori dengan id_kategori = 3
-                'id_tingkat_prestasi' => 1, // Pastikan ada tingkat prestasi dengan id_tingkat_prestasi = 2
-                'deskripsi' => 'Lomba tari tradisional tingkat kabupaten.',
-                'link_pendaftaran' => 'https://kabmalangtari.com',
-                'periode'=>'1',
-                'biaya_pendaftaran'=>false,
-                'berhadiah' => false,
-                'tanggal_mulai' => '2025-01-20',
-                'tanggal_selesai' => '2025-01-25',
-                'deadline_pendaftaran' => '2025-01-18',
+                'nama_lomba' => 'Innovillage Telkom',
+                'penyelenggara' => 'Telkom Indonesia',
+                'id_kategori' => 13, // Inovasi Teknologi
+                'id_tingkat_prestasi' => 4, // Nasional
+                'deskripsi' => 'Kompetisi inovasi sosial berbasis teknologi.',
+                'link_pendaftaran' => 'https://innovillage.id',
+                'periode' => '1',
+                'biaya_pendaftaran' => true,
+                'berhadiah' => true,
+                'tanggal_mulai' => now()->addDays(6),
+                'tanggal_selesai' => now()->addDays(10),
+                'deadline_pendaftaran' => now()->addDays(5),
                 'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
-                'added_by' => 3, // Pastikan ada pengguna dengan id_pengguna = '22410002'
-                'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
+                'added_by' => 1,
+                'role_pengusul' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id_lomba' => 4,
-                'nama_lomba' => 'Lomba UI/UX',
-                'penyelenggara' => 'Politeknik Negeri Malang',
-                'id_kategori' => 9, // Pastikan ada kategori dengan id_kategori = 3
-                'id_tingkat_prestasi' => 2, // Pastikan ada tingkat prestasi dengan id_tingkat_prestasi = 2
-                'deskripsi' => 'Kompetisi Kejuaraan Desain',
-                'link_pendaftaran' => 'https://polinema.ac.id/perlombaan',
-                'periode'=>'1',
-                'biaya_pendaftaran'=>true,
-                'berhadiah' => false,
-                'tanggal_mulai' => '2026-03-01',
-                'tanggal_selesai' => '2026-03-03',
-                'deadline_pendaftaran' => '2026-02-20',
+                'nama_lomba' => 'AI Innovation Challenge by BRIN',
+                'penyelenggara' => 'BRIN',
+                'id_kategori' => 14, // Artificial Intelligence
+                'id_tingkat_prestasi' => 5, // Internasional
+                'deskripsi' => 'Kompetisi AI bertaraf internasional.',
+                'link_pendaftaran' => 'https://ai-challenge.brin.go.id',
+                'periode' => '1',
+                'biaya_pendaftaran' => false,
+                'berhadiah' => true,
+                'tanggal_mulai' => now()->addDays(9),
+                'tanggal_selesai' => now()->addDays(14),
+                'deadline_pendaftaran' => now()->addDays(8),
                 'foto' => 'fotolomba.jpg',
-                'status_verifikasi' => false,
-                'added_by' => 4, // Pastikan ada pengguna dengan id_pengguna = '22410002'
-                'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
+                'status_verifikasi' => true,
+                'added_by' => 1,
+                'role_pengusul' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id_lomba' => 5,
-                'nama_lomba' => 'Lomba Makan Mie Ayam',
-                'penyelenggara' => 'Karang Taruna WetanKali',
-                'id_kategori' => 10, // Pastikan ada kategori dengan id_kategori = 3
-                'id_tingkat_prestasi' => 1, // Pastikan ada tingkat prestasi dengan id_tingkat_prestasi = 2
-                'deskripsi' => 'Kompetisi makan makanan terbanyak kota ngalam',
-                'periode'=>'1',
-                'biaya_pendaftaran'=>false,
-                'berhadiah' => true,
-                'link_pendaftaran' => '-',
-                'tanggal_mulai' => '2026-01-02',
-                'tanggal_selesai' => '2026-01-02',
-                'deadline_pendaftaran' => '2026-01-01',
+                'nama_lomba' => 'UI / UX Competition',
+                'penyelenggara' => 'Komunitas Desain Kota Malang',
+                'id_kategori' => 11, // UI/UX
+                'id_tingkat_prestasi' => 2, // Kota
+                'deskripsi' => 'Lomba UI/UX tingkat kota untuk mahasiswa dan umum.',
+                'link_pendaftaran' => 'https://uixmalang.id/kompetisi',
+                'periode' => '1',
+                'biaya_pendaftaran' => true,
+                'berhadiah' => false,
+                'tanggal_mulai' => now()->addDays(16),
+                'tanggal_selesai' => now()->addDays(20),
+                'deadline_pendaftaran' => now()->addDays(15),
                 'foto' => 'fotolomba.jpg',
-                'status_verifikasi' => false,
-                'added_by' => 5, // Pastikan ada pengguna dengan id_pengguna = '22410002'
-                'role_pengusul' => 2, // Pastikan ada role dengan role_id = 3 (contohnya Mahasiswa)
+                'status_verifikasi' => true,
+                'added_by' => 1,
+                'role_pengusul' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id_lomba' => 6,
+                'nama_lomba' => 'Web Developer Fest',
+                'penyelenggara' => 'Komunitas Coding Kampus',
+                'id_kategori' => 15, // Pemrograman Web
+                'id_tingkat_prestasi' => 1, // Kampus
+                'deskripsi' => 'Lomba web development antar mahasiswa kampus.',
+                'link_pendaftaran' => 'https://webdevfest.com',
+                'periode' => '1',
+                'biaya_pendaftaran' => false,
+                'berhadiah' => true,
+                'tanggal_mulai' => now()->addDays(36),
+                'tanggal_selesai' => now()->addDays(40),
+                'deadline_pendaftaran' => now()->addDays(35),
+                'foto' => 'fotolomba.jpg',
+                'status_verifikasi' => true,
+                'added_by' => 1,
+                'role_pengusul' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

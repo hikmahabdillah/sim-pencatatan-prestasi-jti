@@ -74,6 +74,66 @@ class KategoriSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'nama_kategori' => 'UI/UX (User Interface and User Experience design)',
+                'deskripsi' => 'Kategori UI/UX mencakup segala hal yang berkaitan dengan perancangan antarmuka pengguna dan pengalaman pengguna yang optimal.',
+                'created_at' => '2025-06-04 11:16:15',
+                'updated_at' => '2025-06-04 11:16:15',
+            ],
+            [
+                'nama_kategori' => 'Keamanan Siber',
+                'deskripsi' => 'Kategori Keamanan Siber mencakup topik-topik yang berkaitan dengan perlindungan sistem dan data dari ancaman digital.',
+                'created_at' => '2025-06-04 11:17:05',
+                'updated_at' => '2025-06-04 11:17:05',
+            ],
+            [
+                'nama_kategori' => 'Inovasi Teknologi',
+                'deskripsi' => 'Kategori Inovasi Teknologi mencakup berbagai perkembangan dan penemuan baru dalam bidang teknologi.',
+                'created_at' => '2025-06-04 11:17:49',
+                'updated_at' => '2025-06-04 11:17:49',
+            ],
+            [
+                'nama_kategori' => 'Artificial Intelligence',
+                'deskripsi' => 'Kategori AI (Artificial Intelligence) mencakup segala bentuk kecerdasan buatan dan penerapannya di berbagai bidang.',
+                'created_at' => '2025-06-04 11:18:47',
+                'updated_at' => '2025-06-04 11:18:47',
+            ],
+            [
+                'nama_kategori' => 'Pemrograman Website',
+                'deskripsi' => 'Kategori Pemrograman Web mencakup materi seputar pembuatan dan pengembangan situs web.',
+                'created_at' => '2025-06-04 11:19:20',
+                'updated_at' => '2025-06-04 11:19:20',
+            ],
+            [
+                'nama_kategori' => 'Product Design',
+                'deskripsi' => 'Kategori Product Design membahas proses kreatif dan teknis dalam menciptakan produk yang fungsional dan menarik.',
+                'created_at' => '2025-06-04 11:20:20',
+                'updated_at' => '2025-06-04 11:20:20',
+            ],
+            [
+                'nama_kategori' => 'Desain Grafis',
+                'deskripsi' => 'Kategori Desain Grafis mencakup proses kreatif dalam merancang komunikasi visual melalui elemen grafis.',
+                'created_at' => '2025-06-04 11:21:07',
+                'updated_at' => '2025-06-04 11:21:07',
+            ],
+            [
+                'nama_kategori' => 'Bisnis Digital',
+                'deskripsi' => 'Kategori Bisnis Digital membahas strategi, model, dan pengembangan bisnis berbasis digital.',
+                'created_at' => '2025-06-04 11:21:27',
+                'updated_at' => '2025-06-04 11:21:27',
+            ],
+            [
+                'nama_kategori' => 'Mobile Programming',
+                'deskripsi' => 'Kategori Mobile Programming berfokus pada pengembangan aplikasi untuk perangkat seluler.',
+                'created_at' => '2025-06-04 11:22:02',
+                'updated_at' => '2025-06-04 11:22:02',
+            ],
+            [
+                'nama_kategori' => 'Seni Digital',
+                'deskripsi' => 'Kategori Seni Digital meliputi karya seni yang dibuat atau diproses secara digital, termasuk ilustrasi, animasi, dan media interaktif.',
+                'created_at' => '2025-06-04 11:22:30',
+                'updated_at' => '2025-06-04 11:22:30',
+            ],
         ]);
     }
 }
