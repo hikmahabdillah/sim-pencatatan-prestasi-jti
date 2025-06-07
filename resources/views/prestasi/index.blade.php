@@ -34,69 +34,75 @@
         <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
             data-keyboard="false" data-width="75%" aria-hidden="true"></div>
         @include('layouts.footer')
-    @endsection
+    </div>
+@endsection
 
-    @push('js')
-        <script>
-            function modalAction(url = '') {
-                $('#myModal').load(url, function() {
-                    $('#myModal').modal('show');
-                });
-            }
-
-            let tablecrud;
-
-            $(document).ready(function() {
-                tablecrud = $('#prestasi-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: {
-                        url: "{{ url('prestasi/list') }}",
-                        type: "POST",
-                        data: function(d) {
-                            d.status_filter = $('#status_filter').val(); // Send filter value
-                        }
-                    },
-                    columns: [{
-                            data: 'DT_RowIndex',
-                            className: 'text-center',
-                            orderable: false,
-                            searchable: false,
-                            width: "2%"
-                        },
-                        {
-                            data: 'nama_prestasi',
-                            width: "15%"
-                        },
-                        {
-                            data: 'mahasiswa',
-                            width: "15%"
-                        },
-                        {
-                            data: 'kategori',
-                            width: "10%"
-                        },
-                        {
-                            data: 'tingkat_prestasi',
-                            width: "10%"
-                        },
-                        {
-                            data: 'status_verifikasi',
-                            className: 'text-center',
-                            width: "10%"
-                        },
-                        {
-                            data: 'aksi',
-                            className: 'text-center',
-                            orderable: false,
-                            searchable: false,
-                            width: "15%"
-                        }
-                    ]
-                });
-                $('#status_filter').change(function() {
-                    tablecrud.ajax.reload();
-                });
+@push('js')
+    <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
+                $('#myModal').modal('show');
             });
-        </script>
-    @endpush
+        }
+
+        let tablecrud;
+
+        $(document).ready(function() {
+            tablecrud = $('#prestasi-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ url('prestasi/list') }}",
+                    type: "POST",
+                    data: function(d) {
+                        d.status_filter = $('#status_filter').val(); // Send filter value
+                    }
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false,
+                        width: "2%"
+                    },
+                    {
+                        data: 'nama_prestasi',
+                        width: "15%"
+                    },
+                    {
+                        data: 'mahasiswa',
+                        width: "15%"
+                    },
+                    {
+                        data: 'kategori',
+                        width: "10%"
+                    },
+                    {
+                        data: 'tingkat_prestasi',
+                        width: "10%"
+                    },
+                    {
+                        data: 'status_verifikasi',
+                        className: 'text-center',
+                        width: "10%"
+                    },
+                    {
+                        data: 'aksi',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false,
+                        width: "15%"
+                    }
+                ]
+            }); <<
+            << << < HEAD
+            $('#status_filter').change(function() {
+                tablecrud.ajax.reload();
+            });
+        });
+    </script>
+@endpush
+=======
+</script>
+@endpush
+>>>>>>> 62ddd6b212f751831d0ed90561fc74af85ab7ef7

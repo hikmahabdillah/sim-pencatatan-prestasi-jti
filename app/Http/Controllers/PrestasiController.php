@@ -38,7 +38,7 @@ class PrestasiController extends Controller
             'kategori',
             'periode',
             'dosenPembimbing',
-            'mahasiswa'
+            'anggota'
         ]);
 
         if (auth()->user()->role_id == 2) {
@@ -91,7 +91,21 @@ class PrestasiController extends Controller
                 return $item->kategori->nama_kategori ?? '-';
             })
             ->addColumn('mahasiswa', function ($item) {
-                return $item->mahasiswa->nama ?? '-';
+                $members = [];
+
+                // Cek apakah relasi mahasiswa tidak null
+                // if ($item->mahasiswa) {
+                //     $members[] = $item->mahasiswa->nama;
+                // }
+
+                // Cek apakah relasi anggota ada dan masing-masing anggota punya relasi mahasiswa
+                foreach ($item->anggota as $anggota) {
+                    if ($anggota) {
+                        $members[] = $anggota->nama;
+                    }
+                }
+
+                return count($members) > 0 ? implode(', ', $members) : '-';
             })
             ->addColumn('status_verifikasi', function ($item) {
                 if (auth()->user()->role_id == 1) {
@@ -120,7 +134,8 @@ class PrestasiController extends Controller
     public function getVerifikasiDospem($id)
     {
         $prestasi = PrestasiMahasiswaModel::with([
-            'dosenPembimbing'
+            'dosenPembimbing',
+            'anggota' // Tambahkan eager loading untuk anggota
         ])
             ->where('id_prestasi', $id)
             ->first();
@@ -132,7 +147,11 @@ class PrestasiController extends Controller
 
     public function getVerifikasiAdmin($id)
     {
-        $prestasi = PrestasiMahasiswaModel::where('id_prestasi', $id)->first();
+        $prestasi = PrestasiMahasiswaModel::with([
+            'anggota' // Tambahkan eager loading untuk anggota
+        ])
+            ->where('id_prestasi', $id)
+            ->first();
 
         return view('prestasi.verif-admin', [
             'prestasi' => $prestasi
@@ -269,9 +288,9 @@ class PrestasiController extends Controller
         ]);
     }
 
+
     public function store(Request $request)
     {
-        // Validasi input dengan pesan error yang lebih jelas
         $validator = Validator::make($request->all(), [
             'id_tingkat_prestasi' => 'required|exists:tingkat_prestasi,id_tingkat_prestasi',
             'id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa',
@@ -285,7 +304,11 @@ class PrestasiController extends Controller
             'foto_kegiatan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'bukti_sertifikat' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:2048',
             'surat_tugas' => 'nullable|file|mimes:pdf|max:2048',
-            'karya' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:5120'
+            'karya' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:5120',
+            'tipe_prestasi' => 'required|in:individu,tim',
+            'anggota' => 'required_if:tipe_prestasi,tim|array',
+            'anggota.*.id_mahasiswa' => 'required_if:tipe_prestasi,tim|exists:mahasiswa,id_mahasiswa',
+            'anggota.*.peran' => 'required_if:tipe_prestasi,tim|in:ketua,anggota'
         ], [
             'id_tingkat_prestasi.required' => 'Tingkat prestasi wajib dipilih',
             'id_kategori.required' => 'Kategori prestasi wajib dipilih',
@@ -293,6 +316,8 @@ class PrestasiController extends Controller
             'juara.required' => 'Juara yang diraih wajib diisi',
             'tanggal_prestasi.required' => 'Tanggal prestasi wajib diisi',
             'id_periode.required' => 'Periode wajib dipilih',
+            'tipe_prestasi.required' => 'Tipe prestasi wajib dipilih',
+            'anggota.required_if' => 'Anggota tim wajib diisi untuk prestasi tim',
             'foto_kegiatan.image' => 'File foto kegiatan harus berupa gambar',
             'foto_kegiatan.mimes' => 'Format foto kegiatan harus jpeg, png, jpg, atau gif',
             'foto_kegiatan.max' => 'Ukuran foto kegiatan maksimal 2MB',
@@ -312,9 +337,56 @@ class PrestasiController extends Controller
             ], 422);
         }
 
+        $validator->after(function ($validator) use ($request) {
+            if ($request->tipe_prestasi === 'tim') {
+                $ketuaCount = 0;
+                $anggotaData = $request->anggota ?? [];
+                $totalAnggota = count($anggotaData) + 1; // +1 for the owner
+                $anggotaIds = [];
+
+                // Collect all member IDs
+                foreach ($request->anggota ?? [] as $member) {
+                    $anggotaIds[] = $member['id_mahasiswa'];
+                }
+
+                // Add owner ID if not already in anggota
+                if (!in_array($request->id_mahasiswa, $anggotaIds)) {
+                    $anggotaIds[] = $request->id_mahasiswa;
+                }
+
+                // Check for duplicates
+                if (count($anggotaIds) !== count(array_unique($anggotaIds))) {
+                    $validator->errors()->add('anggota', 'Terdapat mahasiswa yang dipilih lebih dari satu kali');
+                }
+
+                if ($totalAnggota > 5) {
+                    $validator->errors()->add('anggota', 'Maksimal 5 anggota termasuk ketua tim');
+                }
+
+                foreach ($anggotaData as $member) {
+                    if ($member['peran'] === 'ketua') {
+                        $ketuaCount++;
+                    }
+                }
+
+                if ($ketuaCount > 1) {
+                    $validator->errors()->add('anggota', 'Hanya boleh ada satu ketua dalam tim');
+                }
+            }
+        });
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()->toArray()
+            ], 422);
+        }
+
         DB::beginTransaction();
         try {
-            $data = $request->except(['foto_kegiatan', 'bukti_sertifikat', 'surat_tugas', 'karya']);
+            $data = $request->except(['foto_kegiatan', 'bukti_sertifikat', 'surat_tugas', 'karya', 'anggota']);
+            $data['id_mahasiswa'] = auth()->user()->mahasiswa->id_mahasiswa;
 
             // Handle file uploads
             $fileFields = [
@@ -333,13 +405,32 @@ class PrestasiController extends Controller
             }
 
             $prestasi = PrestasiMahasiswaModel::create($data);
+            // Handle anggota for both individu and tim
+            $anggotaData = [];
+            if ($request->tipe_prestasi === 'tim') {
+                $hasKetua = false;
+                foreach ($request->anggota ?? [] as $member) {
+                    $anggotaData[$member['id_mahasiswa']] = ['peran' => $member['peran']];
+                    if ($member['peran'] === 'ketua') {
+                        $hasKetua = true;
+                    }
+                }
+                // Add the logged-in user as anggota or ketua if no ketua found in input anggota
+                $peranPemilik = $hasKetua ? 'anggota' : 'ketua';
+                $anggotaData[auth()->user()->mahasiswa->id_mahasiswa] = ['peran' => $peranPemilik];
+            } else {
+                // For individu: logged-in user always ketua in anggota relation
+                $anggotaData[auth()->user()->mahasiswa->id_mahasiswa] = ['peran' => 'ketua'];
+            }
+            $prestasi->anggota()->sync($anggotaData);
 
             DB::commit();
 
             return response()->json([
                 'status' => true,
+                'data' => $prestasi,
                 'message' => 'Data prestasi berhasil disimpan',
-                'redirect_url' => '/mahasiswa/' . $prestasi->id_mahasiswa . '/prestasi',
+                'redirect_url' => '/mahasiswa/' . auth()->user()->mahasiswa->id_mahasiswa . '/prestasi',
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -358,26 +449,23 @@ class PrestasiController extends Controller
         }
     }
 
-    public function getPrestasiMahasiswa($id) // id = id mahasiswa
+    public function getPrestasiMahasiswa($id_mahasiswa)
     {
         $breadcrumb = (object)[
             'title' => 'Prestasi Mahasiswa',
             'list'  => ['Mahasiswa', 'Prestasi Mahasiswa']
         ];
 
-        // Mengambil data prestasi mahasiswa berdasarkan id
-        $prestasi = PrestasiMahasiswaModel::where('id_mahasiswa', $id)->get();
-        if (!$prestasi) {
-            return redirect('/mahasiswa/' . $id . '/prestasi')->with('error', 'Data mahasiswa tidak ditemukan');
-        }
-
-        $prestasi = PrestasiMahasiswaModel::with([
+        $prestasi = \App\Models\PrestasiMahasiswaModel::with([
             'tingkatPrestasi',
             'kategori',
             'periode',
-            'dosenPembimbing'
+            'dosenPembimbing',
+            'anggota'
         ])
-            ->where('id_mahasiswa', $id)
+            ->whereHas('anggota', function ($query) use ($id_mahasiswa) {
+                $query->where('anggota_prestasi.id_mahasiswa', $id_mahasiswa);
+            })
             ->get();
 
         return view('mahasiswa.prestasi', [
@@ -386,24 +474,20 @@ class PrestasiController extends Controller
         ]);
     }
 
-    public function getDetailPrestasiMahasiswa($id) // id = id prestasi
+    public function getDetailPrestasiMahasiswa($id)
     {
         $breadcrumb = (object)[
             'title' => 'Prestasi Mahasiswa',
             'list'  => ['Mahasiswa', 'Detail Prestasi Mahasiswa']
         ];
+
         $prestasi = PrestasiMahasiswaModel::with([
             'tingkatPrestasi',
             'kategori',
             'periode',
-            'dosenPembimbing'
-        ])
-            ->where('id_prestasi', $id)
-            ->first();
-
-        // if ($prestasi) {
-        //     return redirect('/mahasiswa/' . $prestasi->id_mahasiswa . '/prestasi')->with('error', 'Data prestasi tidak ditemukan');
-        // }
+            'dosenPembimbing',
+            'anggota' // Tambahkan eager loading untuk anggota
+        ])->where('id_prestasi', $id)->first();
 
         return view('prestasi.show', [
             'prestasi' => $prestasi,
@@ -411,14 +495,14 @@ class PrestasiController extends Controller
         ]);
     }
 
-    public function getEditPrestasi($id) // id = id prestasi
+    public function getEditPrestasi($id)
     {
         $prestasi = PrestasiMahasiswaModel::with([
             'tingkatPrestasi',
             'kategori',
             'periode',
             'dosenPembimbing',
-            'mahasiswa'
+            'anggota' // Tambahkan eager loading untuk anggota
         ])->find($id);
 
         if (!$prestasi) {
@@ -439,7 +523,7 @@ class PrestasiController extends Controller
         ]);
     }
 
-    public function updatePrestasi(Request $request, $id) // id = id prestasi
+    public function updatePrestasi(Request $request, $id)
     {
         $prestasi = PrestasiMahasiswaModel::find($id);
 
@@ -462,7 +546,11 @@ class PrestasiController extends Controller
             'foto_kegiatan' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'bukti_sertifikat' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
             'surat_tugas' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:5120',
-            'karya' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:5120'
+            'karya' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:5120',
+            'tipe_prestasi' => 'required|in:individu,tim',
+            'anggota' => 'required_if:tipe_prestasi,tim|array',
+            'anggota.*.id_mahasiswa' => 'required_if:tipe_prestasi,tim|exists:mahasiswa,id_mahasiswa',
+            'anggota.*.peran' => 'required_if:tipe_prestasi,tim|in:ketua,anggota'
         ], [
             'nama_prestasi.required' => 'Nama prestasi wajib diisi',
             'id_tingkat_prestasi.required' => 'Tingkat prestasi wajib dipilih',
@@ -470,6 +558,8 @@ class PrestasiController extends Controller
             'juara.required' => 'Juara yang diraih wajib diisi',
             'tanggal_prestasi.required' => 'Tanggal prestasi wajib diisi',
             'id_periode.required' => 'Periode wajib dipilih',
+            'tipe_prestasi.required' => 'Tipe prestasi wajib dipilih',
+            'anggota.required_if' => 'Anggota tim wajib diisi untuk prestasi tim',
             'foto_kegiatan.image' => 'File foto kegiatan harus berupa gambar',
             'foto_kegiatan.mimes' => 'Format foto kegiatan harus jpeg, png, atau jpg',
             'foto_kegiatan.max' => 'Ukuran foto kegiatan maksimal 2MB',
@@ -480,6 +570,58 @@ class PrestasiController extends Controller
             'karya.mimes' => 'Format karya harus pdf, doc, docx, ppt, atau pptx',
             'karya.max' => 'Ukuran karya maksimal 5MB'
         ]);
+
+
+        $validator->after(function ($validator) use ($request, $prestasi) {
+            if ($request->tipe_prestasi === 'tim') {
+                $ketuaCount = 0;
+                $anggotaData = $request->anggota ?? [];
+                $totalAnggota = count($anggotaData) + 1; // +1 for the owner
+                $anggotaIds = [];
+
+                // Collect all member IDs
+                foreach ($request->anggota ?? [] as $member) {
+                    $anggotaIds[] = $member['id_mahasiswa'];
+                }
+
+                // Add owner ID if not already in anggota
+                if (!in_array($request->id_mahasiswa, $anggotaIds)) {
+                    $anggotaIds[] = $request->id_mahasiswa;
+                }
+
+                // Check for duplicates
+                if (count($anggotaIds) !== count(array_unique($anggotaIds))) {
+                    $validator->errors()->add('anggota', 'Terdapat mahasiswa yang dipilih lebih dari satu kali');
+                }
+
+                if ($totalAnggota > 5) {
+                    $validator->errors()->add('anggota', 'Maksimal 5 anggota termasuk ketua tim');
+                }
+
+                foreach ($anggotaData as $member) {
+                    if ($member['peran'] === 'ketua') {
+                        $ketuaCount++;
+                    }
+                }
+
+                if ($ketuaCount > 1) {
+                    $validator->errors()->add('anggota', 'Hanya boleh ada satu ketua dalam tim');
+                }
+
+                // Cek apakah mahasiswa pemilik ada di anggota yang diinput
+                $pemilikAda = false;
+                foreach ($anggotaData as $member) {
+                    if ($member['id_mahasiswa'] == $prestasi->id_mahasiswa) {
+                        $pemilikAda = true;
+                        break;
+                    }
+                }
+
+                if ($pemilikAda) {
+                    $validator->errors()->add('anggota', 'Mahasiswa pemilik prestasi tidak perlu ditambahkan sebagai anggota');
+                }
+            }
+        });
 
         if ($validator->fails()) {
             return response()->json([
@@ -499,7 +641,8 @@ class PrestasiController extends Controller
                 'tanggal_prestasi',
                 'id_periode',
                 'id_dospem',
-                'deskripsi'
+                'deskripsi',
+                'tipe_prestasi'
             ]);
 
             // Handle file uploads
@@ -526,12 +669,32 @@ class PrestasiController extends Controller
 
             $prestasi->update($data);
 
+            // Handle anggota for both individu and tim
+            $anggotaData = [];
+            if ($request->tipe_prestasi === 'tim') {
+                $hasKetua = false;
+                foreach ($request->anggota ?? [] as $member) {
+                    $anggotaData[$member['id_mahasiswa']] = ['peran' => $member['peran']];
+                    if ($member['peran'] === 'ketua') {
+                        $hasKetua = true;
+                    }
+                }
+                // Add the logged-in user as anggota or ketua if no ketua found in input anggota
+                $peranPemilik = $hasKetua ? 'anggota' : 'ketua';
+                $anggotaData[auth()->user()->mahasiswa->id_mahasiswa] = ['peran' => $peranPemilik];
+            } else {
+                // Jika berubah dari tim ke individu, hapus semua anggota
+                $prestasi->anggota()->detach();
+                $anggotaData[auth()->user()->mahasiswa->id_mahasiswa] = ['peran' => 'ketua'];
+            }
+            $prestasi->anggota()->sync($anggotaData);
+
             DB::commit();
 
             return response()->json([
                 'status' => true,
                 'message' => 'Prestasi berhasil diperbarui',
-                'redirect_url' => '/mahasiswa/' . $prestasi->id_mahasiswa . '/prestasi',
+                'redirect_url' => '/mahasiswa/' . auth()->user()->mahasiswa->id_mahasiswa . '/prestasi',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -556,7 +719,7 @@ class PrestasiController extends Controller
         ]);
     }
 
-    public function deletePrestasi($id) // id = id prestasi
+    public function deletePrestasi($id)
     {
         $prestasi = PrestasiMahasiswaModel::find($id);
 
@@ -568,6 +731,9 @@ class PrestasiController extends Controller
         }
 
         try {
+            // Hapus relasi anggota terlebih dahulu
+            $prestasi->anggota()->detach();
+
             // Delete associated files
             $fileFields = [
                 'foto_kegiatan',

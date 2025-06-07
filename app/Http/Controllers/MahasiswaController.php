@@ -37,7 +37,6 @@ class MahasiswaController extends Controller
     public function list(Request $request)
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
-        
         // jika ada isi dari requests front end maka filter
 
         if ($request->filled('status_filter')) {
@@ -134,6 +133,7 @@ class MahasiswaController extends Controller
             ]);
 
             $pengguna->minatBakat()->sync($request->minat_bakat);
+
             // Jika semua proses berhasil, commit transaksi 
             DB::commit();
 
@@ -227,6 +227,12 @@ class MahasiswaController extends Controller
                 $mahasiswa->pengguna->update(['username' => $request->nim]);
                 $mahasiswa->pengguna->update(['password' => Hash::make($request->nim)]);
             }
+
+            // update password
+            if ($request->newPassword) {
+                $mahasiswa->pengguna->update(['password' => Hash::make($request->newPassword)]);
+            }
+
 
             if ($request->status_aktif == 0) {
                 $mahasiswa->pengguna->update([

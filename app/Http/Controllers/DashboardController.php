@@ -122,25 +122,25 @@ class DashboardController extends Controller
     // diagram
     private function rankMahasiswaByPrestasi()
     {
-        $ranking = PrestasiMahasiswaModel::selectRaw('
-        prestasi_mahasiswa.id_mahasiswa,
-        COUNT(prestasi_mahasiswa.id_prestasi) as total_prestasi
-    ')
-            ->where('status_verifikasi', 1)
-            ->groupBy('prestasi_mahasiswa.id_mahasiswa')
-            ->with(['mahasiswa.pengguna']) // eager load relasi mahasiswa dan pengguna untuk ambil nama + foto
-            ->orderByDesc('total_prestasi')
-            ->get();
+        //     $ranking = PrestasiMahasiswaModel::selectRaw('
+        //     prestasi_mahasiswa.id_mahasiswa,
+        //     COUNT(prestasi_mahasiswa.id_prestasi) as total_prestasi
+        // ')
+        //         ->where('status_verifikasi', 1)
+        //         ->groupBy('prestasi_mahasiswa.id_mahasiswa')
+        //         ->with(['mahasiswa.pengguna']) // eager load relasi mahasiswa dan pengguna untuk ambil nama + foto
+        //         ->orderByDesc('total_prestasi')
+        //         ->get();
 
-        $hasil = $ranking->map(function ($item) {
-            return [
-                'nama'   => $item->mahasiswa->nama,
-                'foto'   => $item->mahasiswa->pengguna->foto ?? null,
-                'jumlah' => $item->total_prestasi
-            ];
-        });
+        //     $hasil = $ranking->map(function ($item) {
+        //         return [
+        //             'nama'   => $item->mahasiswa->nama,
+        //             'foto'   => $item->mahasiswa->pengguna->foto ?? null,
+        //             'jumlah' => $item->total_prestasi
+        //         ];
+        //     });
 
-        return $hasil;
+        // return $hasil;
     }
     public function index()
     {
