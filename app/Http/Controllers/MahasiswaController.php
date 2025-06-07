@@ -37,8 +37,8 @@ class MahasiswaController extends Controller
     public function list(Request $request)
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
-
         // jika ada isi dari requests front end maka filter
+
         if ($request->filled('status_filter')) {
             $status = $request->status_filter;
             $mahasiswa = $mahasiswa->filter(function ($item) use ($status) {

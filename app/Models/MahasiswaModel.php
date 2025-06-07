@@ -40,4 +40,13 @@ class MahasiswaModel extends Model
             ->withPivot('peran')
             ->withTimestamps();
     }
+    public function rekomendasi()
+    {
+        return $this->hasMany(RekomendasiLombaModel::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function kategori()
+    {
+        return $this->belongsToMany(KategoriModel::class, 'minat_bakat_pengguna', 'id_pengguna', 'id_kategori');
+    }
 }
