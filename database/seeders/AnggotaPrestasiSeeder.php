@@ -43,7 +43,7 @@ class AnggotaPrestasiSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-          
+
             // Prestasi 3 (Tim Desain UI/UX) - 2 anggota
             [
                 'id_prestasi' => 3,
