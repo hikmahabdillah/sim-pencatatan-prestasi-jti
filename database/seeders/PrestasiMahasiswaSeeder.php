@@ -5,20 +5,12 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 class PrestasiMahasiswaSeeder extends Seeder
 {
     public function run(): void
     {
-        // Nonaktifkan foreign key checks sementara
-        Schema::disableForeignKeyConstraints();
-
-        // Kosongkan tabel dengan cara yang aman
-        DB::table('prestasi_mahasiswa')->where('id_prestasi', '>', 0)->delete();
-
-        // Aktifkan kembali foreign key checks
-        Schema::enableForeignKeyConstraints();
-
         $prestasiData = [
             // Prestasi 1 - Tim
             [
