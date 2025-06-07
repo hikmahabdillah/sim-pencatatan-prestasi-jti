@@ -1,8 +1,8 @@
 <!-- Modal -->
 <form action="{{ url('/prestasi/store') }}" method="POST" id="form-tambah" enctype="multipart/form-data">
     @csrf
-    <div id="modal-master" class="modal-dialog modal-dialog-centered w-100" style="max-width: 800px" role="document">
-        <div class="modal-content w-100">
+    <div id="modal-master" class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content ">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Prestasi Mahasiswa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
@@ -12,6 +12,14 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tipe_prestasi" class="form-label">Tipe Prestasi</label>
+                            <select id="tipe_prestasi" name="tipe_prestasi" class="form-control" required>
+                                <option value="individu">Individu</option>
+                                <option value="tim">Tim</option>
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label for="id_tingkat_prestasi" class="form-label">Tingkat Prestasi</label>
                             <select id="id_tingkat_prestasi" name="id_tingkat_prestasi" class="form-control text-dark"
@@ -83,6 +91,17 @@
                     </div>
 
                     <div class="col-md-6">
+                        <!-- Tambahkan bagian untuk anggota tim -->
+                        <div id="anggota-tim-section" style="display: none;">
+                            <div class="border-top pt-3">
+                                <h6 class="text-uppercase text-sm">Anggota Tim</h6>
+                                <div id="anggota-container"></div>
+                                <button type="button" id="tambah-anggota" class="btn btn-sm btn-primary mt-2">
+                                    <i class="fas fa-plus"></i> Tambah Anggota
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label for="deskripsi" class="form-label">Deskripsi</label>
                             <textarea id="deskripsi" name="deskripsi" class="form-control" placeholder="Masukkan deskripsi tambahan"
@@ -133,6 +152,112 @@
 </form>
 <script>
     $(document).ready(function() {
+        function initSelect2() {
+            $('.select-mahasiswa').select2({
+                placeholder: "Pilih Mahasiswa",
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#modal-master') // Pastikan dropdown muncul di atas modal
+            });
+        }
+
+        // Panggil fungsi inisialisasi pertama kali
+        initSelect2();
+
+        // Toggle anggota tim section
+        $('#tipe_prestasi').change(function() {
+            if ($(this).val() === 'tim') {
+                $('#anggota-tim-section').show();
+            } else {
+                $('#anggota-tim-section').hide();
+            }
+        });
+
+        // Add anggota
+        function updateAddAnggotaButtonVisibility() {
+            if (anggotaCount >= 4) {
+                $('#tambah-anggota').hide();
+            } else {
+                $('#tambah-anggota').show();
+            }
+        }
+
+        let anggotaCount = 0;
+        updateAddAnggotaButtonVisibility();
+
+        $('#tambah-anggota').click(function() {
+            const row = `
+                <div class="row anggota-row mb-2">
+                    <div class="col-md-6 mx-0">
+                        <select name="anggota[${anggotaCount}][id_mahasiswa]" class="form-control select-mahasiswa" required>
+                            <option value="">Pilih Mahasiswa</option>
+                            @foreach (App\Models\MahasiswaModel::where('id_mahasiswa', '!=', auth()->user()->mahasiswa->id_mahasiswa)->get() as $mhs)
+                                <option value="{{ $mhs->id_mahasiswa }}">{{ $mhs->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3 mx-0">
+                        <select name="anggota[${anggotaCount}][peran]" class="form-control" required>
+                            <option value="anggota">Anggota</option>
+                            <option value="ketua">Ketua</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-danger btn-sm remove-anggota"><i class="ni ni-fat-remove text-white text-sm opacity-10"></i></button>
+                    </div>
+                </div>
+            `;
+
+            // Tambahkan row baru
+            $('#anggota-container').append(row);
+
+            // Inisialisasi Select2 untuk elemen yang baru ditambahkan
+            $('#anggota-container .select-mahasiswa').last().select2({
+                placeholder: "Pilih Mahasiswa",
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#myModal')
+            });
+
+            anggotaCount++;
+            updateAddAnggotaButtonVisibility();
+        });
+
+        // Remove anggota
+        $(document).on('click', '.remove-anggota', function() {
+            $(this).closest('.anggota-row').remove();
+            anggotaCount--;
+            updateAddAnggotaButtonVisibility();
+        });
+
+
+        // Function to validate duplicate members
+        function validateDuplicateMembers() {
+            let selectedValues = [];
+            let hasDuplicate = false;
+
+            // Get all selected values
+            $('.select-mahasiswa').each(function() {
+                let value = $(this).val();
+                if (value && value !== '') {
+                    if (selectedValues.includes(value)) {
+                        hasDuplicate = true;
+                        $(this).addClass('is-invalid');
+                        $(this).next('.select2-container').addClass('is-invalid');
+                        $(this).next('.select2-container').after(
+                            '<span class="error-text text-danger">Mahasiswa sudah dipilih</span>');
+                    } else {
+                        selectedValues.push(value);
+                        $(this).removeClass('is-invalid');
+                        $(this).next('.select2-container').removeClass('is-invalid');
+                        $(this).next('.select2-container').next('.error-text').remove();
+                    }
+                }
+            });
+
+            return !hasDuplicate;
+        }
+
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('tanggal_prestasi').setAttribute('max', today);
 
@@ -292,6 +417,48 @@
                 $(element).removeClass('is-invalid');
             },
             submitHandler: function(form, event) {
+                if ($('#tipe_prestasi').val() === 'tim') {
+                    let ketuaCount = 0;
+                    let anggotaCount = 0;
+
+                    // Count existing anggota rows
+                    anggotaCount = $('.anggota-row').length;
+
+                    // Validate max 5 anggota (including the owner)
+                    if (anggotaCount > 4) { // 4 others + owner = 5 total
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Maksimal 5 anggota termasuk ketua tim'
+                        });
+                        return false;
+                    }
+
+                    $('[name^="anggota["][name$="[peran]"]').each(function() {
+                        if ($(this).val() === 'ketua') {
+                            ketuaCount++;
+                        }
+                    });
+
+                    if (ketuaCount > 1) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hanya boleh ada satu ketua dalam tim'
+                        });
+                        return false;
+                    }
+                }
+
+                if (!validateDuplicateMembers()) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Terdapat mahasiswa yang dipilih lebih dari satu kali'
+                    });
+                    return false;
+                }
+
                 event.preventDefault();
                 var formData = new FormData(form);
 

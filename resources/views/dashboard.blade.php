@@ -85,7 +85,7 @@
                 </div>
 
                 <!-- Leaderboard -->
-                <div class="col-md-4 flex-grow-1">
+                {{-- <div class="col-md-4 flex-grow-1">
                     <div class="card mx-auto border" style="width: 100%; height:500px">
                         <div class="card-body p-4 d-flex flex-column gap-2">
                             <h5 class="font-weight-bolder mb-2">Top Mahasiswa Berprestasi</h5>
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Row 3: Perkembangan Prestasi Mahasiswa Per Semester dan Distribusi Lomba Per Kategori -->

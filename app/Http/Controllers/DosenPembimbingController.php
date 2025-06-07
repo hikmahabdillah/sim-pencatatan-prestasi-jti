@@ -203,6 +203,11 @@ class DosenPembimbingController extends Controller
                 $dosen->pengguna->update(['password' => Hash::make($request->nip)]);
             }
 
+            // update password
+            if ($request->newPassword) {
+                $dosen->pengguna->update(['password' => Hash::make($request->newPassword)]);
+            }
+
             if ($request->status_aktif == 0) {
                 $dosen->pengguna->update([
                     'status_aktif' => $request->status_aktif,
