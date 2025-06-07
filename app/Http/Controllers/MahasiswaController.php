@@ -37,6 +37,8 @@ class MahasiswaController extends Controller
     public function list(Request $request)
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
+
+<<<<<<<<< Temporary merge branch 1
         // jika ada isi dari requests front end maka filter
 
         if ($request->filled('status_filter')) {
@@ -134,6 +136,7 @@ class MahasiswaController extends Controller
 
             $pengguna->minatBakat()->sync($request->minat_bakat);
 
+>>>>>>>>> Temporary merge branch 2
             // Jika semua proses berhasil, commit transaksi 
             DB::commit();
 
