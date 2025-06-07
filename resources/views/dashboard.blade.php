@@ -85,7 +85,7 @@
                 </div>
 
                 <!-- Leaderboard -->
-                {{-- <div class="col-md-4 flex-grow-1">
+                <div class="col-md-4 flex-grow-1">
                     <div class="card mx-auto border" style="width: 100%; height:500px">
                         <div class="card-body p-4 d-flex flex-column gap-2">
                             <h5 class="font-weight-bolder mb-2">Top Mahasiswa Berprestasi</h5>
@@ -95,12 +95,12 @@
                                         @foreach ($rankMahasiswaByPrestasi as $index => $mahasiswa)
                                             <div class="carousel-item h-100 {{ $index === 0 ? 'active' : '' }}"
                                                 style="background-image: url('{{ asset($mahasiswa['foto'] ? 'storage/' . $mahasiswa['foto'] : 'image/fotoDefault.jpg') }}');
-                            background-size: cover; background-position: center; position: relative;">
+                                background-size: cover; background-position: center; position: relative;">
 
                                                 <!-- Gradient Overlay -->
                                                 <div
                                                     style="position: absolute; bottom: 0; left: 0; right: 0; height: 40%; 
-                                background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);">
+                                    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);">
                                                 </div>
 
                                                 <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-3"
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
 
             <!-- Row 3: Perkembangan Prestasi Mahasiswa Per Semester dan Distribusi Lomba Per Kategori -->
