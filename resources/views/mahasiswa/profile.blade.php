@@ -69,9 +69,11 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <p class="mb-1 text-muted small font-weight-bold">Minat Bakat</p>
-                        @foreach ($data->pengguna->minatBakat as $kategori)
-                            <span class="badge bg-primary">{{ $kategori->nama_kategori }}</span>
-                        @endforeach
+                        <div class="my-2">
+                            @foreach ($data->pengguna->minatBakat as $kategori)
+                                <span class="badge bg-primary">{{ $kategori->nama_kategori }}</span>
+                            @endforeach
+                        </div>
 
                         <p class="mb-1 text-muted small font-weight-bold">Email Address</p>
                         <p class="fw-semibold">{{ $data->email }}</p>
