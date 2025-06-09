@@ -32,10 +32,12 @@
                                     {{ $data->nim }}</p>
                                 <p class="text-dark mb-0 mb-0">
                                     <strong>Minat Bakat: </strong>
+                                </p>
+                                <div class="my-2">
                                     @foreach ($data->pengguna->minatBakat as $kategori)
                                         <span class="badge bg-primary">{{ $kategori->nama_kategori }}</span>
                                     @endforeach
-                                </p>
+                                </div>
                                 <p class="text-dark mb-0">
                                     <strong>Email: </strong>
                                     {{ $data->email }}

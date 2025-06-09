@@ -94,15 +94,10 @@
                         width: "15%"
                     }
                 ]
-            }); <<
-            << << < HEAD
+            });
             $('#status_filter').change(function() {
                 tablecrud.ajax.reload();
             });
         });
     </script>
 @endpush
-=======
-</script>
-@endpush
->>>>>>> 62ddd6b212f751831d0ed90561fc74af85ab7ef7
