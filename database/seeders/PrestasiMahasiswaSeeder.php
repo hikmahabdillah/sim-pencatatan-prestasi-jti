@@ -28,10 +28,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_programming.pdf',
                 'surat_tugas' => 'surat_programming.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -51,10 +48,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_math.pdf',
                 'surat_tugas' => 'surat_math.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -74,10 +68,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_uiux.pdf',
                 'surat_tugas' => 'surat_uiux.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -97,10 +88,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_manual_1.pdf',
                 'surat_tugas' => 'surat_manual_1.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -120,10 +108,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_manual_2.pdf',
                 'surat_tugas' => 'surat_manual_2.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -143,10 +128,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_manual_3.pdf',
                 'surat_tugas' => 'surat_manual_3.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -166,10 +148,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_manual_4.pdf',
                 'surat_tugas' => 'surat_manual_4.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -189,10 +168,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_manual_5.pdf',
                 'surat_tugas' => 'surat_manual_5.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -212,10 +188,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_manual_6.pdf',
                 'surat_tugas' => 'surat_manual_6.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -235,10 +208,7 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_manual_7.pdf',
                 'surat_tugas' => 'surat_manual_7.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -258,28 +228,17 @@ class PrestasiMahasiswaSeeder extends Seeder
                 'bukti_sertifikat' => 'sertifikat_manual_8.pdf',
                 'surat_tugas' => 'surat_manual_8.pdf',
                 'karya' => 'prototype.fig',
-                'status_verifikasi' => $this->getRandomVerificationStatus(),
-                'status_verifikasi_dospem' => function ($prestasi) {
-                    return $prestasi['status_verifikasi'];
-                },
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
         ];
 
-        // Process the data to ensure verification statuses match
-        $prestasiData = array_map(function ($item) {
-            if (is_callable($item['status_verifikasi_dospem'])) {
-                $item['status_verifikasi_dospem'] = $item['status_verifikasi_dospem']($item);
-            }
-            return $item;
-        }, $prestasiData);
-
         DB::table('prestasi_mahasiswa')->insert($prestasiData);
     }
 
-    protected function getRandomVerificationStatus(): int
+    protected function getRandomDospemVerificationStatus(): int
     {
-        return rand(0, 1); // 50% chance of being verified or not
+        return rand(0, 1); // 50% chance of being verified or not by dosen pembimbing
     }
 }
