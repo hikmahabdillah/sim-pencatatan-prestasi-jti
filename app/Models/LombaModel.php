@@ -59,4 +59,9 @@ class LombaModel extends Model
     {
         return $this->belongsTo(PeriodeModel::class, 'periode', 'id_periode');
     }
+
+    public function rekomendasi()
+    {
+        return $this->hasMany(RekomendasiLombaModel::class, 'id_lomba', 'id_lomba');
+    }
 }

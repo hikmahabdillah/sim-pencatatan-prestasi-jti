@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('prestasi_mahasiswa', function (Blueprint $table) {
             $table->id('id_prestasi');
             $table->unsignedBigInteger('id_tingkat_prestasi')->index();
-            $table->unsignedBigInteger('id_mahasiswa')->index();
             $table->unsignedBigInteger('id_dospem')->nullable()->index();
             $table->string('nama_prestasi');
             $table->unsignedBigInteger('id_kategori')->index();
@@ -23,15 +22,15 @@ return new class extends Migration
             $table->unsignedBigInteger('id_periode')->index();
             $table->text('deskripsi')->nullable();
             $table->text('keterangan')->nullable();
-            $table->string('foto_kegiatan');
+            $table->string('foto_kegiatan')->nullable();
             $table->string('bukti_sertifikat');
-            $table->string('surat_tugas');
-            $table->string('karya')->nullable();
+            $table->string('surat_tugas')->nullable();
+            $table->string('karya');
+            $table->enum('tipe_prestasi', ['individu', 'tim'])->default('individu');
             $table->boolean('status_verifikasi_dospem')->nullable();
             $table->boolean('status_verifikasi')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_mahasiswa')->references('id_mahasiswa')->on('mahasiswa');
             $table->foreign('id_tingkat_prestasi')->references('id_tingkat_prestasi')->on('tingkat_prestasi');
             $table->foreign('id_dospem')->references('id_dospem')->on('dosen_pembimbing');
             $table->foreign('id_periode')->references('id_periode')->on('periode');

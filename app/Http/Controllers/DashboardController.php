@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AnggotaPrestasiModel;
 use App\Models\LombaModel;
 use App\Models\PrestasiMahasiswaModel;
 use Illuminate\Http\Request;
@@ -13,20 +14,32 @@ class DashboardController extends Controller
     //text
     private function totalPrestasiMahasiswa()
     {
-        $prestasi = PrestasiMahasiswaModel::all();
         $auth = auth()->user();
 
-        if ($auth->role_id == 3) { //jika role mahasiswa
-            $jmlPrestasi = $prestasi->where('id_mahasiswa', $auth->mahasiswa->id_mahasiswa)->where('status_verifikasi', 1)->count(); // hitung prestasi by id_mahasiswa yang sedang login
+        if ($auth->role_id == 3) {
+            // Mahasiswa
+            $jmlPrestasi = AnggotaPrestasiModel::where('id_mahasiswa', $auth->mahasiswa->id_mahasiswa)
+                ->whereHas('prestasi', function ($query) {
+                    $query->where('status_verifikasi', 1);
+                })
+                ->count();
+
             return $jmlPrestasi;
-        } else if ($auth->role_id == 2) { // jika role dospem
-            $jmlPrestasi = $prestasi->where('id_dospem', $auth->dosen->id_dospem)->where('status_verifikasi', 1)->count(); // hitung  prestasi by id_dospem yang sedang login(prestasi mahasiswa bimbingan)
+        } elseif ($auth->role_id == 2) {
+            // Dosen Pembimbing
+            $jmlPrestasi = PrestasiMahasiswaModel::where('id_dospem', $auth->dosen->id_dospem)
+                ->where('status_verifikasi', 1)
+                ->count();
+
             return $jmlPrestasi;
-        } else if ($auth->role_id == 1) { // jika role admin
-            $jmlPrestasi = $prestasi->where('status_verifikasi', 1)->count(); // hitung semua prestasi mahasiswa
-            return $jmlPrestasi;
+        } elseif ($auth->role_id == 1) {
+            // Admin
+            return PrestasiMahasiswaModel::where('status_verifikasi', 1)->count();
         }
+
+        return 0;
     }
+
 
     // diagram
     // jumlah prestasi per kategori
@@ -36,6 +49,7 @@ class DashboardController extends Controller
             ->leftJoin('prestasi_mahasiswa', 'kategori.id_kategori', '=', 'prestasi_mahasiswa.id_kategori')
             ->select('kategori.nama_kategori', DB::raw('COUNT(prestasi_mahasiswa.id_prestasi) as jumlah'))
             ->groupBy('kategori.id_kategori', 'kategori.nama_kategori') //Mengelompokkan hasil berdasarkan id_kategori dan nama_kategori
+            ->where('prestasi_mahasiswa.status_verifikasi', 1)
             ->get();
 
         return $data;
@@ -50,6 +64,7 @@ class DashboardController extends Controller
             ->leftJoin('prestasi_mahasiswa', 'tingkat_prestasi.id_tingkat_prestasi', '=', 'prestasi_mahasiswa.id_tingkat_prestasi')
             ->select('tingkat_prestasi.nama_tingkat_prestasi', DB::raw('COUNT(prestasi_mahasiswa.id_prestasi) as jumlah'))
             ->groupBy('tingkat_prestasi.id_tingkat_prestasi', 'tingkat_prestasi.nama_tingkat_prestasi')
+            ->where('prestasi_mahasiswa.status_verifikasi', 1)
             ->get();
 
         return $data;
@@ -103,7 +118,7 @@ class DashboardController extends Controller
             ->select(
                 'p.id_periode',
                 'p.tahun_ajaran',
-                DB::raw('COUNT(pm.id_prestasi) as total')
+                DB::raw("COUNT(CASE WHEN pm.status_verifikasi = 1 THEN pm.id_prestasi END) as total")
             )
             ->groupBy('p.id_periode', 'p.tahun_ajaran')
             ->orderBy('p.id_periode', 'asc')
@@ -122,25 +137,28 @@ class DashboardController extends Controller
     // diagram
     private function rankMahasiswaByPrestasi()
     {
-        $ranking = PrestasiMahasiswaModel::selectRaw('
-        prestasi_mahasiswa.id_mahasiswa,
-        COUNT(prestasi_mahasiswa.id_prestasi) as total_prestasi
-    ')
-            ->where('status_verifikasi', 1)
-            ->groupBy('prestasi_mahasiswa.id_mahasiswa')
-            ->with(['mahasiswa.pengguna']) // eager load relasi mahasiswa dan pengguna untuk ambil nama + foto
+        $ranking = DB::table('prestasi_mahasiswa')
+            ->join('anggota_prestasi', 'prestasi_mahasiswa.id_prestasi', '=', 'anggota_prestasi.id_prestasi')
+            ->join('mahasiswa', 'anggota_prestasi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+            ->join('pengguna', 'mahasiswa.id_pengguna', '=', 'pengguna.id_pengguna')
+            ->selectRaw('
+            mahasiswa.id_mahasiswa,
+            mahasiswa.nama,
+            pengguna.foto,
+            COUNT(DISTINCT prestasi_mahasiswa.id_prestasi) as total_prestasi
+        ')
+            ->where('prestasi_mahasiswa.status_verifikasi', 1)
+            ->groupBy('mahasiswa.id_mahasiswa', 'mahasiswa.nama', 'pengguna.foto')
             ->orderByDesc('total_prestasi')
             ->get();
 
-        $hasil = $ranking->map(function ($item) {
+        return $ranking->map(function ($item) {
             return [
-                'nama'   => $item->mahasiswa->nama,
-                'foto'   => $item->mahasiswa->pengguna->foto ?? null,
+                'nama'   => $item->nama,
+                'foto'   => $item->foto ?? null,
                 'jumlah' => $item->total_prestasi
             ];
         });
-
-        return $hasil;
     }
     public function index()
     {

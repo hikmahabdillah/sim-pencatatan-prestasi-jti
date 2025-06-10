@@ -105,6 +105,12 @@
                         </div>
 
                         <div class="form-group mb-3">
+                            <label for="newPassword" class="form-label">Password Baru</label>
+                            <input type="password" id="newPassword" name="newPassword" class="form-control">
+                            <div id="error-newPassword" class="text-danger error-text"></div>
+                        </div>
+
+                        <div class="form-group mb-3">
                             <label for="status_aktif" class="form-label">Status Akun</label>
                             <select id="status_aktif" name="status_aktif" class="form-control" required>
                                 <option value="1" {{ $data->pengguna->status_aktif ? 'selected' : '' }}>Aktif
@@ -162,6 +168,9 @@
                 nama: {
                     required: true,
                     maxlength: 200
+                },
+                newPassword: {
+                    minlength: 6
                 },
                 angkatan: {
                     required: true,

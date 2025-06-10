@@ -2,35 +2,243 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 class PrestasiMahasiswaSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        for ($i = 1; $i <= 5; $i++) {
-            DB::table('prestasi_mahasiswa')->insert([
-                'id_mahasiswa' => $i,
-                'id_tingkat_prestasi' => $i,
-                'id_dospem' => $i,
-                'nama_prestasi' => 'Lomba Kejuaraan ' . $i,
-                'id_kategori' => $i,
-                'juara' => 'Juara ' . $i,
-                'tanggal_prestasi' => now()->subDays($i * 10),
-                'id_periode' => $i,
-                'deskripsi' => 'Prestasi yang bagus! pertahankan!' . $i,
-                'foto_kegiatan' => 'foto' . $i . '.jpg',
-                'bukti_sertifikat' => 'sertifikat' . $i . '.pdf',
-                'surat_tugas' => 'surat' . $i . '.pdf',
-                'karya' => null,
+        $prestasiData = [
+            // Prestasi 1 - Tim
+            [
+                'id_prestasi' => 1,
+                'id_tingkat_prestasi' => 1,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'Lomba Programming Nasional',
+                'id_kategori' => 1,
+                'juara' => 'Juara 1',
+                'tanggal_prestasi' => '2023-05-15',
+                'id_periode' => 1,
+                'tipe_prestasi' => 'tim',
+                'deskripsi' => 'Memecahkan masalah algoritma dengan waktu tercepat',
+                'foto_kegiatan' => 'programming_contest.jpg',
+                'bukti_sertifikat' => 'sertifikat_programming.pdf',
+                'surat_tugas' => 'surat_programming.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
-        }
+            ],
+            // Prestasi 2 - Individu
+            [
+                'id_prestasi' => 2,
+                'id_tingkat_prestasi' => 2,
+                'id_dospem' => 2,
+                'nama_prestasi' => 'Olimpiade Matematika',
+                'id_kategori' => 2,
+                'juara' => 'Juara 2',
+                'tanggal_prestasi' => '2023-06-20',
+                'id_periode' => 2,
+                'tipe_prestasi' => 'individu',
+                'deskripsi' => 'Menyelesaikan soal matematika tingkat tinggi',
+                'foto_kegiatan' => 'math_olympiad.jpg',
+                'bukti_sertifikat' => 'sertifikat_math.pdf',
+                'surat_tugas' => 'surat_math.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 3 - Tim
+            [
+                'id_prestasi' => 3,
+                'id_tingkat_prestasi' => 3,
+                'id_dospem' => 3,
+                'nama_prestasi' => 'Lomba Desain UI/UX',
+                'id_kategori' => 3,
+                'juara' => 'Juara 3',
+                'tanggal_prestasi' => '2023-07-10',
+                'id_periode' => 3,
+                'tipe_prestasi' => 'tim',
+                'deskripsi' => 'Membuat desain aplikasi yang user friendly',
+                'foto_kegiatan' => 'uiux_contest.jpg',
+                'bukti_sertifikat' => 'sertifikat_uiux.pdf',
+                'surat_tugas' => 'surat_uiux.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 4 - Individu
+            [
+                'id_prestasi' => 4,
+                'id_tingkat_prestasi' => 3,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'UI Challenge Nasional',
+                'id_kategori' => 11,
+                'juara' => 'Juara 1',
+                'tanggal_prestasi' => '2023-08-15',
+                'id_periode' => 1,
+                'tipe_prestasi' => 'individu',
+                'deskripsi' => 'Prestasi dalam lomba UI Challenge Nasional',
+                'foto_kegiatan' => 'foto_manual_1.jpg',
+                'bukti_sertifikat' => 'sertifikat_manual_1.pdf',
+                'surat_tugas' => 'surat_manual_1.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 5 - Tim
+            [
+                'id_prestasi' => 5,
+                'id_tingkat_prestasi' => 2,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'Hackathon WebDev',
+                'id_kategori' => 15,
+                'juara' => 'Harapan 1',
+                'tanggal_prestasi' => '2023-09-20',
+                'id_periode' => 1,
+                'tipe_prestasi' => 'tim',
+                'deskripsi' => 'Prestasi dalam lomba Hackathon WebDev',
+                'foto_kegiatan' => 'foto_manual_2.jpg',
+                'bukti_sertifikat' => 'sertifikat_manual_2.pdf',
+                'surat_tugas' => 'surat_manual_2.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 6 - Tim
+            [
+                'id_prestasi' => 6,
+                'id_tingkat_prestasi' => 3,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'National Tech Fair',
+                'id_kategori' => 11,
+                'juara' => 'Juara 1',
+                'tanggal_prestasi' => '2024-01-10',
+                'id_periode' => 4,
+                'tipe_prestasi' => 'tim',
+                'deskripsi' => 'Prestasi dalam lomba National Tech Fair',
+                'foto_kegiatan' => 'foto_manual_3.jpg',
+                'bukti_sertifikat' => 'sertifikat_manual_3.pdf',
+                'surat_tugas' => 'surat_manual_3.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 7 - Individu
+            [
+                'id_prestasi' => 7,
+                'id_tingkat_prestasi' => 4,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'Digital Innovation Week',
+                'id_kategori' => 16,
+                'juara' => 'Juara 2',
+                'tanggal_prestasi' => '2024-02-15',
+                'id_periode' => 5,
+                'tipe_prestasi' => 'individu',
+                'deskripsi' => 'Prestasi dalam lomba Digital Innovation Week',
+                'foto_kegiatan' => 'foto_manual_4.jpg',
+                'bukti_sertifikat' => 'sertifikat_manual_4.pdf',
+                'surat_tugas' => 'surat_manual_4.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 8 - Individu
+            [
+                'id_prestasi' => 8,
+                'id_tingkat_prestasi' => 1,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'Poster Design Festival',
+                'id_kategori' => 17,
+                'juara' => 'Juara 3',
+                'tanggal_prestasi' => '2023-10-05',
+                'id_periode' => 3,
+                'tipe_prestasi' => 'individu',
+                'deskripsi' => 'Prestasi dalam lomba Poster Design Festival',
+                'foto_kegiatan' => 'foto_manual_5.jpg',
+                'bukti_sertifikat' => 'sertifikat_manual_5.pdf',
+                'surat_tugas' => 'surat_manual_5.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 9 - Tim
+            [
+                'id_prestasi' => 9,
+                'id_tingkat_prestasi' => 3,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'Marketing Case Study',
+                'id_kategori' => 18,
+                'juara' => 'Juara 2',
+                'tanggal_prestasi' => '2024-03-20',
+                'id_periode' => 5,
+                'tipe_prestasi' => 'tim',
+                'deskripsi' => 'Prestasi dalam lomba Marketing Case Study',
+                'foto_kegiatan' => 'foto_manual_6.jpg',
+                'bukti_sertifikat' => 'sertifikat_manual_6.pdf',
+                'surat_tugas' => 'surat_manual_6.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 10 - Tim
+            [
+                'id_prestasi' => 10,
+                'id_tingkat_prestasi' => 2,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'Mobile App Development',
+                'id_kategori' => 19,
+                'juara' => 'Harapan 2',
+                'tanggal_prestasi' => '2024-04-25',
+                'id_periode' => 6,
+                'tipe_prestasi' => 'tim',
+                'deskripsi' => 'Prestasi dalam lomba Mobile App Development',
+                'foto_kegiatan' => 'foto_manual_7.jpg',
+                'bukti_sertifikat' => 'sertifikat_manual_7.pdf',
+                'surat_tugas' => 'surat_manual_7.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Prestasi 11 - Individu
+            [
+                'id_prestasi' => 11,
+                'id_tingkat_prestasi' => 5,
+                'id_dospem' => 1,
+                'nama_prestasi' => 'Seni Digital Exhibition',
+                'id_kategori' => 20,
+                'juara' => 'Harapan 3',
+                'tanggal_prestasi' => '2023-11-30',
+                'id_periode' => 3,
+                'tipe_prestasi' => 'individu',
+                'deskripsi' => 'Prestasi dalam lomba Seni Digital Exhibition',
+                'foto_kegiatan' => 'foto_manual_8.jpg',
+                'bukti_sertifikat' => 'sertifikat_manual_8.pdf',
+                'surat_tugas' => 'surat_manual_8.pdf',
+                'karya' => 'prototype.fig',
+                'status_verifikasi_dospem' => $this->getRandomDospemVerificationStatus(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        ];
+
+        DB::table('prestasi_mahasiswa')->insert($prestasiData);
+    }
+
+    protected function getRandomDospemVerificationStatus(): int
+    {
+        return rand(0, 1); // 50% chance of being verified or not by dosen pembimbing
     }
 }

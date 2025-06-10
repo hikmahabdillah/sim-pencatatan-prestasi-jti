@@ -13,7 +13,6 @@ class PrestasiMahasiswaModel extends Model
     protected $primaryKey = 'id_prestasi';
     protected $fillable = [
         'id_tingkat_prestasi',
-        'id_mahasiswa',
         'id_dospem',
         'id_kategori',
         'nama_prestasi',
@@ -26,6 +25,7 @@ class PrestasiMahasiswaModel extends Model
         'bukti_sertifikat',
         'surat_tugas',
         'karya',
+        'tipe_prestasi',
         'status_verifikasi_dospem',
         'status_verifikasi',
     ];
@@ -33,11 +33,6 @@ class PrestasiMahasiswaModel extends Model
     public function tingkatPrestasi()
     {
         return $this->belongsTo(TingkatPrestasiModel::class, 'id_tingkat_prestasi', 'id_tingkat_prestasi');
-    }
-
-    public function mahasiswa()
-    {
-        return $this->belongsTo(MahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
     }
 
     public function dosenPembimbing()
@@ -53,5 +48,11 @@ class PrestasiMahasiswaModel extends Model
     public function periode()
     {
         return $this->belongsTo(PeriodeModel::class, 'id_periode', 'id_periode');
+    }
+    public function anggota()
+    {
+        return $this->belongsToMany(MahasiswaModel::class, 'anggota_prestasi', 'id_prestasi', 'id_mahasiswa')
+            ->withPivot('peran')
+            ->withTimestamps();
     }
 }

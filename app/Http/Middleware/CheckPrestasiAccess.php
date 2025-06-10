@@ -18,27 +18,42 @@ class CheckPrestasiAccess
     {
         $user = $request->user();
         $idPrestasi = $request->route('id');
-        $idMahasiswa = $user->mahasiswa->id_mahasiswa ?? ''; // id mahasiswa yang saat ini sedang login
-        $idDospem = $user->dosen->id_dospem ?? ''; // id dospem yang saat ini sedang login
-        $prestasi = PrestasiMahasiswaModel::findOrFail($idPrestasi);
 
-        switch ($user->role->nama_role) {
+        // Ambil data prestasi
+        $prestasi = PrestasiMahasiswaModel::with('anggota')->find($idPrestasi);
+
+        if (!$prestasi) {
+            abort(404, 'Data prestasi tidak ditemukan');
+        }
+
+        $role = $user->role->nama_role ?? null;
+
+        if (!$role) {
+            abort(403, 'Role tidak dikenali');
+        }
+
+        switch ($role) {
             case 'Mahasiswa':
-                // jika prestasi denngan id mahasiswa yang coba diakses tidak sama dengan id mahasiswa yang login saat ini
-                if ($prestasi->id_mahasiswa != $idMahasiswa) {
-                    abort(403, 'Anda hanya bisa mengakses prestasi milik sendiri');
+                $idMahasiswa = $user->mahasiswa->id_mahasiswa ?? null;
+
+                // Cek apakah mahasiswa ini termasuk anggota prestasi
+                $isAnggota = $prestasi->anggota->contains('id_mahasiswa', $idMahasiswa);
+
+                if (!$idMahasiswa || !$isAnggota) {
+                    abort(403, 'Anda hanya bisa mengakses prestasi yang Anda ikuti');
                 }
                 break;
 
             case 'Dosen Pembimbing':
-                // jika prestasi denngan id dospem yang coba diakses tidak sama dengan id dospem yang login saat ini
-                if ($prestasi->id_dospem != $idDospem) {
+                $idDospem = $user->dosen->id_dospem ?? null;
+
+                if (!$idDospem || $prestasi->id_dospem != $idDospem) {
                     abort(403, 'Anda hanya bisa mengakses prestasi yang Anda bimbing');
                 }
                 break;
 
             case 'Admin':
-
+                // Admin memiliki akses penuh
                 break;
 
             default:
