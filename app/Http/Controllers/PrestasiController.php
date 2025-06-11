@@ -111,6 +111,8 @@ class PrestasiController extends Controller
                 if (auth()->user()->role_id == 1) {
                     if ($item->status_verifikasi === 1) {
                         return '<span class="badge bg-gradient-success">Terverifikasi</span>';
+                    } elseif ($item->status_verifikasi_dospem === 0) {
+                        return '<span class="badge bg-gradient-danger">Ditolak Dospem</span>';
                     } elseif ($item->status_verifikasi === 0) {
                         return '<span class="badge bg-gradient-danger">Ditolak</span>';
                     } else {
@@ -160,7 +162,7 @@ class PrestasiController extends Controller
 
     public function updateVerifikasiAdmin(Request $request, $id)
     {
-        $prestasi = PrestasiMahasiswaModel::find($id);
+        $prestasi = PrestasiMahasiswaModel::with(['anggota'])->find($id);
         $laporanPrestasi = LaporanPrestasiModel::where('id_prestasi', $id);
 
         if (!$prestasi) {
@@ -189,27 +191,34 @@ class PrestasiController extends Controller
             $prestasi->keterangan = $request->keterangan;
             $prestasi->save();
 
-            // Jika prestasi diverifikasi, buat laporan prestasi
+            // Jika prestasi diverifikasi
             if ($prestasi->status_verifikasi == 1) {
-                $laporanData = [
-                    'id_mahasiswa' => $prestasi->id_mahasiswa,
-                    'id_prestasi' => $prestasi->id_prestasi,
-                    'id_prodi' => $prestasi->mahasiswa->id_prodi,
-                    'id_tingkat_prestasi' => $prestasi->id_tingkat_prestasi,
-                    'id_kategori' => $prestasi->id_kategori,
-                ];
+                // Dapatkan semua mahasiswa yang terlibat (pemilik dan anggota)
+                $semuaMahasiswa = $prestasi->anggota;
 
-                LaporanPrestasiModel::updateOrCreate(
-                    ['id_prestasi' => $prestasi->id_prestasi],
-                    $laporanData
-                );
-            } else {
-                // Jika prestasi ditolak, hapus laporan prestasi jika ada
-                if ($prestasi->status_verifikasi == 0 && $laporanPrestasi) {
-                    $laporanPrestasi->delete();
+                // Buat laporan untuk setiap mahasiswa
+                foreach ($semuaMahasiswa as $mahasiswa) {
+                    $laporanData = [
+                        'id_mahasiswa' => $mahasiswa->id_mahasiswa,
+                        'id_prestasi' => $prestasi->id_prestasi,
+                        'id_prodi' => $mahasiswa->id_prodi,
+                        'id_tingkat_prestasi' => $prestasi->id_tingkat_prestasi,
+                        'id_kategori' => $prestasi->id_kategori,
+                    ];
+
+                    LaporanPrestasiModel::updateOrCreate(
+                        [
+                            'id_prestasi' => $prestasi->id_prestasi,
+                            'id_mahasiswa' => $mahasiswa->id_mahasiswa
+                        ],
+                        $laporanData
+                    );
                 }
+            } else {
+                // Jika prestasi ditolak, hapus semua laporan terkait prestasi ini
+                LaporanPrestasiModel::where('id_prestasi', $prestasi->id_prestasi)->delete();
             }
-            // Commit the transaction
+
             DB::commit();
 
             return response()->json([
@@ -240,6 +249,7 @@ class PrestasiController extends Controller
 
         $validator = Validator::make($request->all(), [
             'status_verifikasi_dospem' => 'required|boolean',
+            'keterangan' => 'nullable|string|max:255'
         ]);
 
         if ($validator->fails()) {
@@ -694,7 +704,7 @@ class PrestasiController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Prestasi berhasil diperbarui',
-                'redirect_url' => '/mahasiswa/' . auth()->user()->mahasiswa->id_mahasiswa . '/prestasi',
+                'redirect_url' => '/prestasi/' . $id . '/detail-prestasi',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();

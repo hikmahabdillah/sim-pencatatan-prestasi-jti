@@ -27,6 +27,11 @@
                         </select>
                         <div id="error-status_verifikasi_dospem" class="text-danger error-text"></div>
                     </div>
+                    <div class="form-group" id="keterangan-group">
+                        <label for="keterangan" class="form-label">Keterangan</label>
+                        <textarea id="keterangan" name="keterangan" class="form-control"
+                            {{ !$prestasi->status_verifikasi_dospem ? 'required' : '' }}>{{ $prestasi->keterangan }}</textarea>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Kembali</button>
@@ -38,17 +43,32 @@
 
 <script>
     $(document).ready(function() {
+        $('#status_verifikasi_dospem').change(function() {
+            if ($(this).val() === '0') {
+                $('#keterangan').prop('required', true);
+            } else {
+                $('#keterangan').prop('required', false);
+            }
+        });
         // Initialize validation
         $("#form-edit").validate({
             rules: {
                 status_verifikasi_dospem: {
                     required: true
                 },
+                keterangan: {
+                    required: function() {
+                        return $('#status_verifikasi_dospem').val() === '0';
+                    }
+                }
             },
             messages: {
                 status_verifikasi_dospem: {
                     required: "Status verifikasi wajib dipilih"
                 },
+                keterangan: {
+                    required: "Keterangan wajib diisi ketika prestasi ditolak"
+                }
             },
             errorElement: 'span',
             errorPlacement: function(error, element) {
