@@ -148,6 +148,17 @@
                                 <p class="card-text text-sm mb-2">
                                     ${item.deskripsi.length > 100 ? item.deskripsi.substring(0, 100) + '...' : item.deskripsi}
                                 </p>
+                                <p class="card-text text-sm mb-2">
+                                     ${item.link_pendaftaran && item.link_pendaftaran !== '-' ? 
+                                    `<a href="${item.link_pendaftaran}" target="_blank">${item.link_pendaftaran}</a>` :  '-'}
+                                    </p>
+                                   <p class="card-text text-sm mb-2">
+                                     ${item.status_verifikasi === 1
+                                        ? `<span class="text-success fw-bold">Disetujui</span>`
+                                     : item.status_verifikasi === 0
+                                     ? `<span class="text-danger fw-bold">Ditolak</span>`
+                                     : `<span class="text-secondary fw-bold">Belum Diverifikasi</span>`}
+                                    </p>
                                 <div class="mt-auto d-flex flex-wrap justify-content-end gap-2">
                                     ${item.aksi}
                                 </div>

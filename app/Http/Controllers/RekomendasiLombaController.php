@@ -255,9 +255,20 @@ class RekomendasiLombaController extends Controller
         // Ambil id_dospem dari salah satu rekomendasi jika sudah ada
         $dospemTerpilih = RekomendasiLombaModel::where('id_lomba', $id)
             ->whereNotNull('id_dospem')
-            ->value('id_dospem'); // ambil satu saja (global)
+            ->value('id_dospem');
 
-        return view('rekomendasi.mahasiswa', compact('lomba', 'rekomendasi', 'dospemList', 'dospemTerpilih'))->with([
+        // Convert ke id_pengguna agar cocok dengan value <select>
+        $idPenggunaDospem = null;
+        if ($dospemTerpilih) {
+            $idPenggunaDospem = \App\Models\DosenPembimbingModel::where('id_dospem', $dospemTerpilih)->value('id_pengguna');
+        }
+
+        return view('rekomendasi.mahasiswa', compact(
+            'lomba',
+            'rekomendasi',
+            'dospemList'
+        ))->with([
+            'dospemTerpilih' => $idPenggunaDospem, 
             'empty' => $rekomendasi->isEmpty(),
             'message' => 'Belum ada mahasiswa yang direkomendasikan.'
         ]);
@@ -308,24 +319,32 @@ class RekomendasiLombaController extends Controller
         ]);
     }
 
-    public function simpanDospem(Request $request)
-    {
-        $request->validate([
-            'id_lomba' => 'required|exists:lomba,id_lomba',
-            'id_dospem' => 'required|exists:pengguna,id_pengguna',
-            'id_pengusul' => 'required|exists:pengguna,id_pengguna',
+   public function simpanDospem(Request $request)
+{
+    $request->validate([
+        'id_lomba' => 'required|exists:lomba,id_lomba',
+        'id_dospem' => 'required|exists:pengguna,id_pengguna', // Tetap validasi input awal
+        'id_pengusul' => 'required|exists:pengguna,id_pengguna',
+    ]);
+
+    // Ambil id_dospem dari id_pengguna
+    $dospem = \App\Models\DosenPembimbingModel::where('id_pengguna', $request->id_dospem)->first();
+
+    if (!$dospem) {
+        return back()->withErrors(['id_dospem' => 'Dosen pembimbing tidak ditemukan.']);
+    }
+
+    RekomendasiLombaModel::where('id_lomba', $request->id_lomba)
+        ->update([
+            'id_dospem' => $dospem->id_dospem, // ← gunakan id_dospem yang valid
+            'id_pengusul' => $request->id_pengusul,
+            'role_pengusul' => auth()->user()->role_id ?? 1,
+            'tanggal_rekomendasi' => now(),
         ]);
 
-        RekomendasiLombaModel::where('id_lomba', $request->id_lomba)
-            ->update([
-                'id_dospem' => $request->id_dospem,
-                'id_pengusul' => $request->id_pengusul,
-                'role_pengusul' => auth()->user()->role_id,
-                'tanggal_rekomendasi' => now(),
-            ]);
+    return back()->with('success', 'Dosen pembimbing berhasil ditetapkan untuk semua mahasiswa.');
+}
 
-        return back()->with('success', 'Dosen pembimbing berhasil ditetapkan untuk semua mahasiswa.');
-    }
 
     public function rekombyDosen(Request $request)
     {

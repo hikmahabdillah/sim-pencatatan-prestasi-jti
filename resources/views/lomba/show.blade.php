@@ -71,7 +71,7 @@
             </div>
 
             <div class="mb-2 d-flex align-items-center gap-4">
-                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Berhadiah</p>
+                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Benefit Lomba</p>
                 <p class="mb-0 fw-semibold">:
                     @if ($data->berhadiah == 1)
                     Berhadiah
@@ -202,7 +202,7 @@
                 title: 'Berhasil',
                 text: "{{ session('success') }}",
                 timer: 2500,
-                showConfirmButton: false,
+                showConfirmButton: true,
             });
         </script>
         @endif

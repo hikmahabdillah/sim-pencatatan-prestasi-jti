@@ -43,6 +43,11 @@
             </div>
 
             <div class="mb-2 d-flex align-items-center gap-4">
+                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Tipe Lomba</p>
+                <p class="mb-0 fw-semibold">: {{ $data->tipe_lomba ?? '-' }}</p>
+            </div>
+
+            <div class="mb-2 d-flex align-items-center gap-4">
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Penyelenggara</p>
                 <p class="mb-0 fw-semibold">: {{ $data->penyelenggara ?? '-' }}</p>
             </div>
@@ -59,6 +64,19 @@
                     Berbayar
                     @elseif ($data->biaya_pendaftaran == 0)
                     Tidak Berbayar
+                    @else
+                    -
+                    @endif
+                </p>
+            </div>
+
+            <div class="mb-2 d-flex align-items-center gap-4">
+                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Benefit Lomba</p>
+                <p class="mb-0 fw-semibold">:
+                    @if ($data->berhadiah == 1)
+                    Berhadiah
+                    @elseif ($data->berhadiah == 0)
+                    Tidak Berhadiah
                     @else
                     -
                     @endif

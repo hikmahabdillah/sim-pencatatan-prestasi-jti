@@ -86,10 +86,14 @@
                         <div class="mb-4 flex-grow-1" style="flex: 0 0 calc(33.333% - 1rem); max-width: calc(33.333% - 1rem);">
                             <div class="card shadow h-100 d-flex flex-column">
                                 <!-- Foto -->
-                                <div class="d-flex justify-content-center align-items-center" style="height: 200px; width: 150px; margin: auto; border-radius: 25px; overflow: hidden;">
+                                <div class="d-flex justify-content-center align-items-center" 
+                                style="height: 200px; width: 150px; margin: auto; border-radius: 25px; overflow: hidden;">
+                                <a href="${item.foto ? '/storage/' + item.foto : '/image/fotoDefault.jpg'}" 
+                                    target="_blank">
                                     <img src="${item.foto ? '/storage/' + item.foto : '/image/fotoDefault.jpg'}" 
-                                        alt="Poster Lomba" class="w-100 h-100 shadow-lg" style="object-fit: cover; border-radius: 25px;">
-                                </div>
+                                        alt="Poster Lomba" class="w-100 h-100" style="object-fit: cover; border-radius: 25px;">
+                                </a>
+                            </div>
                                 <!-- Konten Card -->
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title">${item.nama_lomba}</h5>

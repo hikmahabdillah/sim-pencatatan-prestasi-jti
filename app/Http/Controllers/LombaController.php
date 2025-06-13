@@ -105,6 +105,33 @@ class LombaController extends Controller
         ]);
     }
 
+    public function getRekombyDosen(Request $request)
+    {
+        $keyword = $request->keyword;
+        $kategori = $request->kategori;
+
+        $user = auth()->user();
+        $dosenId = $user->id_dosen;
+
+        $query = RekomendasiLombaModel::with([
+            'mahasiswa:id_mahasiswa,nim,nama',
+            'lomba.kategoris'
+        ])
+            ->where('id_dospem', $dosenId)
+            ->when($keyword, function ($q) use ($keyword) {
+                $q->whereHas('lomba', fn($l) => $l->where('nama_lomba', 'like', "%$keyword%"))
+                    ->orWhereHas('mahasiswa', fn($m) => $m->where('nama', 'like', "%$keyword%"));
+            })
+            ->when($kategori, function ($q) use ($kategori) {
+                $q->whereHas('lomba.kategoris', fn($k) => $k->where('kategori.id_kategori', $kategori));
+            })
+            ->orderBy('tanggal_rekomendasi', 'asc');
+
+        return response()->json([
+            'data' => $query->get()
+        ]);
+    }
+
     public function inputLomba()
     {
         $activeMenu = 'input_lomba';
@@ -218,8 +245,8 @@ class LombaController extends Controller
                 'aksi' => auth()->user()->role_id == 2
                     ? '<a href="' . url('/lomba/' . $item->id_lomba . '/showDosen') . '" class="btn btn-info btn-sm">Detail</a>'
                     : (auth()->user()->role_id == 3
-                        ?
-                        : '<a href="' . url('/lomba/' . $item->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>'
+                        ? '<a href="' . url('/lomba/' . $item->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>'
+                        : ''
                     ),
             ];
         });
@@ -250,7 +277,7 @@ class LombaController extends Controller
         $rekomendasi = $query->get();
         $lombaIds = $rekomendasi->pluck('id_lomba');
 
-        $lombaQuery = LombaModel::with('kategoris')->whereIn('id_lomba', $lombaIds);
+        $lombaQuery = LombaModel::with('kategoris')->whereIn('id_lomba', $lombaIds)->where('status_verifikasi', 1);
 
         if ($request->filled('keyword')) {
             $lombaQuery->where('nama_lomba', 'like', '%' . $request->keyword . '%');

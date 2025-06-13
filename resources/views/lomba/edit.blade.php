@@ -55,7 +55,7 @@
                         <div class="text-danger error-text" id="error-id_tingkat_prestasi"></div>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-8">
                         <label>Deskripsi</label>
                         <textarea name="deskripsi" rows="3" class="form-control">{{ $lomba->deskripsi }}</textarea>
                         <div class="text-danger error-text" id="error-deskripsi"></div>
@@ -75,7 +75,7 @@
                     </div>
 
                     <div class="col-md-5">
-                        <label>Link Pendaftaran</label>
+                        <label>Link Pendaftaran (Opsional)</label>
                         <input type="url" name="link_pendaftaran" value="{{ $lomba->link_pendaftaran }}"
                             class="form-control">
                         <div class="text-danger error-text" id="error-link_pendaftaran"></div>
@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label>Berhadiah</label>
+                        <label>Benefit Lomba</label>
                         <select name="berhadiah" class="form-control">
                             <option value="1" {{ $lomba->berhadiah == 1 ? 'selected' : '' }}>Berhadiah</option>
                             <option value="0" {{ $lomba->berhadiah == 0 ? 'selected' : '' }}>Tidak Berhadiah</option>
@@ -129,7 +129,7 @@
                     </div>
 
                     <div class="col-md-8">
-                        <label>Foto (Opsional)</label>
+                        <label>Foto</label>
                         <input type="file" name="foto" class="form-control">
                         <small class="form-text text-muted">
                             Format yang diperbolehkan: .jpg, .jpeg, .png. Maksimal ukuran file: 2MB.

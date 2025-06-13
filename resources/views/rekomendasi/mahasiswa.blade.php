@@ -69,6 +69,11 @@
             @endforeach
         </div>
     </div>
+    <div class="mt-3">
+        <a href="{{ route('lomba.manajemen') }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i> Kembali
+        </a>
+    </div>
     @endif
 </div>
 
