@@ -60,7 +60,7 @@
 
             {{-- Tombol Aksi --}}
             <div class="card-footer d-flex justify-content-between align-items-center bg-transparent">
-                <a href="{{ url()->previous() }}" class="btn btn-secondary">
+                <a href="{{ url('lomba/indexDosen') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Kembali
                 </a>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRekomendasi">
@@ -86,7 +86,7 @@
 
                 <div class="modal-body">
                     <input type="text" class="form-control mb-3" id="searchMahasiswa" placeholder="Cari nama mahasiswa...">
-                    <div class="list-group" style="max-height: 300px; overflow-y: auto;">
+                    <div class="list-group" id="mahasiswaContainer" style="max-height: 300px; overflow-y: auto;">
                         @foreach ($mahasiswaList as $mhs)
                         @php
                         $sudahRekom = \DB::table('rekomendasi_lomba')
@@ -97,78 +97,191 @@
                         <label class="list-group-item d-flex justify-content-between align-items-center mahasiswa-item"
                             data-search="{{ strtolower(trim(($mhs->nama ?? '') . ' ' . ($mhs->nim ?? ''))) }}">
                             <div>
-                            <input type="checkbox" name="id_mahasiswa[]" value="{{ $mhs->id_mahasiswa }}"
-                                class="mahasiswa-checkbox" {{ $sudahRekom ? 'disabled' : '' }}>
-                            <span class="ms-2">{{ $mhs->nama }} ({{ $mhs->nim }})</span>
+                                <input type="checkbox" name="id_mahasiswa[]" value="{{ $mhs->id_mahasiswa }}"
+                                    class="mahasiswa-checkbox" {{ $sudahRekom ? 'disabled' : '' }}>
+                                <span class="ms-2">{{ $mhs->nama }} ({{ $mhs->nim }})</span>
+                            </div>
+                            @if ($sudahRekom)
+                            <span class="badge bg-success">Sudah direkomendasikan</span>
+                            @endif
+                        </label>
+                        @endforeach
                     </div>
-                    @if ($sudahRekom)
-                    <span class="badge bg-success">Sudah direkomendasikan</span>
-                    @endif
-                    </label>
-                    @endforeach
                 </div>
-        </div>
 
-        <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            <button type="submit" class="btn btn-primary" id="btnSubmitRekomendasi">
-                <i class="fas fa-paper-plane me-2"></i>Kirim Rekomendasi
-            </button>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitRekomendasi">
+                        <i class="fas fa-paper-plane me-2"></i>Kirim Rekomendasi
+                    </button>
+                </div>
+            </form>
         </div>
-        </form>
     </div>
-</div>
 </div>
 
 @include('layouts.footer')
+@endsection
 
-{{-- SweetAlert + Search --}}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@push('css')
+<style>
+    /* CSS untuk Search Mahasiswa */
+    .mahasiswa-item.d-none {
+        display: none !important;
+    }
+
+    .mahasiswa-item[style*="display: none"] {
+        display: none !important;
+    }
+
+    .list-group-item {
+        transition: all 0.2s ease;
+    }
+
+    .no-result-message {
+        padding: 2rem 1rem;
+        text-align: center;
+        color: #6c757d;
+        background-color: #f8f9fa;
+        border-radius: 0.375rem;
+        margin: 0.5rem 0;
+    }
+
+    .no-result-message i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.5;
+    }
+
+    /* Highlight search results */
+    .mahasiswa-item.highlight {
+        background-color: #fff3cd;
+        border-color: #ffeaa7;
+    }
+
+    /* Search input focus */
+    #searchMahasiswa:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>
+@endpush
+
+@push('js')
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const searchInput = document.getElementById("searchMahasiswa");
+        const modalRekomendasi = document.getElementById('modalRekomendasi');
+        const mahasiswaContainer = document.getElementById('mahasiswaContainer');
+        let mahasiswaItems = [];
 
-        // Fungsi untuk inisialisasi pencarian
-        function initSearch() {
-            const mahasiswaItems = document.querySelectorAll(".mahasiswa-item");
+        // Fungsi untuk filter mahasiswa
+        function filterMahasiswaList() {
+            const keyword = searchInput.value.toLowerCase().trim();
+            console.log('Searching for:', keyword);
 
-            if (searchInput) {
-                // Tampilkan semua item saat modal dibuka
-                mahasiswaItems.forEach(item => {
-                    item.style.display = "flex";
-                });
+            let visibleCount = 0;
 
-                // Event pencarian
-                searchInput.addEventListener("input", function() {
-                    const keyword = this.value.toLowerCase().trim();
+            mahasiswaItems.forEach((item, index) => {
+                const searchText = item.getAttribute('data-search') || '';
+                const isMatch = keyword === '' || searchText.includes(keyword);
 
-                    mahasiswaItems.forEach(item => {
-                        const searchText = (item.dataset.search || '').toLowerCase().trim();
-                        if (searchText.includes(keyword)) {
-                            item.style.display = "flex";
-                        } else {
-                            item.style.display = "none";
-                        }
-                    });
-                });
+                if (isMatch) {
+                    // Tampilkan item
+                    item.classList.remove('d-none');
+                    item.style.removeProperty('display');
+                    item.style.display = 'flex';
+                    visibleCount++;
+                    console.log(`Item ${index + 1} (${searchText}) - SHOWN`);
+                } else {
+                    // Sembunyikan item
+                    item.classList.add('d-none');
+                    item.style.display = 'none';
+                    console.log(`Item ${index + 1} (${searchText}) - HIDDEN`);
+                }
+            });
+
+            console.log(`Total visible items: ${visibleCount}/${mahasiswaItems.length}`);
+
+            // Tambahkan pesan jika tidak ada hasil
+            let noResultMsg = mahasiswaContainer.querySelector('.no-result-message');
+
+            if (visibleCount === 0 && keyword !== '') {
+                if (!noResultMsg) {
+                    noResultMsg = document.createElement('div');
+                    noResultMsg.className = 'no-result-message';
+                    noResultMsg.innerHTML = '<i class="fas fa-search"></i><br>Tidak ada mahasiswa yang cocok dengan pencarian "<strong>' + keyword + '</strong>"';
+                    mahasiswaContainer.appendChild(noResultMsg);
+                } else {
+                    noResultMsg.innerHTML = '<i class="fas fa-search"></i><br>Tidak ada mahasiswa yang cocok dengan pencarian "<strong>' + keyword + '</strong>"';
+                }
+                noResultMsg.style.display = 'block';
+            } else {
+                if (noResultMsg) {
+                    noResultMsg.style.display = 'none';
+                }
             }
         }
 
-        // Jalankan pencarian saat modal ditampilkan
-        const modalRekomendasi = document.getElementById('modalRekomendasi');
-        if (modalRekomendasi) {
-            modalRekomendasi.addEventListener('shown.bs.modal', function() {
-                initSearch(); // Inisialisasi ulang tiap kali modal dibuka
+        // Event listener untuk input search
+        if (searchInput) {
+            searchInput.addEventListener("input", function() {
+                console.log('Input changed:', this.value);
+                filterMahasiswaList();
+            });
+
+            // Clear search dengan Escape key
+            searchInput.addEventListener("keydown", function(e) {
+                if (e.key === 'Escape') {
+                    this.value = '';
+                    filterMahasiswaList();
+                }
             });
         }
 
-        // Validasi form sebelum submit
+        // Inisialisasi saat modal dibuka
+        if (modalRekomendasi) {
+            modalRekomendasi.addEventListener('shown.bs.modal', function() {
+                console.log('Modal opened');
+
+                // Ambil semua item mahasiswa
+                mahasiswaItems = Array.from(document.querySelectorAll(".mahasiswa-item"));
+                console.log('Found items:', mahasiswaItems.length);
+
+                // Reset search input
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.focus(); // Auto focus ke search input
+                }
+
+                // Tampilkan semua item awalnya
+                mahasiswaItems.forEach(item => {
+                    item.classList.remove('d-none');
+                    item.style.removeProperty('display');
+                    item.style.display = 'flex';
+                });
+
+                // Hide no result message if exists
+                const noResultMsg = mahasiswaContainer.querySelector('.no-result-message');
+                if (noResultMsg) {
+                    noResultMsg.style.display = 'none';
+                }
+            });
+
+            // Reset saat modal ditutup
+            modalRekomendasi.addEventListener('hidden.bs.modal', function() {
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+            });
+        }
+
+        // Validasi sebelum submit
         const form = document.getElementById('formRekomendasi');
         if (form) {
             form.addEventListener('submit', function(e) {
-                const checkboxes = document.querySelectorAll('.mahasiswa-checkbox:checked:not([disabled])');
-
-                if (checkboxes.length === 0) {
+                const checked = document.querySelectorAll('.mahasiswa-checkbox:checked:not([disabled])');
+                if (checked.length === 0) {
                     e.preventDefault();
                     Swal.fire({
                         icon: 'warning',
@@ -176,13 +289,12 @@
                         text: 'Pilih minimal satu mahasiswa untuk direkomendasikan.',
                         confirmButtonText: 'OK'
                     });
-                    return false;
-                }
-
-                const submitBtn = document.getElementById('btnSubmitRekomendasi');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+                } else {
+                    const submitBtn = document.getElementById('btnSubmitRekomendasi');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+                    }
                 }
             });
         }
@@ -196,7 +308,7 @@
         title: 'Berhasil!',
         text: "{{ session('success') }}",
         timer: 3000,
-        showConfirmButton: false
+        showConfirmButton: true
     });
 </script>
 @endif
@@ -222,4 +334,4 @@
     });
 </script>
 @endif
-@endsection
+@endpush

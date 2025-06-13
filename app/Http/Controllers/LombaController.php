@@ -117,10 +117,13 @@ class LombaController extends Controller
             'mahasiswa:id_mahasiswa,nim,nama',
             'lomba.kategoris'
         ])
-            ->where('id_dospem', $dosenId)
+            ->where('id_pengusul', $dosenId)
             ->when($keyword, function ($q) use ($keyword) {
-                $q->whereHas('lomba', fn($l) => $l->where('nama_lomba', 'like', "%$keyword%"))
-                    ->orWhereHas('mahasiswa', fn($m) => $m->where('nama', 'like', "%$keyword%"));
+                $q->where(function ($subQuery) use ($keyword) {
+                    $subQuery->whereHas('lomba', fn($l) => $l->where('nama_lomba', 'like', "%$keyword%"))
+                        ->orWhereHas('mahasiswa', fn($m) => $m->where('nama', 'like', "%$keyword%"))
+                        ->orWhereHas('mahasiswa', fn($m) => $m->where('nim', 'like', "%$keyword%"));
+                });
             })
             ->when($kategori, function ($q) use ($kategori) {
                 $q->whereHas('lomba.kategoris', fn($k) => $k->where('kategori.id_kategori', $kategori));
