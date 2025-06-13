@@ -34,7 +34,9 @@
                                 <!-- Main Information -->
                                 <div class="col-md-8 position-relative">
                                     @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
-                                        <h5 class="text-dark mb-3">Mahasiswa: {{ $prestasi->mahasiswa->nama }}</h5>
+                                        @if ($prestasi->tipe_prestasi === 'individu')
+                                            <h5 class="text-dark mb-3">Mahasiswa: {{ $prestasi->anggota[0]->nama }}</h5>
+                                        @endif
                                         @if ($prestasi->status_verifikasi === 1 && $prestasi->status_verifikasi_dospem === 1)
                                             <span class="badge bg-gradient-success position-absolute end-2 top-2">
                                                 <i class="fas fa-check-circle me-1"></i> Terverifikasi (Admin & Dospem)
@@ -101,6 +103,10 @@
                                             Tanggal:
                                             {{ \Carbon\Carbon::parse($prestasi->tanggal_prestasi)->format('d F Y') }}
                                         </p>
+                                        <p class="text-muted mb-1">
+                                            <i class="fas fa-users me-2 text-success"></i>
+                                            Tipe: {{ $prestasi->tipe_prestasi == 'tim' ? 'Tim' : 'Individu' }}
+                                        </p>
                                     </div>
 
                                     <div class="border-top pt-3">
@@ -129,6 +135,60 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Tambahkan bagian untuk menampilkan anggota tim -->
+                                    @if ($prestasi->tipe_prestasi == 'tim' && $prestasi->anggota->count() > 0)
+                                        @php
+                                            // Pisahkan ketua dan anggota
+                                            $ketua = $prestasi->anggota->first(function ($anggota) {
+                                                return $anggota->pivot->peran === 'ketua';
+                                            });
+
+                                            $anggotaBiasa = $prestasi->anggota->filter(function ($anggota) {
+                                                return $anggota->pivot->peran !== 'ketua';
+                                            });
+                                        @endphp
+
+                                        <div class="table-responsive mt-3">
+                                            <table class="table table-anggota">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Nama</th>
+                                                        <th>Peran</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {{-- Tampilkan ketua pertama --}}
+                                                    @if ($ketua)
+                                                        <tr class="anggota-ketua">
+                                                            <td>
+                                                                {{ $ketua->nama }}
+                                                                <span class="badge badge-peran badge-ketua ms-2"> <i
+                                                                        class="fas fa-crown text-white me-1"
+                                                                        title="Ketua"></i></span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge badge-peran badge-ketua">
+                                                                    {{ ucfirst($ketua->pivot->peran) }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+
+                                                    {{-- Tampilkan anggota biasa --}}
+                                                    @foreach ($anggotaBiasa as $anggota)
+                                                        <tr class="anggota-biasa">
+                                                            <td>{{ $anggota->nama }}</td>
+                                                            <td>
+                                                                <span class="badge badge-peran badge-anggota">
+                                                                    {{ ucfirst($anggota->pivot->peran) }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
 
                                     <div class="border-top pt-3">
                                         <h6 class="text-uppercase text-sm">Deskripsi</h6>
@@ -232,23 +292,67 @@
         data-keyboard="false" data-width="75%" aria-hidden="true"></div>
     @include('layouts.footer')
 @endsection
-
 @push('css')
     <style>
-        .card {
-            border-radius: 0.5rem;
+        /* Tambahkan ini ke bagian CSS Anda */
+        .table-anggota {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        .card-header {
-            border-bottom: 1px solid rgba(0, 0, 0, .125);
+        .table-anggota thead th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
         }
 
-        .text-uppercase {
-            letter-spacing: 0.1em;
+        .table-anggota tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table-anggota tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        /* Styling khusus untuk ketua tim */
+        .anggota-ketua {
+            background-color: #e3f2fd !important;
+            position: relative;
+        }
+
+        .anggota-ketua td:first-child {
+            border-left: 4px solid #2196F3;
+        }
+
+        /* Styling untuk anggota biasa */
+        .anggota-biasa {
+            background-color: #f8f9fa;
+        }
+
+        /* Badge untuk peran */
+        .badge-peran {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: capitalize;
+        }
+
+        .badge-ketua {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .badge-anggota {
+            background-color: #6c757d;
+            color: white;
         }
     </style>
 @endpush
-
 @push('js')
     <script>
         function modalAction(url = '') {

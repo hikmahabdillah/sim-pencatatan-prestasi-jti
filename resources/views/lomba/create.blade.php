@@ -10,12 +10,14 @@
 
             <div class="modal-body row">
                 <!-- Nama Lomba -->
+                <!-- Nama Lomba -->
                 <div class="form-group col-md-6">
                     <label for="nama_lomba">Nama Lomba</label>
                     <input type="text" name="nama_lomba" class="form-control">
                     <div class="text-danger error-text" id="error-nama_lomba"></div>
                 </div>
 
+                <!-- Penyelenggara -->
                 <!-- Penyelenggara -->
                 <div class="form-group col-md-6">
                     <label for="penyelenggara">Penyelenggara</label>
@@ -24,10 +26,12 @@
                 </div>
 
                 <!-- Kategori -->
+                <!-- Kategori -->
                 <div class="form-group col-md-6">
                     <label for="id_kategori" class="form-label">Kategori (Maksimal 3)</label>
                     <select name="id_kategori[]" id="id_kategori" class="form-control select2" multiple required>
                         @foreach ($id_kategori as $k)
+                        <option value="{{ $k->id_kategori }}">{{ $k->nama_kategori }}</option>
                         <option value="{{ $k->id_kategori }}">{{ $k->nama_kategori }}</option>
                         @endforeach
                     </select>
@@ -36,17 +40,20 @@
                 </div>
 
                 <!-- Tingkat Prestasi -->
+                <!-- Tingkat Prestasi -->
                 <div class="form-group col-md-6">
                     <label for="id_tingkat_prestasi">Tingkat Prestasi</label>
                     <select name="id_tingkat_prestasi" class="form-control">
                         <option value="">-- Pilih Tingkat Prestasi --</option>
                         @foreach ($id_tingkat_prestasi as $t)
                         <option value="{{ $t->id_tingkat_prestasi }}">{{ $t->nama_tingkat_prestasi }}</option>
+                        <option value="{{ $t->id_tingkat_prestasi }}">{{ $t->nama_tingkat_prestasi }}</option>
                         @endforeach
                     </select>
                     <div class="text-danger error-text" id="error-id_tingkat_prestasi"></div>
                 </div>
 
+                <!-- Deskripsi -->
                 <!-- Deskripsi -->
                 <div class="form-group col-md-12">
                     <label for="deskripsi">Deskripsi</label>
@@ -55,11 +62,13 @@
                 </div>
 
                 <!-- Periode -->
+                <!-- Periode -->
                 <div class="form-group col-md-4">
                     <label for="periode">Periode</label>
                     <select name="periode" class="form-select">
                         <option value="">-- Pilih Periode --</option>
                         @foreach ($periode as $p)
+                        <option value="{{ $p->id_periode }}">{{ $p->semester }} - {{ $p->tahun_ajaran }}</option>
                         <option value="{{ $p->id_periode }}">{{ $p->semester }} - {{ $p->tahun_ajaran }}</option>
                         @endforeach
                     </select>
@@ -100,12 +109,15 @@
                 </div>
 
                 <!-- Link Pendaftaran -->
+                <!-- Link Pendaftaran -->
                 <div class="form-group col-md-4">
                     <label for="link_pendaftaran">Link Pendaftaran</label>
+                    <input type="url" name="link_pendaftaran" class="form-control">
                     <input type="url" name="link_pendaftaran" class="form-control">
                     <div class="text-danger error-text" id="error-link_pendaftaran"></div>
                 </div>
 
+                <!-- Tanggal Mulai -->
                 <!-- Tanggal Mulai -->
                 <div class="form-group col-md-4">
                     <label for="tanggal_mulai">Tanggal Mulai</label>
@@ -114,6 +126,7 @@
                 </div>
 
                 <!-- Tanggal Selesai -->
+                <!-- Tanggal Selesai -->
                 <div class="form-group col-md-4">
                     <label for="tanggal_selesai">Tanggal Selesai</label>
                     <input type="date" name="tanggal_selesai" class="form-control">
@@ -121,12 +134,14 @@
                 </div>
 
                 <!-- Deadline Pendaftaran -->
+                <!-- Deadline Pendaftaran -->
                 <div class="form-group col-md-4">
                     <label for="deadline_pendaftaran">Deadline Pendaftaran</label>
                     <input type="date" name="deadline_pendaftaran" class="form-control">
                     <div class="text-danger error-text" id="error-deadline_pendaftaran"></div>
                 </div>
 
+                <!-- Foto -->
                 <!-- Foto -->
                 <div class="form-group col-md-8">
                     <label for="foto">Foto Lomba</label>
@@ -146,6 +161,7 @@
     </div>
 </form>
 
+<!-- Script AJAX -->
 <!-- Script AJAX -->
 <script>
     $(document).ready(function() {

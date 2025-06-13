@@ -37,7 +37,7 @@ class MahasiswaController extends Controller
     public function list(Request $request)
     {
         $mahasiswa = MahasiswaModel::with(['prodi', 'pengguna.minatBakat'])->get();
-        
+
         // jika ada isi dari requests front end maka filter
 
         if ($request->filled('status_filter')) {
@@ -134,6 +134,7 @@ class MahasiswaController extends Controller
             ]);
 
             $pengguna->minatBakat()->sync($request->minat_bakat);
+
             // Jika semua proses berhasil, commit transaksi 
             DB::commit();
 
@@ -227,6 +228,12 @@ class MahasiswaController extends Controller
                 $mahasiswa->pengguna->update(['username' => $request->nim]);
                 $mahasiswa->pengguna->update(['password' => Hash::make($request->nim)]);
             }
+
+            // update password
+            if ($request->newPassword) {
+                $mahasiswa->pengguna->update(['password' => Hash::make($request->newPassword)]);
+            }
+
 
             if ($request->status_aktif == 0) {
                 $mahasiswa->pengguna->update([
@@ -580,15 +587,38 @@ class MahasiswaController extends Controller
                             }
 
                             // Handle multiple categories (assuming they're comma-separated in column J)
-                            $categories = explode(',', $row['J']);
+                            // $categories = explode(',', $row['J']);
+                            // $categoryIds = [];
+                            // foreach ($categories as $category) {
+                            //     $category = trim($category);
+                            //     $kategori = KategoriModel::where('nama_kategori', $category)->first();
+                            //     if ($kategori) {
+                            //         $categoryIds[] = $kategori->id_kategori;
+                            //     }
+                            // }
+                            // Handle multiple categories (by ID or name) comma-separated in column J
                             $categoryIds = [];
-                            foreach ($categories as $category) {
-                                $category = trim($category);
-                                $kategori = KategoriModel::where('nama_kategori', $category)->first();
-                                if ($kategori) {
-                                    $categoryIds[] = $kategori->id_kategori;
+
+                            if (!empty($row['J'])) {
+                                $items = explode(',', $row['J']);
+                                foreach ($items as $item) {
+                                    $item = trim($item);
+
+                                    // Jika input angka (ID)
+                                    if (is_numeric($item)) {
+                                        $kategori = KategoriModel::find($item);
+                                    } else {
+                                        // Jika input teks (nama)
+                                        $kategori = KategoriModel::where('nama_kategori', $item)->first();
+                                    }
+
+                                    // Tambahkan ID jika kategori ditemukan
+                                    if ($kategori) {
+                                        $categoryIds[] = $kategori->id_kategori;
+                                    }
                                 }
                             }
+
 
                             // Attach categories
                             if (!empty($categoryIds)) {

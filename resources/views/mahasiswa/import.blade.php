@@ -15,7 +15,8 @@
                             <i class="fa fa-file-excel"></i> Download Template
                         </a>
                     </div>
-                    <small class="form-text text-muted">Unduh template untuk format impor yang benar</small>
+                    <small class="form-text text-muted">⚠️ Perhatian:
+                    File hanya berformat (.xlsx) dan harus mengikuti struktur kolom dari template yang disediakan.</small>
                 </div>
                 <div class="form-group">
                     <label>Pilih File</label>

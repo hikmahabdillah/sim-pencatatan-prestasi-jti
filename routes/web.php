@@ -266,12 +266,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::delete('/{id}/delete', [LombaController::class, 'delete']);
     });
 });
-Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])->name('rekomendasi.detail');
-Route::get('/rekomendasi/lomba/{id}', [RekomendasiLombaController::class, 'index']);
-Route::get('/admin/lomba/{id}/rekomendasi-mahasiswa', [RekomendasiLombaController::class, 'topMahasiswaLomba']);
-Route::post('/rekomendasi/simpan-dospem', [RekomendasiLombaController::class, 'simpanDospem'])->name('rekomendasi.simpanDospem');
-Route::post('/rekomendasi/by-dosen', [RekomendasiLombaController::class, 'rekombyDosen'])->name('rekomendasi.byDosen');
-
+Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])
+    ->name('rekomendasi.detail');
 
 // contoh route untuk penerapannya
 Route::prefix('cobacrud')->group(function () {

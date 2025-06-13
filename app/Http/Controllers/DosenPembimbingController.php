@@ -203,6 +203,11 @@ class DosenPembimbingController extends Controller
                 $dosen->pengguna->update(['password' => Hash::make($request->nip)]);
             }
 
+            // update password
+            if ($request->newPassword) {
+                $dosen->pengguna->update(['password' => Hash::make($request->newPassword)]);
+            }
+
             if ($request->status_aktif == 0) {
                 $dosen->pengguna->update([
                     'status_aktif' => $request->status_aktif,
@@ -541,14 +546,37 @@ class DosenPembimbingController extends Controller
                                 ]);
                             }
 
-                            // Handle multiple categories (assuming they're comma-separated in column E)
-                            $categories = explode(',', $row['E']);
+                            // // Handle multiple categories (assuming they're comma-separated in column E)
+                            // $categories = explode(',', $row['E']);
+                            // $categoryIds = [];
+                            // foreach ($categories as $category) {
+                            //     $category = trim($category);
+                            //     $kategori = KategoriModel::where('nama_kategori', $category)->first();
+                            //     if ($kategori) {
+                            //         $categoryIds[] = $kategori->id_kategori;
+                            //     }
+                            // }
+
+                            // Handle multiple categories (by ID or name) comma-separated in column E
                             $categoryIds = [];
-                            foreach ($categories as $category) {
-                                $category = trim($category);
-                                $kategori = KategoriModel::where('nama_kategori', $category)->first();
-                                if ($kategori) {
-                                    $categoryIds[] = $kategori->id_kategori;
+
+                            if (!empty($row['E'])) {
+                                $items = explode(',', $row['E']);
+                                foreach ($items as $item) {
+                                    $item = trim($item);
+
+                                    // Jika input angka (ID)
+                                    if (is_numeric($item)) {
+                                        $kategori = KategoriModel::find($item);
+                                    } else {
+                                        // Jika input teks (nama)
+                                        $kategori = KategoriModel::where('nama_kategori', $item)->first();
+                                    }
+
+                                    // Tambahkan ID jika kategori ditemukan
+                                    if ($kategori) {
+                                        $categoryIds[] = $kategori->id_kategori;
+                                    }
                                 }
                             }
 
