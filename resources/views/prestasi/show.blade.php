@@ -137,6 +137,17 @@
                                     </div>
                                     <!-- Tambahkan bagian untuk menampilkan anggota tim -->
                                     @if ($prestasi->tipe_prestasi == 'tim' && $prestasi->anggota->count() > 0)
+                                        @php
+                                            // Pisahkan ketua dan anggota
+                                            $ketua = $prestasi->anggota->first(function ($anggota) {
+                                                return $anggota->pivot->peran === 'ketua';
+                                            });
+
+                                            $anggotaBiasa = $prestasi->anggota->filter(function ($anggota) {
+                                                return $anggota->pivot->peran !== 'ketua';
+                                            });
+                                        @endphp
+
                                         <div class="table-responsive mt-3">
                                             <table class="table table-anggota">
                                                 <thead>
@@ -146,19 +157,29 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($prestasi->anggota as $anggota)
-                                                        <tr
-                                                            class="{{ $anggota->pivot->peran === 'ketua' ? 'anggota-ketua' : 'anggota-biasa' }}">
+                                                    {{-- Tampilkan ketua pertama --}}
+                                                    @if ($ketua)
+                                                        <tr class="anggota-ketua">
                                                             <td>
-                                                                {{ $anggota->nama }}
-                                                                @if ($anggota->pivot->peran === 'ketua')
-                                                                    <span
-                                                                        class="badge badge-peran badge-ketua ms-2">Ketua</span>
-                                                                @endif
+                                                                {{ $ketua->nama }}
+                                                                <span class="badge badge-peran badge-ketua ms-2"> <i
+                                                                        class="fas fa-crown text-white me-1"
+                                                                        title="Ketua"></i></span>
                                                             </td>
                                                             <td>
-                                                                <span
-                                                                    class="badge badge-peran {{ $anggota->pivot->peran === 'ketua' ? 'badge-ketua' : 'badge-anggota' }}">
+                                                                <span class="badge badge-peran badge-ketua">
+                                                                    {{ ucfirst($ketua->pivot->peran) }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+
+                                                    {{-- Tampilkan anggota biasa --}}
+                                                    @foreach ($anggotaBiasa as $anggota)
+                                                        <tr class="anggota-biasa">
+                                                            <td>{{ $anggota->nama }}</td>
+                                                            <td>
+                                                                <span class="badge badge-peran badge-anggota">
                                                                     {{ ucfirst($anggota->pivot->peran) }}
                                                                 </span>
                                                             </td>
@@ -306,20 +327,6 @@
 
         .anggota-ketua td:first-child {
             border-left: 4px solid #2196F3;
-        }
-
-        .anggota-ketua::after {
-            content: "Ketua";
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: #2196F3;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: bold;
         }
 
         /* Styling untuk anggota biasa */
