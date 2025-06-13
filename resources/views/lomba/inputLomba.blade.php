@@ -27,8 +27,10 @@
 
     <!-- Card Lomba -->
     <div class="card p-3">
-        <div class="row" id="lomba-card-list">
-            {{-- Data akan di-load via AJAX --}}
+        <div class="mx-auto" style="width: 80vw; max-width: 1200px;">
+            <div id="lomba-card-list" class="d-flex flex-wrap gap-3">
+                {{-- Data akan di-load via AJAX --}}
+            </div>
         </div>
     </div>
 
@@ -81,7 +83,7 @@
                 } else {
                     res.data.forEach(item => {
                         html += `
-                        <div class="col-md-4 mb-4">
+                        <div class="mb-4 flex-grow-1" style="flex: 0 0 calc(33.333% - 1rem); max-width: calc(33.333% - 1rem);">
                             <div class="card shadow h-100 d-flex flex-column">
                                 <!-- Foto -->
                                 <div class="d-flex justify-content-center align-items-center" style="height: 200px; width: 150px; margin: auto; border-radius: 25px; overflow: hidden;">
@@ -91,7 +93,9 @@
                                 <!-- Konten Card -->
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title">${item.nama_lomba}</h5>
-                                    <h7 class="card-title">${item.nama_kategori}</h7>
+                                   <div class="mb-2">
+                                    ${item.nama_kategori.split(',').map(k => `<span class="badge bg-gradient-warning me-1">${k.trim()}</span>`).join('')}
+                                    </div>
                                     <p class="card-text text-sm mb-2">
                                         ${item.deskripsi.length > 100 ? item.deskripsi.substring(0, 100) + '...' : item.deskripsi}
                                     </p>

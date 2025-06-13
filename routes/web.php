@@ -219,11 +219,14 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
     // Routes untuk LombaController
     Route::prefix('lomba')->group(function () {
         Route::get('/', [LombaController::class, 'indexMahasiswa']);
+        Route::get('/indexDosen', [LombaController::class, 'indexDosen']);
         Route::get('/input-lomba', [LombaController::class, 'inputLomba']);
         Route::get('/create', [LombaController::class, 'create']);
         Route::post('/store', [LombaController::class, 'store']);
+        Route::get('/{id}/showDosen', [LombaController::class, 'showDosen']);
         Route::post('/listLomba', [LombaController::class, 'listLomba']);
         Route::post('/listInput', [LombaController::class, 'listInput']);
+        Route::post('/listRekom', [LombaController::class, 'listRekom']);
 
         Route::middleware(['authorize:Admin'])->group(function () {
             Route::get('/manajemen-lomba', [LombaController::class, 'indexAdmin'])->name('lomba.manajemen');
@@ -263,8 +266,12 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::delete('/{id}/delete', [LombaController::class, 'delete']);
     });
 });
-Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])
-    ->name('rekomendasi.detail');
+Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])->name('rekomendasi.detail');
+Route::get('/rekomendasi/lomba/{id}', [RekomendasiLombaController::class, 'index']);
+Route::get('/admin/lomba/{id}/rekomendasi-mahasiswa', [RekomendasiLombaController::class, 'topMahasiswaLomba']);
+Route::post('/rekomendasi/simpan-dospem', [RekomendasiLombaController::class, 'simpanDospem'])->name('rekomendasi.simpanDospem');
+Route::post('/rekomendasi/by-dosen', [RekomendasiLombaController::class, 'rekombyDosen'])->name('rekomendasi.byDosen');
+
 
 // contoh route untuk penerapannya
 Route::prefix('cobacrud')->group(function () {

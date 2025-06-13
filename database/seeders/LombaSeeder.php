@@ -18,7 +18,6 @@ class LombaSeeder extends Seeder
                 'id_lomba' => 1,
                 'nama_lomba' => 'UI / UX Fest 2025',
                 'penyelenggara' => 'Panitia UI/UX Fest',
-                'id_kategori' => 11, // UI/UX
                 'id_tingkat_prestasi' => 3, // Provinsi
                 'deskripsi' => 'Kompetisi desain UI/UX tingkat Provinsi.',
                 'link_pendaftaran' => 'https://uifest2025.com',
@@ -30,6 +29,7 @@ class LombaSeeder extends Seeder
                 'deadline_pendaftaran' => now()->addDays(20),
                 'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
+                'catatan_penolakan' => null,
                 'added_by' => 1,
                 'role_pengusul' => 1,
                 'created_at' => now(),
@@ -39,7 +39,6 @@ class LombaSeeder extends Seeder
                 'id_lomba' => 2,
                 'nama_lomba' => 'Hacknation Malang',
                 'penyelenggara' => 'Hacknation Indonesia',
-                'id_kategori' => 12, // Keamanan Siber
                 'id_tingkat_prestasi' => 2, // Kota
                 'deskripsi' => 'Kompetisi hacking dan keamanan siber tingkat kota.',
                 'link_pendaftaran' => 'https://hacknation.id/malang',
@@ -51,6 +50,7 @@ class LombaSeeder extends Seeder
                 'deadline_pendaftaran' => now()->addDays(27),
                 'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
+                'catatan_penolakan' => null,
                 'added_by' => 1,
                 'role_pengusul' => 1,
                 'created_at' => now(),
@@ -60,7 +60,6 @@ class LombaSeeder extends Seeder
                 'id_lomba' => 3,
                 'nama_lomba' => 'Innovillage Telkom',
                 'penyelenggara' => 'Telkom Indonesia',
-                'id_kategori' => 13, // Inovasi Teknologi
                 'id_tingkat_prestasi' => 4, // Nasional
                 'deskripsi' => 'Kompetisi inovasi sosial berbasis teknologi.',
                 'link_pendaftaran' => 'https://innovillage.id',
@@ -72,6 +71,7 @@ class LombaSeeder extends Seeder
                 'deadline_pendaftaran' => now()->addDays(5),
                 'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
+                'catatan_penolakan' => null,
                 'added_by' => 1,
                 'role_pengusul' => 1,
                 'created_at' => now(),
@@ -81,7 +81,6 @@ class LombaSeeder extends Seeder
                 'id_lomba' => 4,
                 'nama_lomba' => 'AI Innovation Challenge by BRIN',
                 'penyelenggara' => 'BRIN',
-                'id_kategori' => 14, // Artificial Intelligence
                 'id_tingkat_prestasi' => 5, // Internasional
                 'deskripsi' => 'Kompetisi AI bertaraf internasional.',
                 'link_pendaftaran' => 'https://ai-challenge.brin.go.id',
@@ -93,6 +92,7 @@ class LombaSeeder extends Seeder
                 'deadline_pendaftaran' => now()->addDays(8),
                 'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
+                'catatan_penolakan' => null,
                 'added_by' => 1,
                 'role_pengusul' => 1,
                 'created_at' => now(),
@@ -102,7 +102,6 @@ class LombaSeeder extends Seeder
                 'id_lomba' => 5,
                 'nama_lomba' => 'UI / UX Competition',
                 'penyelenggara' => 'Komunitas Desain Kota Malang',
-                'id_kategori' => 11, // UI/UX
                 'id_tingkat_prestasi' => 2, // Kota
                 'deskripsi' => 'Lomba UI/UX tingkat kota untuk mahasiswa dan umum.',
                 'link_pendaftaran' => 'https://uixmalang.id/kompetisi',
@@ -114,6 +113,7 @@ class LombaSeeder extends Seeder
                 'deadline_pendaftaran' => now()->addDays(15),
                 'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
+                'catatan_penolakan' => null,
                 'added_by' => 1,
                 'role_pengusul' => 1,
                 'created_at' => now(),
@@ -123,7 +123,6 @@ class LombaSeeder extends Seeder
                 'id_lomba' => 6,
                 'nama_lomba' => 'Web Developer Fest',
                 'penyelenggara' => 'Komunitas Coding Kampus',
-                'id_kategori' => 15, // Pemrograman Web
                 'id_tingkat_prestasi' => 1, // Kampus
                 'deskripsi' => 'Lomba web development antar mahasiswa kampus.',
                 'link_pendaftaran' => 'https://webdevfest.com',
@@ -135,6 +134,7 @@ class LombaSeeder extends Seeder
                 'deadline_pendaftaran' => now()->addDays(35),
                 'foto' => 'fotolomba.jpg',
                 'status_verifikasi' => true,
+                'catatan_penolakan' => null,
                 'added_by' => 1,
                 'role_pengusul' => 1,
                 'created_at' => now(),

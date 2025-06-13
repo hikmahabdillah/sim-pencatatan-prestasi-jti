@@ -33,10 +33,12 @@
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Tingkat Lomba</p>
                 <p class="mb-0 fw-semibold">: {{ $data->tingkatPrestasi->nama_tingkat_prestasi ?? '-' }}</p>
             </div>
-
             <div class="mb-2 d-flex align-items-center gap-4">
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Kategori Lomba</p>
-                <p class="mb-0 fw-semibold">: {{ $data->kategori->nama_kategori ?? '-' }}</p>
+                <p class="mb-0 fw-semibold">
+                    :
+                    {{ $data->kategoris->pluck('nama_kategori')->implode(', ') }}
+                </p>
             </div>
 
             <div class="mb-2 d-flex align-items-center gap-4">

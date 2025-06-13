@@ -36,7 +36,10 @@
 
             <div class="mb-2 d-flex align-items-center gap-4">
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Kategori Lomba</p>
-                <p class="mb-0 fw-semibold">: {{ $data->kategori->nama_kategori ?? '-' }}</p>
+                <p class="mb-0 fw-semibold">
+                    :
+                    {{ $data->kategoris->pluck('nama_kategori')->implode(', ') }}
+                </p>
             </div>
 
             <div class="mb-2 d-flex align-items-center gap-4">
@@ -98,6 +101,12 @@
                     @endif
                 </p>
             </div>
+            @if ($data->status_verifikasi === 0 && $data->catatan_penolakan)
+            <div class="mb-2 d-flex align-items-center gap-4">
+                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Catatan Penolakan</p>
+                <p class="mb-0 fw-semibold">: {{ $data->catatan_penolakan }}</p>
+            </div>
+            @endif
             <div class="card-footer d-flex justify-content-between align-items-center bg-transparent">
                 <a href="{{ url()->previous() }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Kembali

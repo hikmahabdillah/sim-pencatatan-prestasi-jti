@@ -37,7 +37,7 @@ class PrestasiMahasiswaSeeder extends Seeder
         $manualData = [
             [
                 'nama_prestasi' => 'UI Challenge Nasional',
-                'id_kategori' => 11,
+                'id_kategori' => 10,
                 'id_tingkat_prestasi' => 3,
                 'juara' => 'Juara 1',
                 'tahun' => 2023,
@@ -51,7 +51,7 @@ class PrestasiMahasiswaSeeder extends Seeder
             ],
             [
                 'nama_prestasi' => 'National Tech Fair',
-                'id_kategori' => 11,
+                'id_kategori' => 10,
                 'id_tingkat_prestasi' => 3,
                 'juara' => 'Juara 1',
                 'tahun' => 2024,
@@ -79,14 +79,14 @@ class PrestasiMahasiswaSeeder extends Seeder
             ],
             [
                 'nama_prestasi' => 'Mobile App Development',
-                'id_kategori' => 19,
+                'id_kategori' => 20,
                 'id_tingkat_prestasi' => 2,
                 'juara' => 'Harapan 2',
                 'tahun' => 2024,
             ],
             [
                 'nama_prestasi' => 'Seni Digital Exhibition',
-                'id_kategori' => 20,
+                'id_kategori' => 21,
                 'id_tingkat_prestasi' => 5,
                 'juara' => 'Harapan 3',
                 'tahun' => 2023,

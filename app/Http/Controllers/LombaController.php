@@ -7,7 +7,9 @@ use App\Models\KategoriModel;
 use App\Models\PenggunaModel;
 use App\Models\TingkatPrestasiModel;
 use App\Models\PeriodeModel;
+use App\Models\MahasiswaModel;
 use App\Models\RoleModel;
+use App\Models\RekomendasiLombaModel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -44,7 +46,59 @@ class LombaController extends Controller
 
         $kategori = KategoriModel::all();
 
+        // Ambil id mahasiswa yg login
+        $idMahasiswa = auth()->user()->mahasiswa->id_mahasiswa;
+
+        // Ambil rekomendasi lomba dari model RekomendasiLomba
+        $rekomendasi = RekomendasiLombaModel::where('id_mahasiswa', $idMahasiswa)
+            ->orderByDesc('skor_moora')
+            ->get();
+
+        // Ambil data lomba yang terkait
+        $lombaIds = $rekomendasi->pluck('id_lomba');
+        $lombaList = LombaModel::with('kategoris')
+            ->whereIn('id_lomba', $lombaIds)
+            ->get()
+            ->keyBy('id_lomba');
+
+        // Gabungkan data rekomendasi dengan data lomba lengkap
+        $rekomLomba = $rekomendasi->map(function ($rek) use ($lombaList) {
+            $lomba = $lombaList[$rek->id_lomba];
+            return [
+                'id_lomba' => $lomba->id_lomba,
+                'nama_lomba' => $lomba->nama_lomba,
+                'kategoris' => $lomba->kategoris->map(function ($kat) {
+                    return [
+                        'id_kategori' => $kat->id_kategori,
+                        'nama_kategori' => $kat->nama_kategori,
+                    ];
+                }),
+                'deskripsi' => $lomba->deskripsi,
+                'link_pendaftaran' => $lomba->link_pendaftaran,
+                'foto' => $lomba->foto,
+                'skor_moora' => $rek->skor_moora,
+            ];
+        });
+
         return view('lomba.indexMahasiswa', [
+            'breadcrumb' => $breadcrumb,
+            'activeMenu' => $activeMenu,
+            'kategori' => $kategori,
+            'rekomLomba' => $rekomLomba,  
+        ]);
+    }
+
+    public function indexDosen()
+    {
+        $activeMenu = 'Lomba';
+        $breadcrumb = (object)[
+            'title' => 'Lomba',
+            'list' => ['Lomba']
+        ];
+
+        $kategori = KategoriModel::all();
+
+        return view('lomba.indexDosen', [
             'breadcrumb' => $breadcrumb,
             'activeMenu' => $activeMenu,
             'kategori' => $kategori,
@@ -74,9 +128,11 @@ class LombaController extends Controller
         $filterKategori = $request->input('kategori');
         $statusVerifikasi = $request->input('status_verifikasi');
 
-        $lomba = LombaModel::with('kategori')
+        $lomba = LombaModel::with('kategoris')
             ->when($filterKategori, function ($query, $filterKategori) {
-                return $query->where('id_kategori', $filterKategori);
+                return $query->whereHas('kategoris', function ($q) use ($filterKategori) {
+                    $q->where('kategori.id_kategori', $filterKategori);
+                });
             })
             ->when($keyword, function ($query, $keyword) {
                 return $query->where('nama_lomba', 'like', "%{$keyword}%");
@@ -87,23 +143,39 @@ class LombaController extends Controller
             ->when($statusVerifikasi === 'sudah', function ($query) {
                 return $query->whereIn('status_verifikasi', [0, 1]);
             })
+            ->when($statusVerifikasi === 'rekom', function ($query) {
+                return $query->whereIn('status_verifikasi', [1]);
+            })
+            ->distinct()
             ->get();
 
-        // Buat return sesuai kebutuhan front end
-        $data = $lomba->map(function ($item) {
+        $data = $lomba->map(function ($item) use ($statusVerifikasi) {
+            $aksi = '';
+
+            if ($statusVerifikasi === 'rekom') {
+                $aksi = '<a href="' . url('/rekomendasi/lomba/' . $item->id_lomba) . '" class="btn btn-primary btn-sm">Rekomendasi Mahasiswa</a>';
+            } else {
+                $aksi = auth()->user()->role_id == 1
+                    ? '<a href="' . url('/lomba/' . $item->id_lomba . '/show') . '" class="btn btn-info btn-sm">Detail</a> ' .
+                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ' .
+                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Hapus</button>'
+                    : '<a href="' . url('/lomba/' . $item->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>';
+            }
+
             return [
                 'id_lomba' => $item->id_lomba,
                 'nama_lomba' => $item->nama_lomba,
-                'nama_kategori' => $item->kategori->nama_kategori ?? '-',
+                'kategoris' => $item->kategoris->map(function ($k) {
+                    return [
+                        'id_kategori' => $k->id_kategori,
+                        'nama_kategori' => $k->nama_kategori,
+                    ];
+                }),
                 'deskripsi' => $item->deskripsi,
                 'link_pendaftaran' => $item->link_pendaftaran,
                 'foto' => $item->foto,
                 'status_verifikasi' => $item->status_verifikasi,
-                'aksi' => auth()->user()->role_id == 1
-                    ? '<a href="' . url('/lomba/' . $item->id_lomba . '/show') . '" class="btn btn-info btn-sm">Detail</a> ' .
-                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ' .
-                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Hapus</button>'
-                    : '<a href="' . url('/lomba/' . $item->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>',
+                'aksi' => $aksi,
             ];
         });
 
@@ -116,20 +188,16 @@ class LombaController extends Controller
         $filterKategori = $request->input('kategori');
         $statusVerifikasi = $request->input('status_verifikasi');
 
-        $lomba = LombaModel::with('kategori')
-            ->where('status_verifikasi', 1) // hanya lomba yang disetujui
-            ->whereDate('deadline_pendaftaran', '>=', Carbon::today()) // tambahkan ini
+        $lomba = LombaModel::with('kategoris')
+            ->where('status_verifikasi', 1)
+            ->whereDate('deadline_pendaftaran', '>=', Carbon::today())
             ->when($filterKategori, function ($query, $filterKategori) {
-                return $query->where('id_kategori', $filterKategori);
+                return $query->whereHas('kategoris', function ($q) use ($filterKategori) {
+                    $q->where('kategori.id_kategori', $filterKategori);
+                });
             })
             ->when($keyword, function ($query, $keyword) {
                 return $query->where('nama_lomba', 'like', "%{$keyword}%");
-            })
-            ->when($statusVerifikasi === 'belum', function ($query) {
-                return $query->whereNull('status_verifikasi');
-            })
-            ->when($statusVerifikasi === 'sudah', function ($query) {
-                return $query->whereIn('status_verifikasi', [0, 1]);
             })
             ->get();
 
@@ -137,20 +205,82 @@ class LombaController extends Controller
             return [
                 'id_lomba' => $item->id_lomba,
                 'nama_lomba' => $item->nama_lomba,
-                'nama_kategori' => $item->kategori->nama_kategori ?? '-',
+                'kategoris' => $item->kategoris->map(function ($kat) {
+                    return [
+                        'id_kategori' => $kat->id_kategori,
+                        'nama_kategori' => $kat->nama_kategori,
+                    ];
+                }),
                 'deskripsi' => $item->deskripsi,
                 'link_pendaftaran' => $item->link_pendaftaran,
                 'foto' => $item->foto,
                 'status_verifikasi' => $item->status_verifikasi,
-                'aksi' => auth()->user()->role_id == 1
-                    ? '<a href="' . url('/lomba/' . $item->id_lomba . '/show') . '" class="btn btn-info btn-sm">Detail</a> ' .
-                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ' .
-                    '<button onclick="modalAction(\'' . url('/lomba/' . $item->id_lomba . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Hapus</button>'
-                    : '<a href="' . url('/lomba/' . $item->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>',
+                'aksi' => auth()->user()->role_id == 2
+                    ? '<a href="' . url('/lomba/' . $item->id_lomba . '/showDosen') . '" class="btn btn-info btn-sm">Detail</a>'
+                    : (auth()->user()->role_id == 3
+                        ?
+                        : '<a href="' . url('/lomba/' . $item->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>'
+                    ),
             ];
         });
 
         return response()->json(['data' => $data]);
+    }
+    
+    public function listRekom(Request $request)
+    {
+        $idMahasiswa = auth()->user()->mahasiswa->id_mahasiswa;
+
+        // Selalu generate ulang rekomendasi
+        app()->call('App\Http\Controllers\RekomendasiLombaController@prosesRekomendasi', [
+            'idMahasiswa' => $idMahasiswa
+        ]);
+
+        // Ambil data rekomendasi terbaru dan urutkan berdasarkan skor_moora desc
+        $query = RekomendasiLombaModel::where('id_mahasiswa', $idMahasiswa)
+            ->orderByDesc('skor_moora');
+
+        // Filter tipe_lomba jika ada
+        if ($request->has('tipe_lomba') && in_array($request->tipe_lomba, ['tim', 'individu'])) {
+            $query->whereHas('lomba', function ($q) use ($request) {
+                $q->where('tipe_lomba', $request->tipe_lomba);
+            });
+        }
+
+        $rekomendasi = $query->get();
+        $lombaIds = $rekomendasi->pluck('id_lomba');
+
+        $lombaQuery = LombaModel::with('kategoris')->whereIn('id_lomba', $lombaIds);
+
+        if ($request->filled('keyword')) {
+            $lombaQuery->where('nama_lomba', 'like', '%' . $request->keyword . '%');
+        }
+
+        $lombaList = $lombaQuery->get()->keyBy('id_lomba');
+
+        $filteredRekom = $rekomendasi->filter(fn($rek) => $lombaList->has($rek->id_lomba));
+
+        $rank = 1;
+        $data = $filteredRekom->map(function ($rek) use ($lombaList, &$rank) {
+            $lomba = $lombaList[$rek->id_lomba];
+
+            return [
+                'id_lomba' => $lomba->id_lomba,
+                'nama_lomba' => $lomba->nama_lomba,
+                'kategoris' => $lomba->kategoris->map(fn($kat) => [
+                    'id_kategori' => $kat->id_kategori,
+                    'nama_kategori' => $kat->nama_kategori,
+                ]),
+                'deskripsi' => $lomba->deskripsi,
+                'link_pendaftaran' => $lomba->link_pendaftaran,
+                'foto' => $lomba->foto,
+                'skor_moora' => $rek->skor_moora,
+                'aksi' => '<a href="' . url('/lomba/' . $lomba->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>',
+                'rank' => $rank <= 5 ? $rank++ : null, // Hanya beri rank untuk 5 teratas
+            ];
+        });
+
+        return response()->json(['data' => $data->values()]);
     }
 
     public function listInput(Request $request)
@@ -158,12 +288,14 @@ class LombaController extends Controller
         $user = auth()->user();
         $keyword = $request->input('keyword');
         $filterKategori = $request->input('kategori');
-        $filterStatus = $request->input('status_verifikasi'); // Tambahan
+        $filterStatus = $request->input('status_verifikasi');
 
-        $lomba = LombaModel::with(['kategori', 'tingkatPrestasi'])
+        $lomba = LombaModel::with(['kategoris', 'tingkatPrestasi'])
             ->where('added_by', $user->id_pengguna)
             ->when($filterKategori, function ($query, $filterKategori) {
-                return $query->where('id_kategori', $filterKategori);
+                return $query->whereHas('kategoris', function ($q) use ($filterKategori) {
+                    $q->where('kategori.id_kategori', $filterKategori);
+                });
             })
             ->when($filterStatus !== null, function ($query) use ($filterStatus) {
                 return $query->where('status_verifikasi', $filterStatus);
@@ -171,17 +303,21 @@ class LombaController extends Controller
             ->when($keyword, function ($query, $keyword) {
                 return $query->where(function ($q) use ($keyword) {
                     $q->where('nama_lomba', 'like', "%{$keyword}%")
-                        ->orWhereHas('kategori', fn($q2) => $q2->where('nama_kategori', 'like', "%{$keyword}%"))
+                        ->orWhereHas('kategoris', fn($q2) => $q2->where('nama_kategori', 'like', "%{$keyword}%"))
                         ->orWhereHas('tingkatPrestasi', fn($q3) => $q3->where('nama_tingkat_prestasi', 'like', "%{$keyword}%"));
                 });
             });
 
         return DataTables::of($lomba->get())
             ->addIndexColumn()
-            ->addColumn('kategori', fn($l) => $l->kategori->nama_kategori ?? '-')
-            ->addColumn('nama_kategori', fn($l) => $l->kategori->nama_kategori ?? '-')
+            ->addColumn('kategori', function ($l) {
+                return $l->kategoris->pluck('nama_kategori')->implode(', ') ?: '-';
+            })
+            ->addColumn('nama_kategori', function ($l) {
+                return $l->kategoris->pluck('nama_kategori')->implode(', ') ?: '-';
+            })
             ->addColumn('tingkat', fn($l) => $l->tingkatPrestasi->nama_tingkat_prestasi ?? '-')
-            ->addColumn('aksi', function ($l) use ($user) {
+            ->addColumn('aksi', function ($l) {
                 $btn = '<a href="' . url('/lomba/' . $l->id_lomba . '/showInput') . '" class="btn btn-info btn-sm">Detail</a>';
                 $btn .= '<button onclick="modalAction(\'' . url('/lomba/' . $l->id_lomba . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/lomba/' . $l->id_lomba . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Hapus</button>';
@@ -213,6 +349,21 @@ class LombaController extends Controller
         return view('lomba.showMahasiswa', compact('data', 'breadcrumb'));
     }
 
+    public function showDosen($id)
+    {
+        $data = LombaModel::with(['kategori', 'tingkatPrestasi', 'pengusul', 'periode'])->find($id);
+        $activeMenu = 'lomba';
+        $breadcrumb = (object)[
+            'title' => 'Detail Lomba',
+            'list' => ['Detail Lomba']
+        ];
+
+        $mahasiswaList = MahasiswaModel::all(); 
+
+        return view('lomba.showDosen', compact('data', 'breadcrumb', 'mahasiswaList'));
+    }
+
+
     public function showInput($id)
     {
         $data = LombaModel::with(['kategori', 'tingkatPrestasi', 'pengusul', 'periode'])->find($id);
@@ -228,18 +379,24 @@ class LombaController extends Controller
     {
         $lomba = LombaModel::findOrFail($id_lomba);
         $lomba->status_verifikasi = 1;
+        $lomba->catatan_penolakan = null; // Kosongkan catatan penolakan jika disetujui
         $lomba->save();
 
         return redirect()->back()->with('success', 'Data Lomba berhasil disetujui!');
     }
 
-    public function tolak($id_lomba)
+    public function tolak(Request $request, $id_lomba)
     {
+        $request->validate([
+            'catatan_penolakan' => 'required|string'
+        ]);
+
         $lomba = LombaModel::findOrFail($id_lomba);
         $lomba->status_verifikasi = 0;
+        $lomba->catatan_penolakan = $request->catatan_penolakan;
         $lomba->save();
 
-        return redirect()->back()->with('success', 'Data Lomba berhasil ditolak!');
+        return redirect()->back()->with('success', 'Data Lomba berhasil ditolak.');
     }
 
     public function create()
@@ -255,30 +412,63 @@ class LombaController extends Controller
 
     public function store(Request $request)
     {
-        $rules = [
+        $validator = Validator::make($request->all(), [
             'nama_lomba' => 'required|string|max:255',
             'penyelenggara' => 'required|string|max:255',
-            'id_kategori' => 'required|exists:kategori,id_kategori',
+            'id_kategori' => 'required|array|max:3',
+            'id_kategori.*' => 'exists:kategori,id_kategori',
             'id_tingkat_prestasi' => 'required|exists:tingkat_prestasi,id_tingkat_prestasi',
             'deskripsi' => 'required|string',
             'periode' => 'required|integer',
             'link_pendaftaran' => 'nullable|url',
+            'tipe_lomba' => 'required|in:individu,tim',
             'biaya_pendaftaran' => 'required|boolean',
             'berhadiah' => 'required|boolean',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'deadline_pendaftaran' => 'required|date|before_or_equal:tanggal_mulai',
             'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
+        ], [
+            'nama_lomba.required' => 'Nama lomba wajib diisi.',
+            'nama_lomba.max' => 'Nama lomba maksimal 255 karakter.',
+            'penyelenggara.required' => 'Penyelenggara wajib diisi.',
+            'penyelenggara.max' => 'Penyelenggara maksimal 255 karakter.',
+            'id_kategori.required' => 'Kategori harus dipilih.',
+            'id_kategori.array' => 'Kategori harus berupa array.',
+            'id_kategori.max' => 'Maksimal pilih 3 kategori.',
+            'id_kategori.*.exists' => 'Kategori tidak valid.',
+            'id_tingkat_prestasi.required' => 'Tingkat prestasi harus dipilih.',
+            'id_tingkat_prestasi.exists' => 'Tingkat prestasi tidak valid.',
+            'deskripsi.required' => 'Deskripsi wajib diisi.',
+            'periode.required' => 'Periode harus dipilih.',
+            'periode.integer' => 'Format periode tidak valid.',
+            'link_pendaftaran.url' => 'Link pendaftaran harus berupa URL yang valid.',
+            'tipe_lomba.required' => 'Tipe lomba wajib diisi.',
+            'tipe_lomba.in' => 'Tipe lomba harus individu atau tim.',
+            'biaya_pendaftaran.required' => 'Silakan pilih apakah lomba ini berbayar atau tidak.',
+            'biaya_pendaftaran.boolean' => 'Format biaya tidak valid.',
+            'berhadiah.required' => 'Silakan pilih apakah lomba ini berhadiah atau tidak.',
+            'berhadiah.boolean' => 'Format berhadiah tidak valid.',
+            'tanggal_mulai.required' => 'Tanggal mulai wajib diisi.',
+            'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+            'tanggal_selesai.required' => 'Tanggal selesai wajib diisi.',
+            'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai tidak boleh lebih awal dari tanggal mulai.',
+            'deadline_pendaftaran.required' => 'Deadline pendaftaran wajib diisi.',
+            'deadline_pendaftaran.date' => 'Format deadline tidak valid.',
+            'deadline_pendaftaran.before_or_equal' => 'Deadline pendaftaran harus sebelum atau sama dengan tanggal mulai.',
+            'foto.required' => 'Foto wajib diunggah.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus jpg, jpeg, atau png.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
+        ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Validasi gagal.',
-                'msgField' => $validator->errors()
-            ]);
+                'message' => 'Validasi gagal. Silakan periksa kembali input Anda.',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         if (!auth()->check()) {
@@ -291,11 +481,11 @@ class LombaController extends Controller
         $data = $request->only([
             'nama_lomba',
             'penyelenggara',
-            'id_kategori',
             'id_tingkat_prestasi',
             'deskripsi',
             'periode',
             'link_pendaftaran',
+            'tipe_lomba',
             'biaya_pendaftaran',
             'berhadiah',
             'tanggal_mulai',
@@ -303,7 +493,6 @@ class LombaController extends Controller
             'deadline_pendaftaran',
         ]);
 
-        // Simpan foto jika ada
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
@@ -311,13 +500,14 @@ class LombaController extends Controller
             $data['foto'] = 'foto_lomba/' . $filename;
         }
 
-        // Data tambahan
         $data['added_by'] = auth()->user()->id_pengguna;
         $data['role_pengusul'] = auth()->user()->role_id;
         $data['status_verifikasi'] = auth()->user()->role_id == 1 ? true : null;
 
+        $lomba = LombaModel::create($data);
+        // Simpan relasi ke tabel pivot kategori_lomba_pivot
+        $lomba->kategoris()->attach($request->id_kategori);
 
-        LombaModel::create($data);
 
         return response()->json([
             'status' => true,
@@ -328,7 +518,7 @@ class LombaController extends Controller
 
     public function edit($id_lomba)
     {
-        $lomba = LombaModel::with(['kategori', 'tingkatPrestasi', 'periode'])->find($id_lomba);
+        $lomba = LombaModel::with(['kategoris', 'tingkatPrestasi', 'periode'])->find($id_lomba);
 
         if (!$lomba) {
             return response()->json([
@@ -367,7 +557,8 @@ class LombaController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_lomba' => 'required|string|max:255',
             'penyelenggara' => 'required|string|max:255',
-            'id_kategori' => 'required|exists:kategori,id_kategori',
+            'id_kategori' => 'required|array|max:3',
+            'id_kategori.*' => 'exists:kategori,id_kategori',
             'id_tingkat_prestasi' => 'required|exists:tingkat_prestasi,id_tingkat_prestasi',
             'deskripsi' => 'required|string',
             'periode' => 'required|exists:periode,id_periode',
@@ -378,19 +569,47 @@ class LombaController extends Controller
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'deadline_pendaftaran' => 'required|date|before_or_equal:tanggal_mulai',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'nama_lomba.required' => 'Nama lomba wajib diisi.',
+            'nama_lomba.max' => 'Nama lomba maksimal 255 karakter.',
+            'penyelenggara.required' => 'Penyelenggara wajib diisi.',
+            'penyelenggara.max' => 'Penyelenggara maksimal 255 karakter.',
+            'id_kategori.required' => 'Kategori harus dipilih.',
+            'id_kategori.exists' => 'Kategori tidak valid.',
+            'id_tingkat_prestasi.required' => 'Tingkat prestasi harus dipilih.',
+            'id_tingkat_prestasi.exists' => 'Tingkat prestasi tidak valid.',
+            'deskripsi.required' => 'Deskripsi wajib diisi.',
+            'periode.required' => 'Periode harus dipilih.',
+            'periode.exists' => 'Periode tidak valid.',
+            'link_pendaftaran.url' => 'Link pendaftaran harus berupa URL yang valid.',
+            'biaya_pendaftaran.required' => 'Silakan pilih apakah lomba ini berbayar atau tidak.',
+            'biaya_pendaftaran.in' => 'Format biaya tidak valid.',
+            'berhadiah.required' => 'Silakan pilih apakah lomba ini berhadiah atau tidak.',
+            'berhadiah.in' => 'Format berhadiah tidak valid.',
+            'tanggal_mulai.required' => 'Tanggal mulai wajib diisi.',
+            'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+            'tanggal_selesai.required' => 'Tanggal selesai wajib diisi.',
+            'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai tidak boleh lebih awal dari tanggal mulai.',
+            'deadline_pendaftaran.required' => 'Deadline pendaftaran wajib diisi.',
+            'deadline_pendaftaran.date' => 'Format deadline tidak valid.',
+            'deadline_pendaftaran.before_or_equal' => 'Deadline pendaftaran harus sebelum atau sama dengan tanggal mulai.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Format foto harus jpg, jpeg, atau png.',
+            'foto.max' => 'Ukuran foto maksimal 2MB.',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
+                'message' => 'Validasi gagal. Silahkan cek kembali inputan anda',
                 'errors' => $validator->errors()
-            ]);
+            ], 422);
         }
 
         // Update data lomba dari request
         $lomba->nama_lomba = $request->nama_lomba;
         $lomba->penyelenggara = $request->penyelenggara;
-        $lomba->id_kategori = $request->id_kategori;
         $lomba->id_tingkat_prestasi = $request->id_tingkat_prestasi;
         $lomba->deskripsi = $request->deskripsi;
         $lomba->periode = $request->periode;
@@ -419,6 +638,7 @@ class LombaController extends Controller
         }
 
         $lomba->save();
+        $lomba->kategoris()->sync($request->id_kategori);
 
         return response()->json([
             'status' => true,
@@ -428,7 +648,7 @@ class LombaController extends Controller
 
     public function confirm_delete($id)
     {
-        $data = LombaModel::with(['kategori', 'tingkatPrestasi', 'periode'])->findOrFail($id);
+        $data = LombaModel::with(['kategoris', 'tingkatPrestasi', 'periode'])->findOrFail($id);
         return view('lomba.delete', ['data' => $data]);
     }
 
