@@ -28,4 +28,9 @@ class KategoriModel extends Model
             'id_pengguna'
         )->withTimestamps();
     }
+
+    public function lombas()
+    {
+        return $this->belongsToMany(LombaModel::class, 'kategori_lomba_pivot', 'id_kategori', 'id_lomba');
+    }
 }

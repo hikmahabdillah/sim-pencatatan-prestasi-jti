@@ -36,7 +36,15 @@
 
             <div class="mb-2 d-flex align-items-center gap-4">
                 <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Kategori Lomba</p>
-                <p class="mb-0 fw-semibold">: {{ $data->kategori->nama_kategori ?? '-' }}</p>
+                <p class="mb-0 fw-semibold">
+                    :
+                    {{ $data->kategoris->pluck('nama_kategori')->implode(', ') }}
+                </p>
+            </div>
+
+            <div class="mb-2 d-flex align-items-center gap-4">
+                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Tipe Lomba</p>
+                <p class="mb-0 fw-semibold">: {{ $data->tipe_lomba ?? '-' }}</p>
             </div>
 
             <div class="mb-2 d-flex align-items-center gap-4">
@@ -63,7 +71,7 @@
             </div>
 
             <div class="mb-2 d-flex align-items-center gap-4">
-                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Berhadiah</p>
+                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Benefit Lomba</p>
                 <p class="mb-0 fw-semibold">:
                     @if ($data->berhadiah == 1)
                     Berhadiah
@@ -112,6 +120,12 @@
                     @endif
                 </p>
             </div>
+            @if ($data->status_verifikasi === 0 && $data->catatan_penolakan)
+            <div class="mb-2 d-flex align-items-center gap-4">
+                <p class="mb-0 text-muted small fw-bold" style="min-width: 150px;">Catatan Penolakan</p>
+                <p class="mb-0 fw-semibold">: {{ $data->catatan_penolakan }}</p>
+            </div>
+            @endif
             <div class="card-footer d-flex justify-content-between align-items-center bg-transparent">
                 <a href="{{ route('lomba.manajemen') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Kembali
@@ -150,16 +164,31 @@
 
             document.getElementById('btn-tolak').addEventListener('click', function() {
                 Swal.fire({
-                    title: 'Konfirmasi',
-                    text: "Apakah Anda yakin ingin menolak lomba ini?",
-                    icon: 'warning',
+                    title: 'Konfirmasi Penolakan',
+                    text: "Tuliskan alasan penolakan lomba ini:",
+                    input: 'textarea',
+                    inputPlaceholder: 'Contoh: Lomba tidak relevan dengan bidang studi...',
+                    inputAttributes: {
+                        'aria-label': 'Catatan penolakan'
+                    },
                     showCancelButton: true,
-                    confirmButtonText: 'Ya, tolak',
+                    confirmButtonText: 'Tolak',
                     cancelButtonText: 'Batal',
-                    reverseButtons: true
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Catatan penolakan wajib diisi!';
+                        }
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        document.getElementById('form-tolak').submit();
+                        // Buat input hidden untuk kirim catatan
+                        let form = document.getElementById('form-tolak');
+                        let input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'catatan_penolakan';
+                        input.value = result.value;
+                        form.appendChild(input);
+                        form.submit();
                     }
                 });
             });
@@ -173,7 +202,7 @@
                 title: 'Berhasil',
                 text: "{{ session('success') }}",
                 timer: 2500,
-                showConfirmButton: false,
+                showConfirmButton: true,
             });
         </script>
         @endif
