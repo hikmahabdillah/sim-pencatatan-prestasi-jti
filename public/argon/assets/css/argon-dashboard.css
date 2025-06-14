@@ -26148,3 +26148,12 @@ pre[class*="language-"] {
 .fotoPreview:hover {
     transform: scale(1.1) rotate(10deg);
 }
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
