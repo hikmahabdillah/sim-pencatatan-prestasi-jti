@@ -111,13 +111,14 @@ class LombaController extends Controller
         $kategori = $request->kategori;
 
         $user = auth()->user();
-        $dosenId = $user->id_dosen;
+        $pengusulId = $user->id_pengguna; // ini yang kamu simpan di rekomendasi
 
         $query = RekomendasiLombaModel::with([
             'mahasiswa:id_mahasiswa,nim,nama',
             'lomba.kategoris'
         ])
-            ->where('id_pengusul', $dosenId)
+        ->where('id_pengusul', $pengusulId)
+            ->where('role_pengusul', 2)
             ->when($keyword, function ($q) use ($keyword) {
                 $q->where(function ($subQuery) use ($keyword) {
                     $subQuery->whereHas('lomba', fn($l) => $l->where('nama_lomba', 'like', "%$keyword%"))
