@@ -15,6 +15,8 @@ use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\LombaController;
 use App\Http\Controllers\TingkatPrestasiController;
 use App\Http\Controllers\RekomendasiLombaController;
+use App\Notifications\RekomendasiLombaBaru;
+use Illuminate\Notifications\DatabaseNotification;
 use App\Models\KategoriModel;
 
 /*
@@ -274,6 +276,22 @@ Route::get('/admin/lomba/{id}/rekomendasi-mahasiswa', [RekomendasiLombaControlle
 Route::post('/rekomendasi/simpan-dospem', [RekomendasiLombaController::class, 'simpanDospem'])->name('rekomendasi.simpanDospem');
 Route::post('/rekomendasi/by-dosen', [RekomendasiLombaController::class, 'rekombyDosen'])->name('rekomendasi.byDosen');
 
+Route::get('/notifikasi/baca/{id}', function ($id) {
+    $notification = DatabaseNotification::findOrFail($id);
+
+    // Validasi: Hanya user yang punya notifikasi yang boleh akses
+    if (
+        $notification->notifiable_type !== get_class(auth()->user()) ||
+        $notification->notifiable_id !== auth()->id()
+    ) {
+        abort(403, 'Anda tidak berhak mengakses notifikasi ini.');
+    }
+
+    $notification->markAsRead();
+
+    // Redirect ke URL yang ditentukan, fallback ke dashboard jika tidak ada
+    return redirect($notification->data['url'] ?? '/dashboard');
+})->name('notifikasi.baca');
 
 
 // contoh route untuk penerapannya

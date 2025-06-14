@@ -8,6 +8,7 @@ use App\Models\PrestasiMahasiswaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Notifications\DatabaseNotification;
 
 class DashboardController extends Controller
 {
@@ -177,6 +178,11 @@ class DashboardController extends Controller
         $prestasiMahasiswaPerSemester = $this->prestasiMahasiswaPerSemester();
         $rankMahasiswaByPrestasi = $this->rankMahasiswaByPrestasi();
 
+        // Ambil notifikasi yang bertipe RekomendasiLombaBaru
+        $notifRekomendasiLomba = DatabaseNotification::where('type', 'App\Notifications\RekomendasiLombaBaru')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('dashboard', [
             'breadcrumb' => $breadcrumb,
             'activeMenu' => $activeMenu,
@@ -187,6 +193,7 @@ class DashboardController extends Controller
             'lombaByKategori' => $LombaByKategori,
             'prestasiMahasiswaPerSemester' => $prestasiMahasiswaPerSemester,
             'rankMahasiswaByPrestasi' => $rankMahasiswaByPrestasi,
+            'notifRekomendasiLomba' => $notifRekomendasiLomba,
         ]);
     }
 }

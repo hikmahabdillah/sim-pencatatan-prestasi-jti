@@ -12,6 +12,7 @@ use App\Models\PenggunaModel;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use App\Notifications\RekomendasiLombaBaru;
 
 class RekomendasiLombaController extends Controller
 {
@@ -28,6 +29,11 @@ class RekomendasiLombaController extends Controller
             ->whereDate('deadline_pendaftaran', '>=', now()->toDateString())
             ->where('status_verifikasi', 1)
             ->get();
+
+        // Ambil ID lomba yang sudah pernah direkomendasikan sebelumnya
+        $existingLombaIds = RekomendasiLombaModel::where('id_mahasiswa', $idMahasiswa)
+            ->pluck('id_lomba')
+            ->toArray();
 
         $steps = [];
         $dataSkor = []; 
@@ -185,6 +191,11 @@ class RekomendasiLombaController extends Controller
 
             $normalisasi[] = $n;
         }
+        // Cari hanya yang belum pernah dikirimi notifikasi
+        $lombaBaru = RekomendasiLombaModel::where('id_mahasiswa', $idMahasiswa)
+            ->where('notifikasi_terkirim', false)
+            ->pluck('id_lomba')
+            ->toArray();
 
 
         //  Simpan ke database
@@ -210,6 +221,19 @@ class RekomendasiLombaController extends Controller
         }
         $lombaMap = LombaModel::pluck('nama_lomba', 'id_lomba');
         $kategoriMinat = KategoriModel::whereIn('id_kategori', $minatMahasiswa)->get();
+
+        // Kirim notifikasi ke mahasiswa
+        if (!empty($lombaBaru)) {
+            $namaLombaBaru = LombaModel::whereIn('id_lomba', $lombaBaru)->pluck('nama_lomba')->implode(', ');
+
+            $pengusul = auth()->user()->name ?? 'Sistem';
+            $mahasiswa->pengguna->notify(new RekomendasiLombaBaru($pengusul, $namaLombaBaru));
+
+            // Update semua yang sudah dikirimi notif
+            RekomendasiLombaModel::where('id_mahasiswa', $idMahasiswa)
+                ->whereIn('id_lomba', $lombaBaru)
+                ->update(['notifikasi_terkirim' => true]);
+        }
 
         //  Return ke view
         return [

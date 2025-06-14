@@ -40,6 +40,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pengusul')->nullable()->index(); // dari pengguna
             $table->unsignedBigInteger('role_pengusul')->nullable()->index(); // 1=admin, 2=dosen
 
+            $table->boolean('notifikasi_terkirim')->default(false);
+
             // Timestamp rekomendasi
             $table->dateTime('tanggal_rekomendasi')->useCurrent();
 
