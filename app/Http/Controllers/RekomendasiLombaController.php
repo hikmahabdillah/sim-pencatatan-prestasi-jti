@@ -397,7 +397,7 @@ class RekomendasiLombaController extends Controller
             $request->validate([
                 'id_lomba' => 'required|exists:lomba,id_lomba',
                 'id_mahasiswa' => 'required|array|min:1',
-                'id_mahasiswa.*' => 'exists:mahasiswa,id_mahasiswa', // Perbaiki: gunakan id_mahasiswa bukan id
+                'id_mahasiswa.*' => 'exists:mahasiswa,id_mahasiswa',
             ]);
 
             $userId = auth()->user()->id_pengguna;
@@ -427,6 +427,18 @@ class RekomendasiLombaController extends Controller
                     if ($created) {
                         $successCount++;
                         Log::info("Successfully created recommendation ID: " . $created->id);
+
+                        // Ambil model mahasiswa dan penggunanya
+                        $mahasiswa = \App\Models\MahasiswaModel::with('pengguna')->find($idMahasiswa);
+
+                        if ($mahasiswa && $mahasiswa->pengguna) {
+                            $mahasiswa->pengguna->notify(new \App\Notifications\RekomendasiLombaDospem(
+                                $request->id_lomba,
+                                auth()->user()->dosen->nama ?? auth()->user()->username // atau nama lengkap dosennya jika ada field-nya
+                            ));
+                        } else {
+                            Log::warning("Pengguna untuk mahasiswa ID $idMahasiswa tidak ditemukan.");
+                        }
                     } else {
                         Log::error("Failed to create recommendation for mahasiswa: $idMahasiswa");
                     }
