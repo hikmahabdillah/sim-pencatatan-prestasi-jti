@@ -171,24 +171,30 @@ return asset('image/fotoDefault.jpg');
                         aria-expanded="false">
                         <i class="fa fa-bell cursor-pointer"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="notifDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end px-3 py-3 me-sm-n4 w-auto shadow"
+                        style="background-color: #fff; color: #212529; max-width: 95vw; width: 100%; min-width: 300px; max-width: 360px; max-height: 400px; overflow-y: auto; border-radius: 12px;"
+                        aria-labelledby="notifDropdown">
                         <li>
-                            <h6 class="text-sm text-dark fw-bold px-3">Notifikasi Terbaru</h6>
+                            <h6 class="font-weight-bold" style="color: #212529;">Notifikasi Terbaru</h6>
                         </li>
                         @forelse ($navbarNotifications as $notif)
                         <li class="mb-2">
                             <a class="dropdown-item border-radius-md" href="{{ route('notifikasi.baca', $notif->id) }}">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
-                                        <img src="{{ getProfilePhoto() }}" class="avatar avatar-sm me-3"
-                                            onerror="this.onerror=null;this.src='{{ asset('image/fotoDefault.jpg') }}';">
+                                        <img src="{{ getProfilePhoto() }}"
+                                            class="avatar avatar-sm me-3"
+                                            onerror="this.onerror=null;this.src='{{ asset('image/fotoDefault.jpg') }}';"
+                                            alt="Profile Photo">
                                     </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="text-sm font-weight-normal mb-1">
+                                    <div class="d-flex flex-column justify-content-center" style="min-width: 0;">
+                                        <h6 class="text-sm font-weight-normal mb-1 text-break">
                                             <i class="fa fa-bell text-warning me-1"></i>
-                                            <span class="font-weight-bold">{{ $notif->data['title'] ?? 'Notifikasi' }}</span>
+                                            <span class="font-weight-bold" style="color: #212529;">
+                                                {{ $notif->data['title'] ?? 'Notifikasi' }}
+                                            </span>
                                         </h6>
-                                        <p class="text-xs text-dark mb-0">
+                                        <p class="text-xs text-dark mb-0 text-break" style="white-space: normal;">
                                             {{ $notif->data['pesan'] ?? '' }}
                                         </p>
                                         <p class="text-xs text-secondary mb-0">
