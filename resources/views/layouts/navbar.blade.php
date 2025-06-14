@@ -167,30 +167,59 @@
 
                 @auth
                     <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-white p-0" id="notifDropdown" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                        @php
+                            $unreadCount = auth()->user()->unreadNotifications->count();
+                        @endphp
+
+                        <a href="javascript:;" class="nav-link text-white p-0 position-relative" id="notifDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-bell cursor-pointer"></i>
+                            @if ($unreadCount > 0)
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ $unreadCount }}
+                                </span>
+                            @endif
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="notifDropdown">
-                            <li class="mb-2">
-                                <a class="dropdown-item border-radius-md" href="javascript:;">
-                                    <div class="d-flex py-1">
-                                        <div class="my-auto">
-                                            <img src="{{ asset('img/team-2.jpg') }}" class="avatar avatar-sm me-3"
-                                                onerror="this.onerror=null;this.src='{{ asset('image/default-avatar.jpg') }}'">
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">
-                                                <span class="font-weight-bold">Welcome</span> to the system
-                                            </h6>
-                                            <p class="text-xs text-secondary mb-0">
-                                                <i class="fa fa-clock me-1"></i>
-                                                Just now
-                                            </p>
-                                        </div>
-                                    </div>
-                                </a>
+                        <ul class="dropdown-menu dropdown-menu-end px-3 py-3 me-sm-n4 w-auto shadow"
+                            style="background-color: #fff; color: #212529; width: 100%; min-width: 400px; max-width: 460px; max-height: 400px; overflow-y: auto; border-radius: 12px;"
+                            aria-labelledby="notifDropdown">
+                            <li>
+                                <h6 class="font-weight-bold" style="color: #212529!important;">Notifikasi Terbaru</h6>
                             </li>
+                            @forelse ($navbarNotifications as $notif)
+                                <li class="mb-2">
+                                    <a class="dropdown-item border-radius-md"
+                                        href="{{ route('notifikasi.baca', $notif->id) }}">
+                                        <div class="d-flex py-1">
+                                            <div class="">
+                                                <img src="{{ getProfilePhoto() }}"
+                                                    class="avatar avatar-sm me-3 rounded-circle" style="object-fit: cover"
+                                                    onerror="this.onerror=null;this.src='{{ asset('image/fotoDefault.jpg') }}';"
+                                                    alt="Profile Photo">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center" style="min-width: 0;">
+                                                <h6 class="text-sm font-weight-normal mb-1 text-break">
+                                                    <i class="fa fa-bell text-warning me-1"></i>
+                                                    <span class="font-weight-bold" style="color: #212529;">
+                                                        {{ $notif->data['title'] ?? 'Notifikasi' }}
+                                                    </span>
+                                                </h6>
+                                                <p class="text-xs text-dark mb-0 text-break"
+                                                    style="white-space: normal; width: 100%;">
+                                                    {{ $notif->data['pesan'] ?? '' }}
+                                                </p>
+                                                <p class="text-xs text-secondary mb-0 mt-2">
+                                                    <i class="fa fa-clock me-1"></i>
+                                                    {{ $notif->created_at->locale('id')->diffForHumans() }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            @empty
+                                <li class="text-center text-secondary text-sm px-3 py-2">Tidak ada notifikasi baru</li>
+                            @endforelse
                         </ul>
                     </li>
                 @endauth

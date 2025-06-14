@@ -27,6 +27,9 @@ class RekomendasiLombaModel extends Model
         'n_c5',
         'n_c6',
         'skor_moora',
+        'id_dospem',
+        'id_pengusul',
+        'role_pengusul',
         'tanggal_rekomendasi',
     ];
 
