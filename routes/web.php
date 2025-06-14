@@ -244,7 +244,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/confirm_delete', [LombaController::class, 'confirm_delete']);
         Route::delete('/{id}/delete', [LombaController::class, 'delete']);
         Route::get('/{id}/showInput', [LombaController::class, 'showInput']);
-        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa']);
+        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa'])->name('lomba.showMahasiswa');
 
         Route::get('/{id}/show', [LombaController::class, 'show']);
     });
@@ -260,7 +260,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::post('/listAdmin', [LombaController::class, 'listAdmin']);
         Route::get('/create', [LombaController::class, 'create']);
         Route::get('/{id}/show', [LombaController::class, 'show']);
-        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa']);
+        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa'])->name('lomba.showMahasiswa');
         Route::get('/{id}/showInput', [LombaController::class, 'showInput']);
         Route::post('/manajemen-lomba/{id}/setujui', [LombaController::class, 'setujui']);
         Route::post('/manajemen-lomba/{id}/tolak', [LombaController::class, 'tolak']);

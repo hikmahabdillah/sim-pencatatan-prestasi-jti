@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Notifications\RekomendasiLombaBaru;
+use App\Notifications\AdminRekomendasiNotification;
 
 class RekomendasiLombaController extends Controller
 {
@@ -366,7 +367,24 @@ class RekomendasiLombaController extends Controller
             'tanggal_rekomendasi' => now(),
         ]);
 
-    return back()->with('success', 'Dosen pembimbing berhasil ditetapkan untuk semua mahasiswa.');
+        $mahasiswaList = RekomendasiLombaModel::where('id_lomba', $request->id_lomba)->get();
+
+        foreach ($mahasiswaList as $rekom) {
+            $mahasiswaModel = \App\Models\MahasiswaModel::find($rekom->id_mahasiswa);
+
+            if ($mahasiswaModel && $mahasiswaModel->id_pengguna) {
+                $userMahasiswa = \App\Models\PenggunaModel::find($mahasiswaModel->id_pengguna);
+
+                if ($userMahasiswa) {
+                    $userMahasiswa->notify(new AdminRekomendasiNotification(
+                        $request->id_lomba,
+                        $dospem->nama ?? 'Dosen Pembimbing'
+                    ));
+                }
+            }
+        }
+
+        return back()->with('success', 'Dosen pembimbing berhasil ditetapkan untuk semua mahasiswa.');
 }
 
 
