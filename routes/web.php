@@ -248,50 +248,28 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
 
         Route::get('/{id}/show', [LombaController::class, 'show']);
     });
-
-    // Routes untuk LombaController
-    Route::prefix('lomba')->group(function () {
-        Route::get('/manajemen-lomba', [LombaController::class, 'indexAdmin'])->name('lomba.manajemen');
-        Route::get('/', [LombaController::class, 'indexMahasiswa']);
-        Route::get('/input-lomba', [LombaController::class, 'inputLomba']);
-        Route::post('/store', [LombaController::class, 'store']);
-        Route::post('/listLomba', [LombaController::class, 'listLomba']);
-        Route::post('/listInput', [LombaController::class, 'listInput']);
-        Route::post('/listAdmin', [LombaController::class, 'listAdmin']);
-        Route::get('/create', [LombaController::class, 'create']);
-        Route::get('/{id}/show', [LombaController::class, 'show']);
-        Route::get('/{id}/showMahasiswa', [LombaController::class, 'showMahasiswa'])->name('lomba.showMahasiswa');
-        Route::get('/{id}/showInput', [LombaController::class, 'showInput']);
-        Route::post('/manajemen-lomba/{id}/setujui', [LombaController::class, 'setujui']);
-        Route::post('/manajemen-lomba/{id}/tolak', [LombaController::class, 'tolak']);
-        Route::get('/{id}/edit', [LombaController::class, 'edit']);
-        Route::put('/{id}/update', [LombaController::class, 'update']);
-        Route::get('/{id}/confirm_delete', [LombaController::class, 'confirm_delete']);
-        Route::delete('/{id}/delete', [LombaController::class, 'delete']);
-    });
 });
+
 Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])->name('rekomendasi.detail');
 Route::get('/rekomendasi/lomba/{id}', [RekomendasiLombaController::class, 'index']);
 Route::get('/admin/lomba/{id}/rekomendasi-mahasiswa', [RekomendasiLombaController::class, 'topMahasiswaLomba']);
 Route::post('/rekomendasi/simpan-dospem', [RekomendasiLombaController::class, 'simpanDospem'])->name('rekomendasi.simpanDospem');
 Route::post('/rekomendasi/by-dosen', [RekomendasiLombaController::class, 'rekombyDosen'])->name('rekomendasi.byDosen');
 
-Route::get('/notifikasi/baca/{id}', function ($id) {
-    $notification = DatabaseNotification::findOrFail($id);
+Route::middleware('auth')->get('/notifikasi/baca/{id}', function ($id) {
+    $notification = auth()->user()->notifications()->find($id);
 
-    // Validasi: Hanya user yang punya notifikasi yang boleh akses
-    if (
-        $notification->notifiable_type !== get_class(auth()->user()) ||
-        $notification->notifiable_id !== auth()->id()
-    ) {
-        abort(403, 'Anda tidak berhak mengakses notifikasi ini.');
+    if (!$notification) {
+        return redirect('/dashboard')->with('error', 'Notifikasi tidak ditemukan.');
     }
 
     $notification->markAsRead();
 
-    // Redirect ke URL yang ditentukan, fallback ke dashboard jika tidak ada
-    return redirect($notification->data['url'] ?? '/dashboard');
-})->name('notifikasi.baca');
+    // Pastikan URL ada dalam data notifikasi
+    $redirectUrl = $notification->data['url'] ?? '/dashboard';
+
+    return redirect($redirectUrl);
+})->name('notifikasi.baca')->where('id', '[0-9a-f-]+');
 
 
 // contoh route untuk penerapannya

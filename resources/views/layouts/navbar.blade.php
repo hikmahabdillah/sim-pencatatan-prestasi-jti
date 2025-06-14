@@ -167,9 +167,17 @@ return asset('image/fotoDefault.jpg');
 
                 @auth
                 <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-white p-0" id="notifDropdown" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    @php
+                    $unreadCount = auth()->user()->unreadNotifications->count();
+                    @endphp
+
+                    <a href="javascript:;" class="nav-link text-white p-0 position-relative" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-bell cursor-pointer"></i>
+                        @if($unreadCount > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ $unreadCount }}
+                        </span>
+                        @endif
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end px-3 py-3 me-sm-n4 w-auto shadow"
                         style="background-color: #fff; color: #212529; max-width: 95vw; width: 100%; min-width: 300px; max-width: 360px; max-height: 400px; overflow-y: auto; border-radius: 12px;"
@@ -199,7 +207,7 @@ return asset('image/fotoDefault.jpg');
                                         </p>
                                         <p class="text-xs text-secondary mb-0">
                                             <i class="fa fa-clock me-1"></i>
-                                            {{ $notif->created_at->diffForHumans() }}
+                                            {{ $notif->created_at->locale('id')->diffForHumans() }}
                                         </p>
                                     </div>
                                 </div>

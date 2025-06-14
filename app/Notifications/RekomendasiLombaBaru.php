@@ -28,7 +28,7 @@ class RekomendasiLombaBaru extends Notification
         return [
             'title' => 'Rekomendasi Lomba Baru',
             'pesan' => "Kamu mendapatkan rekomendasi lomba baru dari {$this->pengusul}: {$this->lomba}",
-            'url' => url('/lomba/' . $notifiable->id_pengguna . '?tab=rekomendasi'),
+            'url' => url('/lomba/'),
         ];
     }
 }
