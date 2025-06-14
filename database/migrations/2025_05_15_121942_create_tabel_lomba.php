@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('id_lomba');
             $table->string('nama_lomba');
             $table->string('penyelenggara');
-            $table->unsignedBigInteger('id_kategori')->index();
             $table->unsignedBigInteger('id_tingkat_prestasi')->index();
             $table->text('deskripsi');
             $table->string('link_pendaftaran')->nullable();
@@ -26,12 +25,13 @@ return new class extends Migration
             $table->date('tanggal_selesai');
             $table->date('deadline_pendaftaran');
             $table->string('foto');
+            $table->text('catatan_penolakan')->nullable();
             $table->boolean('status_verifikasi')->nullable();
             $table->unsignedBigInteger('added_by')->index();
             $table->unsignedBigInteger('role_pengusul')->index();
+            $table->enum('tipe_lomba', ['individu', 'tim']);
             $table->timestamps();
 
-            $table->foreign('id_kategori')->references('id_kategori')->on('kategori');
             $table->foreign('id_tingkat_prestasi')->references('id_tingkat_prestasi')->on('tingkat_prestasi');
             $table->foreign('periode')->references('id_periode')->on('periode');
             $table->foreign('added_by')->references('id_pengguna')->on('pengguna');

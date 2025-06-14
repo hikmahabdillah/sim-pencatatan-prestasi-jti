@@ -64,4 +64,9 @@ class LombaModel extends Model
     {
         return $this->hasMany(RekomendasiLombaModel::class, 'id_lomba', 'id_lomba');
     }
+
+    public function kategoris()
+    {
+        return $this->belongsToMany(KategoriModel::class, 'kategori_lomba_pivot', 'id_lomba', 'id_kategori');
+    }
 }

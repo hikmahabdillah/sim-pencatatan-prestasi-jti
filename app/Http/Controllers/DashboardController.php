@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\AnggotaPrestasiModel;
 use App\Models\LombaModel;
 use App\Models\PrestasiMahasiswaModel;
+use App\Models\PenggunaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Notifications\DatabaseNotification;
 
 class DashboardController extends Controller
 {
@@ -94,21 +96,23 @@ class DashboardController extends Controller
     // jumlah lomba per kategori
     private function LombaByKategori()
     {
-        $jumlahPerKategori = LombaModel::select('id_kategori')
-            ->selectRaw('COUNT(*) as total')
-            ->groupBy('id_kategori')
-            ->with('kategori')
+        $jumlahPerKategori = DB::table('kategori_lomba_pivot')
+            ->join('kategori', 'kategori_lomba_pivot.id_kategori', '=', 'kategori.id_kategori')
+            ->select('kategori.nama_kategori', DB::raw('COUNT(kategori_lomba_pivot.id_lomba) as total'))
+            ->groupBy('kategori.nama_kategori')
             ->get();
 
+        // Bentuk hasil sesuai struktur yang kamu inginkan
         $hasil = $jumlahPerKategori->map(function ($item) {
             return [
-                'kategori' => $item->kategori->nama_kategori ?? 'Tidak diketahui',
+                'kategori' => $item->nama_kategori,
                 'jumlah' => $item->total
             ];
         });
 
         return $hasil;
     }
+
 
     // diagram 
     private function prestasiMahasiswaPerSemester()
@@ -175,6 +179,9 @@ class DashboardController extends Controller
         $prestasiMahasiswaPerSemester = $this->prestasiMahasiswaPerSemester();
         $rankMahasiswaByPrestasi = $this->rankMahasiswaByPrestasi();
 
+        // Notif
+        $allNotifikasi = auth()->user()->notifications()->latest()->limit(10)->get();
+
         return view('dashboard', [
             'breadcrumb' => $breadcrumb,
             'activeMenu' => $activeMenu,
@@ -185,6 +192,8 @@ class DashboardController extends Controller
             'lombaByKategori' => $LombaByKategori,
             'prestasiMahasiswaPerSemester' => $prestasiMahasiswaPerSemester,
             'rankMahasiswaByPrestasi' => $rankMahasiswaByPrestasi,
+            'navbarNotifications' => $allNotifikasi,
+
         ]);
     }
 }
