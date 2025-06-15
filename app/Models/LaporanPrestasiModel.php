@@ -19,28 +19,34 @@ class LaporanPrestasiModel extends Model
         'id_kategori',
     ];
 
+    // Relasi ke mahasiswa melalui pivot table
     public function mahasiswa()
     {
-        return $this->belongsTo(MahasiswaModel::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(MahasiswaModel::class, 'id_mahasiswa')
+            ->withDefault([
+                'nama' => 'N/A',
+                'nim' => 'N/A'
+            ]);
     }
 
     public function prestasi()
     {
-        return $this->belongsTo(PrestasiMahasiswaModel::class, 'id_prestasi', 'id_prestasi');
+        return $this->belongsTo(PrestasiMahasiswaModel::class, 'id_prestasi')->with(['tingkatPrestasi', 'kategori', 'periode', 'dosenPembimbing']);
     }
 
-    public function programStudi()
+    // Scope untuk filter by periode
+    public function scopeByPeriode($query, $id_periode)
     {
-        return $this->belongsTo(ProdiModel::class, 'id_prodi', 'id_prodi');
+        return $query->whereHas('prestasi', function($q) use ($id_periode) {
+            $q->where('id_periode', $id_periode);
+        });
     }
 
-    public function kategoriPrestasi()
+    // Scope untuk data mahasiswa yang login
+    public function scopeForCurrentUser($query, $user_id)
     {
-        return $this->belongsTo(KategoriModel::class, 'kategori', 'id_kategori');
-    }
-
-    public function tingkatPrestasi()
-    {
-        return $this->belongsTo(TingkatPrestasiModel::class, 'tingkat', 'id_tingkat_prestasi');
+        return $query->whereHas('mahasiswa', function($q) use ($user_id) {
+            $q->where('id_pengguna', $user_id);
+        });
     }
 }

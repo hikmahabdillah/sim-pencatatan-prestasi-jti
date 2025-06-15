@@ -92,13 +92,15 @@
                     </a>
                 </li>
             @endif
-            @if ((auth()->user() && auth()->user()->role_id == 1) || (auth()->user() && auth()->user()->role_id == 3))
+
+            <!-- Menu Laporan Prestasi -->
+            @if (auth()->user())
                 <li class="nav-item">
                     <a class="nav-link {{ $activeMenu == 'laporan_prestasi' ? 'active' : '' }}"
-                        href="/laporan-prestasi">
+                        href="{{ auth()->user()->role_id == 3 ? route('mahasiswa.prestasi') : '/laporan-prestasi' }}">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
                             data-bs-toggle="tooltip" data-bs-placement="right" title="Laporan Prestasi">
-                            <i class="ni ni-chart-bar-32 text-success text-sm opacity-10"></i>
+                            <i class="ni ni-collection text-success text-sm opacity-10"></i>
                         </div>
                         <span class="nav-link-text ms-1">Laporan Prestasi</span>
                     </a>
