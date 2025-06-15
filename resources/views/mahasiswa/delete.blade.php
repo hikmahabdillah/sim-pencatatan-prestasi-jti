@@ -27,10 +27,6 @@
                         <th>Program Studi</th>
                         <td>{{ $data->prodi->nama_prodi }}</td>
                     </tr>
-                    <tr>
-                        <th>Kategori</th>
-                        <td>{{ $data->kategori->nama_kategori }}</td>
-                    </tr>
                 </table>
                 <div class="form-group">
                     <label for="keterangan_nonaktif" class="form-label">Keterangan nonaktif</label>
