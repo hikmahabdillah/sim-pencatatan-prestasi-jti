@@ -180,7 +180,7 @@ class DashboardController extends Controller
         $rankMahasiswaByPrestasi = $this->rankMahasiswaByPrestasi();
 
         // Notif
-        $allNotifikasi = auth()->user()->notifications->latest()->limit(10)->get();
+        $allNotifikasi = auth()->user()->notifications()->latest()->limit(10)->get();
 
         return view('dashboard', [
             'breadcrumb' => $breadcrumb,
