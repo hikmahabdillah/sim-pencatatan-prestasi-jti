@@ -53,7 +53,9 @@ class MahasiswaController extends Controller
             ->addColumn('aksi', function ($mhs) {
                 $btn  = '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/show') . '\')" class="btn btn-info btn-sm" >Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/edit') . '\')" class="btn btn-warning btn-sm" >Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/confirm_delete') . '\')" class="btn btn-danger btn-sm" >Nonaktifkan</button> ';
+                if ($mhs->pengguna->status_aktif === 1) {
+                    $btn .= '<button onclick="modalAction(\'' . url('/mahasiswa/' . $mhs->id_mahasiswa . '/confirm_delete') . '\')" class="btn btn-danger btn-sm" >Nonaktifkan</button> ';
+                }
                 return $btn;
             })
             ->addColumn('prodi', function ($mhs) {
@@ -94,11 +96,6 @@ class MahasiswaController extends Controller
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'id_prodi' => 'required|exists:prodi,id_prodi',
-            'minat_bakat' => 'required|array|max:3',
-            'minat_bakat.*' => 'exists:kategori,id_kategori'
-        ], [
-            'minat_bakat.max' => 'Maksimal memilih 3 minat bakat',
-            'minat_bakat.required' => 'Pilih minimal satu minat bakat'
         ]);
 
         if ($validator->fails()) {
@@ -132,9 +129,6 @@ class MahasiswaController extends Controller
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'id_prodi' => $request->id_prodi,
             ]);
-
-            $pengguna->minatBakat()->sync($request->minat_bakat);
-
             // Jika semua proses berhasil, commit transaksi 
             DB::commit();
 
@@ -190,11 +184,6 @@ class MahasiswaController extends Controller
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'id_prodi' => 'required|exists:prodi,id_prodi',
-            'minat_bakat' => 'required|array|max:3',
-            'minat_bakat.*' => 'exists:kategori,id_kategori'
-        ], [
-            'minat_bakat.max' => 'Maksimal memilih 3 minat bakat',
-            'minat_bakat.required' => 'Pilih minimal satu minat bakat'
         ]);
 
         if ($validator->fails()) {
@@ -219,9 +208,6 @@ class MahasiswaController extends Controller
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'id_prodi' => $request->id_prodi,
             ]);
-
-            // Update minat bakat
-            $mahasiswa->pengguna->minatBakat()->sync($request->minat_bakat);
 
             // Update username pengguna jika NIM berubah
             if ($mahasiswa->pengguna->username !== $request->nim) {
@@ -279,6 +265,11 @@ class MahasiswaController extends Controller
             'no_hp' => 'required|numeric|digits_between:10,20',
             'alamat' => 'required|string',
             'tanggal_lahir' => 'required|date',
+            'minat_bakat' => 'required|array|max:3',
+            'minat_bakat.*' => 'exists:kategori,id_kategori'
+        ], [
+            'minat_bakat.max' => 'Maksimal memilih 3 minat bakat',
+            'minat_bakat.required' => 'Pilih minimal satu minat bakat'
         ]);
 
         if ($validator->fails()) {
