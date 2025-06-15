@@ -38,7 +38,9 @@ class AdminController extends Controller
             ->addColumn('aksi', function ($admin) {
                 $btn  = '<button onclick="modalAction(\'' . url('/admin/' . $admin->id_admin . '/show') . '\')" class="btn btn-info btn-sm" >Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/admin/' . $admin->id_admin . '/edit') . '\')" class="btn btn-warning btn-sm" >Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/admin/' . $admin->id_admin . '/confirm_delete') . '\')" class="btn btn-danger btn-sm" >Nonaktifkan</button> ';
+                if ($admin->pengguna->status_aktif === 1) {
+                    $btn .= '<button onclick="modalAction(\'' . url('/admin/' . $admin->id_admin . '/confirm_delete') . '\')" class="btn btn-danger btn-sm" >Nonaktifkan</button> ';
+                }
                 return $btn;
             })
             ->addColumn('status', function ($admin) {

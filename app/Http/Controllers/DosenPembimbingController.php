@@ -50,7 +50,9 @@ class DosenPembimbingController extends Controller
             ->addColumn('aksi', function ($dosen) {
                 $btn  = '<button onclick="modalAction(\'' . url('/dospem/' . $dosen->id_dospem . '/show') . '\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/dospem/' . $dosen->id_dospem . '/edit') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/dospem/' . $dosen->id_dospem . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Nonaktifkan</button>';
+                if ($dosen->pengguna->status_aktif === 1) {
+                    $btn .= '<button onclick="modalAction(\'' . url('/dospem/' . $dosen->id_dospem . '/confirm_delete') . '\')" class="btn btn-danger btn-sm">Nonaktifkan</button>';
+                }
                 return $btn;
             })
             ->addColumn('prodi', function ($dosen) {
@@ -83,11 +85,6 @@ class DosenPembimbingController extends Controller
             'nama' => 'required|string|max:200',
             'email' => 'required|email|unique:dosen_pembimbing,email',
             'id_prodi' => 'required|exists:prodi,id_prodi',
-            'bidang_keahlian' => 'required|array|max:3',
-            'bidang_keahlian.*' => 'exists:kategori,id_kategori'
-        ], [
-            'bidang_keahlian.max' => 'Maksimal memilih 3 bidang keahlian',
-            'bidang_keahlian.required' => 'Pilih minimal satu bidang keahlian'
         ]);
 
         if ($validator->fails()) {
@@ -114,8 +111,6 @@ class DosenPembimbingController extends Controller
                 'email' => $request->email,
                 'id_prodi' => $request->id_prodi,
             ]);
-
-            $pengguna->minatBakat()->sync($request->bidang_keahlian);
 
             DB::commit();
 
@@ -172,11 +167,6 @@ class DosenPembimbingController extends Controller
             'nama' => 'required|string|max:200',
             'email' => 'required|email|unique:dosen_pembimbing,email,' . $id . ',id_dospem',
             'id_prodi' => 'required|exists:prodi,id_prodi',
-            'bidang_keahlian' => 'required|array|max:3',
-            'bidang_keahlian.*' => 'exists:kategori,id_kategori'
-        ], [
-            'bidang_keahlian.max' => 'Maksimal memilih 3 bidang keahlian',
-            'bidang_keahlian.required' => 'Pilih minimal satu bidang keahlian'
         ]);
 
         if ($validator->fails()) {
@@ -195,8 +185,6 @@ class DosenPembimbingController extends Controller
                 'email' => $request->email,
                 'id_prodi' => $request->id_prodi,
             ]);
-
-            $dosen->pengguna->minatBakat()->sync($request->bidang_keahlian);
 
             if ($dosen->pengguna->username !== $request->nip) {
                 $dosen->pengguna->update(['username' => $request->nip]);
