@@ -250,40 +250,35 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
         Route::get('/{id}/show', [LombaController::class, 'show']);
     });
 
-    Route::prefix('laporan-prestasi')->group(function() {
-        // Main page - bisa diakses admin/mahasiswa/dosen
-        Route::get('/', [LaporanPrestasiController::class, 'index'])
-             ->name('laporan-prestasi.index');
-        
+    Route::prefix('laporan-prestasi')->group(function () {
+
         // A.a - By Student (Admin only)
-        Route::middleware(['authorize:Admin'])->group(function() {
+        Route::middleware(['authorize:Admin'])->group(function () {
+            // Main page - bisa diakses admin
+            Route::get('/', [LaporanPrestasiController::class, 'index'])
+                ->name('laporan-prestasi.index');
             Route::get('/mahasiswa', [LaporanPrestasiController::class, 'mahasiswa'])
-                 ->name('laporan-prestasi.mahasiswa');
+                ->name('laporan-prestasi.mahasiswa');
             Route::get('/mahasiswa/data', [LaporanPrestasiController::class, 'listMahasiswa'])
-                 ->name('laporan-prestasi.mahasiswa.list');
+                ->name('laporan-prestasi.mahasiswa.list');
             Route::get('/mahasiswa/{id}', [LaporanPrestasiController::class, 'showMahasiswa'])
-                 ->name('laporan-prestasi.mahasiswa.show');
+                ->name('laporan-prestasi.mahasiswa.show');
             Route::get('/mahasiswa/export/{id}', [LaporanPrestasiController::class, 'exportMahasiswa'])
-                 ->name('laporan-prestasi.export-mahasiswa');
-        });
-        
-        // A.b - By Period (Admin only)
-        Route::middleware(['authorize:Admin'])->group(function() {
+                ->name('laporan-prestasi.export-mahasiswa');
             Route::get('/periode', [LaporanPrestasiController::class, 'listPeriode'])
-                 ->name('laporan-prestasi.periode');
+                ->name('laporan-prestasi.periode');
             Route::get('/periode/data', [LaporanPrestasiController::class, 'listByPeriode'])
-                 ->name('laporan-prestasi.list-by-periode');
+                ->name('laporan-prestasi.list-by-periode');
             Route::get('/periode/export/{id_periode}', [LaporanPrestasiController::class, 'exportPeriode'])
-                 ->name('laporan-prestasi.export-periode');
+                ->name('laporan-prestasi.export-periode');
         });
 
         // B - For Student (Mahasiswa only)
-        Route::middleware(['auth'])->group(function() {
+        Route::middleware(['auth'])->group(function () {
             Route::get('/mahasiswa/prestasi-saya', [LaporanPrestasiController::class, 'showByUser'])
                 ->name('mahasiswa.prestasi');
         });
     });
-
 });
 
 Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])->name('rekomendasi.detail');
