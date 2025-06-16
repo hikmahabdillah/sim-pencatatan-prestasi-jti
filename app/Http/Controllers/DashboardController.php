@@ -193,7 +193,6 @@ class DashboardController extends Controller
             'prestasiMahasiswaPerSemester' => $prestasiMahasiswaPerSemester,
             'rankMahasiswaByPrestasi' => $rankMahasiswaByPrestasi,
             'navbarNotifications' => $allNotifikasi,
-
         ]);
     }
 }

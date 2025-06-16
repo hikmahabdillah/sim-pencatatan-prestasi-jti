@@ -27,11 +27,11 @@
                         <th>Program Studi</th>
                         <td>{{ $data->prodi->nama_prodi }}</td>
                     </tr>
-                    <tr>
-                        <th>Bidang Keahlian</th>
-                        <td>{{ $data->kategori->nama_kategori }}</td>
-                    </tr>
                 </table>
+                <div class="form-group">
+                    <label for="keterangan_nonaktif" class="form-label">Keterangan nonaktif</label>
+                    <textarea id="keterangan_nonaktif" name="keterangan_nonaktif" class="form-control" required>{{ $data->pengguna->keterangan_nonaktif }}</textarea>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Kembali</button>
@@ -43,6 +43,16 @@
 <script>
     $(document).ready(function() {
         $("#form-delete").validate({
+            rules: {
+                keterangan_nonaktif: {
+                    required: true
+                }
+            },
+            messages: {
+                keterangan_nonaktif: {
+                    required: "Keterangan nonaktif wajib diisi ketika status nonaktif"
+                }
+            },
             submitHandler: function(form) {
                 $.ajax({
                     url: form.action,

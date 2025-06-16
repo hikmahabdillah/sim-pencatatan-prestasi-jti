@@ -55,4 +55,9 @@ class PrestasiMahasiswaModel extends Model
             ->withPivot('peran')
             ->withTimestamps();
     }
+
+    public function mahasiswa()
+    {
+        return $this->anggota(); // Alias untuk relasi yang sama
+    }
 }

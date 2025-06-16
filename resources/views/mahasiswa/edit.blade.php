@@ -90,21 +90,6 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="minat_bakat" class="form-label">Minat Bakat (Maksimal 3)</label>
-                            <select id="minat_bakat" name="minat_bakat[]" class="form-control select2"
-                                multiple="multiple" required>
-                                @foreach ($kategori as $k)
-                                    <option value="{{ $k->id_kategori }}"
-                                        {{ in_array($k->id_kategori, $data->pengguna->minatBakat->pluck('id_kategori')->toArray()) ? 'selected' : '' }}>
-                                        {{ $k->nama_kategori }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <small class="text-muted">Pilih 1-3 minat bakat</small>
-                            <div id="error-minat_bakat" class="text-danger error-text"></div>
-                        </div>
-
-                        <div class="form-group mb-3">
                             <label for="newPassword" class="form-label">Password Baru</label>
                             <input type="password" id="newPassword" name="newPassword" class="form-control">
                             <div id="error-newPassword" class="text-danger error-text"></div>
@@ -139,28 +124,17 @@
 
 <script>
     $(document).ready(function() {
-        $('.select2').select2({
-            placeholder: "Pilih Minat Bakat",
-            allowClear: true,
-            maximumSelectionLength: 3
-        });
         $('#status_aktif').change(function() {
             if ($(this).val() === '0') {
                 $('#keterangan-nonaktif-group').show();
-                $('#keterangan_nonaktif').prop('required', true);
+                $('#keterangan_nonaktif').attr('required', true);
             } else {
                 $('#keterangan-nonaktif-group').hide();
-                $('#keterangan_nonaktif').prop('required', false);
+                $('#keterangan_nonaktif').removeAttr('required');
             }
         });
-
         $("#form-edit").validate({
             rules: {
-                'minat_bakat[]': {
-                    required: true,
-                    minlength: 1,
-                    maxlength: 3
-                },
                 nim: {
                     required: true,
                     maxlength: 20
@@ -219,11 +193,6 @@
                 keterangan_nonaktif: {
                     required: "Keterangan nonaktif wajib diisi ketika status nonaktif"
                 },
-                'minat_bakat[]': {
-                    required: "Pilih minimal satu minat bakat",
-                    minlength: "Pilih minimal satu minat bakat",
-                    maxlength: "Maksimal memilih 3 minat bakat"
-                }
             },
             submitHandler: function(form) {
                 $.ajax({
