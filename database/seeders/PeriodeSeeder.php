@@ -73,30 +73,6 @@ class PeriodeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'semester' => 'Ganjil',
-                'tahun_ajaran' => '2026/2027',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'semester' => 'Genap',
-                'tahun_ajaran' => '2026/2027',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'semester' => 'Ganjil',
-                'tahun_ajaran' => '2027/2028',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'semester' => 'Genap',
-                'tahun_ajaran' => '2027/2028',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ]);
     }
 }
