@@ -260,13 +260,19 @@
                             <i class="fas fa-arrow-left me-1"></i> Kembali
                         </a>
                         <div class="d-flex gap-2 align-items-center">
-                            @if (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === 1)
+                            @if (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === 1 && $prestasi->id_dospem != null)
                                 <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/verifikasi-admin')"
                                     class="btn btn-md btn-primary">
                                     <i class="fas fa-check me-1"></i>
                                     {{ $prestasi->status_verifikasi != null ? 'Edit Verifikasi' : 'Verifikasi' }}
                                 </button>
-                            @elseif (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === null)
+                            @elseif (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === null && $prestasi->id_dospem == null)
+                                <button onclick="modalAction('/prestasi/{{ $prestasi->id_prestasi }}/verifikasi-admin')"
+                                    class="btn btn-md btn-primary">
+                                    <i class="fas fa-check me-1"></i>
+                                    {{ $prestasi->status_verifikasi != null ? 'Edit Verifikasi' : 'Verifikasi' }}
+                                </button>
+                            @elseif (auth()->user()->role_id == 1 && $prestasi->status_verifikasi_dospem === null && $prestasi->id_dospem != null)
                                 <p class="text-dark">
                                     Menunggu verifikasi dari Dosen Pembimbing
                                 </p>

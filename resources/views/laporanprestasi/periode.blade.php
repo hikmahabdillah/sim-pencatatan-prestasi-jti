@@ -78,11 +78,39 @@
                     },
                     {
                         data: 'nama_mahasiswa',
-                        name: 'nama_mahasiswa'
+                        name: 'nama_mahasiswa',
+                        render: function(data, type, row) {
+                            try {
+                                // Parse JSON string to array
+                                const anggota = JSON.parse(data);
+                                if (Array.isArray(anggota)) {
+                                    // Extract all names and join with comma
+                                    return anggota.map(m => m.nama).join(', ');
+                                }
+                                return '-';
+                            } catch (e) {
+                                console.error('Error parsing nama_mahasiswa:', e);
+                                return '-';
+                            }
+                        }
                     },
                     {
                         data: 'nim',
-                        name: 'nim'
+                        name: 'nim',
+                        render: function(data, type, row) {
+                            try {
+                                // Parse JSON string to array
+                                const anggota = JSON.parse(data);
+                                if (Array.isArray(anggota)) {
+                                    // Extract all NIMs and join with comma
+                                    return anggota.map(m => m.nim).join(', ');
+                                }
+                                return '-';
+                            } catch (e) {
+                                console.error('Error parsing nim:', e);
+                                return '-';
+                            }
+                        }
                     },
                     {
                         data: 'kategori',

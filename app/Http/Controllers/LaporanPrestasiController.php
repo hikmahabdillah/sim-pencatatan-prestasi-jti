@@ -137,9 +137,9 @@ class LaporanPrestasiController extends Controller
             'kategori',
             'tingkatPrestasi',
             'periode'
-        ])
+        ])->where('status_verifikasi', 1)
             ->when($request->id_periode, function ($query) use ($request) {
-                return $query->where('id_periode', $request->id_periode);
+                return $query->where('id_periode', $request->id_periode)->where('status_verifikasi', 1);
             });
 
         $prestasi = $query->get();
@@ -147,10 +147,10 @@ class LaporanPrestasiController extends Controller
         return DataTables::of($prestasi)
             ->addIndexColumn()
             ->addColumn('nama_mahasiswa', function ($p) {
-                return $p->anggota->first()->nama ?? 'N/A';
+                return $p->anggota ?? 'N/A';
             })
             ->addColumn('nim', function ($p) {
-                return $p->anggota->first()->nim ?? 'N/A';
+                return $p->anggota ?? 'N/A';
             })
             ->addColumn('kategori', function ($p) {
                 return $p->kategori->nama_kategori ?? 'N/A';
@@ -275,6 +275,7 @@ class LaporanPrestasiController extends Controller
             'dosenPembimbing'
         ])
             ->where('id_periode', $id_periode)
+            ->where('status_verifikasi', 1)
             ->orderBy('tanggal_prestasi', 'desc')
             ->get();
 
@@ -322,9 +323,14 @@ class LaporanPrestasiController extends Controller
         // Table data
         $row = 4;
         foreach ($prestasi as $index => $p) {
+            // Ambil semua nama mahasiswa dan gabungkan dengan koma
+            $namaMahasiswa = $p->anggota->pluck('nama')->implode(', ');
+            // Ambil semua NIM dan gabungkan dengan koma
+            $nimMahasiswa = $p->anggota->pluck('nim')->implode(', ');
+
             $sheet->setCellValue('A' . $row, $index + 1);
-            $sheet->setCellValue('B' . $row, $p->anggota->first()->nama ?? 'N/A');
-            $sheet->setCellValue('C' . $row, $p->anggota->first()->nim ?? 'N/A');
+            $sheet->setCellValue('B' . $row, $namaMahasiswa ?: 'N/A');
+            $sheet->setCellValue('C' . $row, $nimMahasiswa ?: 'N/A');
             $sheet->setCellValue('D' . $row, $p->kategori->nama_kategori ?? 'N/A');
             $sheet->setCellValue('E' . $row, $p->nama_prestasi);
             $sheet->setCellValue('F' . $row, $p->tingkatPrestasi->nama_tingkat_prestasi ?? 'N/A');
@@ -343,6 +349,9 @@ class LaporanPrestasiController extends Controller
         foreach (range('A', 'I') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
+
+        // Set wrap text untuk kolom nama dan NIM karena mungkin panjang
+        $sheet->getStyle('B4:C' . ($row - 1))->getAlignment()->setWrapText(true);
 
         $writer = new Xlsx($spreadsheet);
         $filename = 'prestasi-periode-' . $periode->semester . '-' . $periode->tahun_ajaran . '.xlsx';

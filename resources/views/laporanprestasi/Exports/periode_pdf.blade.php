@@ -116,8 +116,20 @@
                 @foreach ($prestasi as $index => $p)
                     <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
-                        <td>{{ $p->anggota->first()->nama ?? 'N/A' }}</td>
-                        <td>{{ $p->anggota->first()->nim ?? 'N/A' }}</td>
+                        <td>
+                            @if ($p->anggota->isNotEmpty())
+                                {{ $p->anggota->pluck('nama')->implode(', ') }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>
+                            @if ($p->anggota->isNotEmpty())
+                                {{ $p->anggota->pluck('nim')->implode(', ') }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
                         <td>{{ $p->kategori->nama_kategori ?? 'N/A' }}</td>
                         <td>{{ $p->nama_prestasi }}</td>
                         <td>{{ $p->tingkatPrestasi->nama_tingkat_prestasi ?? 'N/A' }}</td>
