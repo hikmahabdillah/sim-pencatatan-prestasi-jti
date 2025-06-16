@@ -352,7 +352,6 @@ class LaporanPrestasiController extends Controller
 
         // Set wrap text untuk kolom nama dan NIM karena mungkin panjang
         $sheet->getStyle('B4:C' . ($row - 1))->getAlignment()->setWrapText(true);
-
         $writer = new Xlsx($spreadsheet);
         $filename = 'prestasi-periode-' . $periode->semester . '-' . $periode->tahun_ajaran . '.xlsx';
 
