@@ -49,7 +49,8 @@ Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
-Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+Route::middleware(['auth', 'check.user.status'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+
     // dashboard untuk semua user
     Route::get('/', [DashboardController::class, 'index']);
 
@@ -272,12 +273,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::get('/periode/export/{id_periode}', [LaporanPrestasiController::class, 'exportPeriode'])
                 ->name('laporan-prestasi.export-periode');
         });
-
-        // B - For Student (Mahasiswa only)
-        Route::middleware(['auth'])->group(function () {
-            Route::get('/mahasiswa/prestasi-saya', [LaporanPrestasiController::class, 'showByUser'])
-                ->name('mahasiswa.prestasi');
-        });
+        Route::get('/mahasiswa/prestasi-saya', [LaporanPrestasiController::class, 'showByUser'])
+            ->name('mahasiswa.prestasi');
     });
 });
 
