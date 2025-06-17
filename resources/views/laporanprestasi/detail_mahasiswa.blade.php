@@ -5,7 +5,7 @@
     <div class="container-fluid py-4">
         <div class="card">
             <div class="card-header bg-light">
-                <h5 class="mb-0">Detail Prestasi Saya</h5>
+                <h5 class="mb-0">Prestasi Saya</h5>
             </div>
             <div class="card-body">
                 <!-- Info Mahasiswa -->
