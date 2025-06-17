@@ -14,7 +14,7 @@
                  <div class="form-group">
                      <label for="nama_kategori" class="form-label">Nama Kategori</label>
                      <input value="{{ $data->nama_kategori }}" type="text" id="nama_kategori" name="nama_kategori"
-                         class="form-control" placeholder="Masukkan nama_kategori" required>
+                         class="form-control" placeholder="Masukkan nama_kategori">
                      <div id="error-nama_kategori" class="text-danger error-text"></div>
                  </div>
                  <div class="form-group">
@@ -32,6 +32,12 @@
  </form>
  <script>
      $(document).ready(function() {
+         // Override default jQuery Validation messages
+         $.extend($.validator.messages, {
+             required: "Field ini wajib diisi.",
+             maxlength: $.validator.format("Maksimal {0} karakter.")
+         });
+
          $("#form-edit").validate({
              rules: {
                  nama_kategori: {
@@ -39,7 +45,16 @@
                      maxlength: 100
                  },
                  deskripsi: {
-                     required: true,
+                     required: true
+                 }
+             },
+             messages: {
+                 nama_kategori: {
+                     required: "Nama kategori wajib diisi.",
+                     maxlength: "Nama kategori maksimal 100 karakter."
+                 },
+                 deskripsi: {
+                     required: "Deskripsi tidak boleh kosong."
                  }
              },
              submitHandler: function(form) {
@@ -60,7 +75,7 @@
                              $('.error-text').text('');
                              $.each(response.msgField, function(prefix, val) {
                                  $('#error-' + prefix).text(val[0]);
-                                 $('#' + prefix).addClass('is-invalid'); // Tambahkan kelas error ke input
+                                 $('#' + prefix).addClass('is-invalid');
                              });
                              Swal.fire({
                                  icon: 'error',
@@ -71,7 +86,7 @@
                      },
                      error: function(xhr) {
                          if (xhr.status === 422) {
-                             var errors = xhr.responseJSON.errors || xhr.responseJSON.msgField;
+                             let errors = xhr.responseJSON.errors || xhr.responseJSON.msgField;
                              $('.error-text').text('');
                              $('.form-control').removeClass('is-invalid');
                              $.each(errors, function(prefix, val) {
@@ -88,10 +103,10 @@
                  error.addClass('invalid-feedback');
                  element.closest('.form-group').append(error);
              },
-             highlight: function(element, errorClass, validClass) {
+             highlight: function(element) {
                  $(element).addClass('is-invalid');
              },
-             unhighlight: function(element, errorClass, validClass) {
+             unhighlight: function(element) {
                  $(element).removeClass('is-invalid');
              }
          });
