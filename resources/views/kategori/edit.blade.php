@@ -60,6 +60,7 @@
                              $('.error-text').text('');
                              $.each(response.msgField, function(prefix, val) {
                                  $('#error-' + prefix).text(val[0]);
+                                 $('#' + prefix).addClass('is-invalid'); // Tambahkan kelas error ke input
                              });
                              Swal.fire({
                                  icon: 'error',
@@ -69,12 +70,13 @@
                          }
                      },
                      error: function(xhr) {
-                         // Handle error response
                          if (xhr.status === 422) {
-                             var errors = xhr.responseJSON.errors;
+                             var errors = xhr.responseJSON.errors || xhr.responseJSON.msgField;
                              $('.error-text').text('');
+                             $('.form-control').removeClass('is-invalid');
                              $.each(errors, function(prefix, val) {
                                  $('#error-' + prefix).text(val[0]);
+                                 $('#' + prefix).addClass('is-invalid');
                              });
                          }
                      }
