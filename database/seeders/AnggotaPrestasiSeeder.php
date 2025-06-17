@@ -63,7 +63,7 @@ class AnggotaPrestasiSeeder extends Seeder
             // Prestasi 4 (UI Challenge Nasional - Individu)
             [
                 'id_prestasi' => 4,
-                'id_mahasiswa' => 7,
+                'id_mahasiswa' => 8,
                 'peran' => 'ketua',
                 'created_at' => now(),
                 'updated_at' => now(),

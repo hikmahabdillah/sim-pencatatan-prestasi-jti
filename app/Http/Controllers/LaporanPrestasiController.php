@@ -384,8 +384,8 @@ class LaporanPrestasiController extends Controller
             'mahasiswa' => $mahasiswa,
             'activeMenu' => 'laporan_prestasi',
             'breadcrumb' => (object) [
-                'title' => 'Prestasi Saya',
-                'list' => ['Dashboard', 'Prestasi Saya']
+                'title' => 'Laporan Prestasi',
+                'list' => ['Laporan Prestasi']
             ]
         ]);
     }

@@ -61,14 +61,22 @@
         overflow: hidden;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    
+
     .card-header {
         border-bottom: none;
         padding: 1rem 1.5rem;
     }
-    
+
     .card-body {
         padding: 1.5rem;
+    }
+
+    .card-header.bg-primary h5 {
+        color: white;
+    }
+
+    .card-header.bg-success h5 {
+        color: white;
     }
 </style>
 @endpush

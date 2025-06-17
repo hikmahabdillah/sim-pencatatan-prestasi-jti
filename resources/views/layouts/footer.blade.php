@@ -6,8 +6,8 @@
                     ©
                     <script>
                         document.write(new Date().getFullYear())
-                    </script>,
-                    made with <i class="fas fa-heart"></i> by
+                    </script>
+                    Argon dashboard 2, made with <i class="fas fa-heart"></i> by
                     <a href="https://github.com/hikmahabdillah/sim-pencatatan-prestasi-jti" class="font-weight-bold"
                         target="_blank">Kelompok 6</a>
                     for a better web.
