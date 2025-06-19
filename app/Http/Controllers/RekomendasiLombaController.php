@@ -120,8 +120,8 @@ class RekomendasiLombaController extends Controller
             $steps[] = "C4 (Durasi Pendaftaran): {$durasi} hari -> skor {$c4}";
 
 
-            //  C5: Biaya pendaftaran (gratis = 3, berbayar = 1)
-            $c5 = $lomba->biaya_pendaftaran == 0 ? 3 : 1;
+            //  C5: Biaya pendaftaran (gratis = 1, berbayar = 3)
+            $c5 = $lomba->biaya_pendaftaran == 0 ? 1 : 3;
             $steps[] = "C5 (Biaya Pendaftaran): " . ($lomba->biaya_pendaftaran == 0 ? "Gratis" : "Berbayar") . " -> skor {$c5}";
 
             //  C6: Ada benefit atau tidak
