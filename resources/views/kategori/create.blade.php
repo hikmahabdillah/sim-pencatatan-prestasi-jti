@@ -13,12 +13,12 @@
                  <div class="form-group">
                      <label for="nama_kategori" class="form-label">Nama Kategori</label>
                      <input type="text" id="nama_kategori" name="nama_kategori" class="form-control"
-                         placeholder="Masukkan nama_kategori" required>
+                         placeholder="Masukkan nama_kategori">
                      <div id="error-nama_kategori" class="text-danger error-text"></div>
                  </div>
                  <div class="form-group">
                      <label for="deskripsi" class="form-label">Deskripsi</label>
-                     <textarea id="deskripsi" name="deskripsi" class="form-control" placeholder="Masukkan deskripsi" rows="3" required></textarea>
+                     <textarea id="deskripsi" name="deskripsi" class="form-control" placeholder="Masukkan deskripsi" rows="3"></textarea>
                      <div id="error-deskripsi" class="text-danger error-text"></div>
                  </div>
              </div>
@@ -41,6 +41,15 @@
                      required: true,
                  }
              },
+             messages: {
+                 nama_kategori: {
+                     required: "Nama kategori tidak boleh kosong",
+                     maxlength: "Nama kategori maksimal 100 karakter"
+                 },
+                 deskripsi: {
+                     required: "Deskripsi tidak boleh kosong"
+                 }
+             },
              submitHandler: function(form) {
                  $.ajax({
                      url: form.action,
@@ -48,27 +57,16 @@
                      data: $(form).serialize(),
                      success: function(response) {
                          if (response.status) {
-                             $('#myModal').modal('hide');
+                             $('#modal-master').modal('hide');
                              Swal.fire({
                                  icon: 'success',
                                  title: 'Berhasil',
                                  text: response.message
                              });
                              tablecrud.ajax.reload();
-                         } else {
-                             $('.error-text').text('');
-                             $.each(response.msgField, function(prefix, val) {
-                                 $('#error-' + prefix).text(val[0]);
-                             });
-                             Swal.fire({
-                                 icon: 'error',
-                                 title: 'Terjadi Kesalahan',
-                                 text: response.message
-                             });
                          }
                      },
                      error: function(xhr) {
-                         // Handle error response
                          if (xhr.status === 422) {
                              var errors = xhr.responseJSON.errors;
                              $('.error-text').text('');

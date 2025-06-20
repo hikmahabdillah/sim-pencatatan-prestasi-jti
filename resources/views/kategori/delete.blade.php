@@ -16,7 +16,7 @@
                  </div>
                  <table class="table table-bordered">
                      <tr>
-                         <th>Kode Kategori</th>
+                         <th>ID Kategori</th>
                          <td>{{ $data->id_kategori }}</td>
                      </tr>
                      <tr>

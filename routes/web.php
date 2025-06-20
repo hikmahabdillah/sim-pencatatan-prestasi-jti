@@ -276,29 +276,28 @@ Route::middleware(['auth', 'check.user.status'])->group(function () { // artinya
         Route::get('/mahasiswa/prestasi-saya', [LaporanPrestasiController::class, 'showByUser'])
             ->name('mahasiswa.prestasi');
     });
+
+    Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])->name('rekomendasi.detail');
+    Route::get('/rekomendasi/lomba/{id}', [RekomendasiLombaController::class, 'index']);
+    Route::get('/admin/lomba/{id}/rekomendasi-mahasiswa', [RekomendasiLombaController::class, 'topMahasiswaLomba']);
+    Route::post('/rekomendasi/simpan-dospem', [RekomendasiLombaController::class, 'simpanDospem'])->name('rekomendasi.simpanDospem');
+    Route::post('/rekomendasi/by-dosen', [RekomendasiLombaController::class, 'rekombyDosen'])->name('rekomendasi.byDosen');
+
+    Route::middleware('auth')->get('/notifikasi/baca/{id}', function ($id) {
+        $notification = auth()->user()->notifications()->find($id);
+
+        if (!$notification) {
+            return redirect('/dashboard')->with('error', 'Notifikasi tidak ditemukan.');
+        }
+
+        $notification->markAsRead();
+
+        // Pastikan URL ada dalam data notifikasi
+        $redirectUrl = $notification->data['url'] ?? '/dashboard';
+
+        return redirect($redirectUrl);
+    })->name('notifikasi.baca')->where('id', '[0-9a-f-]+');
 });
-
-Route::get('/rekomendasi/{idMahasiswa}/detail', [RekomendasiLombaController::class, 'hitungRekomendasiDenganStep'])->name('rekomendasi.detail');
-Route::get('/rekomendasi/lomba/{id}', [RekomendasiLombaController::class, 'index']);
-Route::get('/admin/lomba/{id}/rekomendasi-mahasiswa', [RekomendasiLombaController::class, 'topMahasiswaLomba']);
-Route::post('/rekomendasi/simpan-dospem', [RekomendasiLombaController::class, 'simpanDospem'])->name('rekomendasi.simpanDospem');
-Route::post('/rekomendasi/by-dosen', [RekomendasiLombaController::class, 'rekombyDosen'])->name('rekomendasi.byDosen');
-
-Route::middleware('auth')->get('/notifikasi/baca/{id}', function ($id) {
-    $notification = auth()->user()->notifications()->find($id);
-
-    if (!$notification) {
-        return redirect('/dashboard')->with('error', 'Notifikasi tidak ditemukan.');
-    }
-
-    $notification->markAsRead();
-
-    // Pastikan URL ada dalam data notifikasi
-    $redirectUrl = $notification->data['url'] ?? '/dashboard';
-
-    return redirect($redirectUrl);
-})->name('notifikasi.baca')->where('id', '[0-9a-f-]+');
-
 
 // contoh route untuk penerapannya
 Route::prefix('cobacrud')->group(function () {

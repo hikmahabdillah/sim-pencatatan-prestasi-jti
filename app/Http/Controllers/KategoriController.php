@@ -10,6 +10,7 @@ use App\Models\MahasiswaModel;
 use App\Models\PrestasiMahasiswaModel;
 use App\Models\LombaModel;
 use App\Models\LaporanPrestasiModel;
+use App\Models\MinatBakatPenggunaModel;
 use Yajra\DataTables\Facades\DataTables;
 
 class KategoriController extends Controller
@@ -61,26 +62,33 @@ class KategoriController extends Controller
                 'deskripsi' => 'required|string'
             ];
 
-            $validator = Validator::make($request->all(), [
-                'created_at' => now(),
-                'updated_at' => now(),
-            ], $rules);
+            $messages = [
+                'nama_kategori.required' => 'Nama kategori wajib diisi.',
+                'nama_kategori.unique'   => 'Nama kategori sudah terdaftar.',
+                'deskripsi.required'     => 'Deskripsi tidak boleh kosong.',
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(),
-                ]);
+                    'errors' => $validator->errors()
+                ], 422); 
             }
 
-            KategoriModel::create($request->all());
+            KategoriModel::create([
+                'nama_kategori' => $request->nama_kategori,
+                'deskripsi' => $request->deskripsi,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
             return response()->json([
                 'status' => true,
                 'message' => 'Data berhasil disimpan',
-                'data' => $request->all(),
             ]);
         }
+
         return redirect('/');
     }
 
@@ -103,34 +111,46 @@ class KategoriController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'nama_kategori' => 'required|string|max:100|unique:kategori,nama_kategori',
-                'deskripsi' => 'required|string'
+                'nama_kategori' => 'required|string|max:100|unique:kategori,nama_kategori,' . $id . ',id_kategori',
+                'deskripsi'     => 'required|string'
             ];
 
-            $validator = Validator::make($request->all(), ['updated_at' => now(),], $rules);
+            $messages = [
+                'nama_kategori.required' => 'Nama kategori wajib diisi.',
+                'nama_kategori.unique'   => 'Nama kategori sudah terdaftar.',
+                'deskripsi.required'     => 'Deskripsi tidak boleh kosong.',
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi gagal.',
+                    'status'   => false,
+                    'message'  => 'Validasi gagal.',
                     'msgField' => $validator->errors()
-                ]);
+                ], 422);
             }
 
             $data = KategoriModel::find($id);
             if ($data) {
-                $data->update($request->all());
+                $data->update([
+                    'nama_kategori' => $request->nama_kategori,
+                    'deskripsi'     => $request->deskripsi,
+                    'updated_at'    => now()
+                ]);
+
                 return response()->json([
-                    'status' => true,
+                    'status'  => true,
                     'message' => 'Data berhasil diupdate'
                 ]);
             } else {
                 return response()->json([
-                    'status' => false,
+                    'status'  => false,
                     'message' => 'Data tidak ditemukan'
                 ]);
             }
         }
+
         return redirect('/');
     }
 
@@ -157,11 +177,10 @@ class KategoriController extends Controller
             }
     
             // Cek apakah id_kategori digunakan di tabel lain
-            $digunakan = DosenPembimbingModel::where('bidang_keahlian', $id)->exists() ||
-                         MahasiswaModel::where('id_kategori', $id)->exists() ||
+            $digunakan = MinatBakatPenggunaModel::where('id_kategori', $id)->exists() ||
                          PrestasiMahasiswaModel::where('id_kategori', $id)->exists() ||
-                         LombaModel::where('id_kategori', $id)->exists() ||
-                         LaporanPrestasiModel::where('kategori', $id)->exists();
+                         $kategori->lombas()->exists() ||
+                         LaporanPrestasiModel::where('id_kategori', $id)->exists();
     
             if ($digunakan) {
                 return response()->json([
