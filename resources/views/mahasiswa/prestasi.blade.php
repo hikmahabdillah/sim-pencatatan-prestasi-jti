@@ -41,10 +41,12 @@
                                         <!-- PDF Preview -->
                                         @if ($item->bukti_sertifikat)
                                             <div class="pdf-preview-container border-radius-md mb-3 flex-grow-1"
-                                                style="height: 180px; background-color: #f8f9fa; overflow: hidden;">
+                                                style="height: 180px; background-color: #f8f9fa; overflow: hidden; padding: 0;">
                                                 <iframe
-                                                    src="{{ asset('storage/' . $item->bukti_sertifikat) }}#toolbar=0&view=fit"
-                                                    style="width: 100%; height: 100%; border: none;"></iframe>
+                                                    src="{{ asset('storage/' . $item->bukti_sertifikat) }}#toolbar=0&view=fit&scrollbar=0"
+                                                    style="width: 100%; height: 100%; border: none; overflow: hidden;"
+                                                    scrolling="no">
+                                                </iframe>
                                             </div>
                                         @else
                                             <div class="pdf-preview-container border-radius-md mb-3 flex-grow-1"
@@ -111,6 +113,15 @@
         .pdf-preview-container {
             border: 1px solid #dee2e6;
             border-radius: 0.5rem;
+        }
+
+        .pdf-preview-container iframe::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pdf-preview-container iframe {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         .badge {

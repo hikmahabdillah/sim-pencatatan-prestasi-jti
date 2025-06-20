@@ -84,7 +84,7 @@ class LombaController extends Controller
             'breadcrumb' => $breadcrumb,
             'activeMenu' => $activeMenu,
             'kategori' => $kategori,
-            'rekomLomba' => $rekomLomba,  
+            'rekomLomba' => $rekomLomba,
         ]);
     }
 
@@ -117,7 +117,7 @@ class LombaController extends Controller
             'mahasiswa:id_mahasiswa,nim,nama',
             'lomba.kategoris'
         ])
-        ->where('id_pengusul', $pengusulId)
+            ->where('id_pengusul', $pengusulId)
             ->where('role_pengusul', 2)
             ->when($keyword, function ($q) use ($keyword) {
                 $q->where(function ($subQuery) use ($keyword) {
@@ -257,7 +257,7 @@ class LombaController extends Controller
 
         return response()->json(['data' => $data]);
     }
-    
+
     public function listRekom(Request $request)
     {
         $idMahasiswa = auth()->user()->mahasiswa->id_mahasiswa;
@@ -389,7 +389,7 @@ class LombaController extends Controller
             'list' => ['Detail Lomba']
         ];
 
-        $mahasiswaList = MahasiswaModel::all(); 
+        $mahasiswaList = MahasiswaModel::all();
 
         return view('lomba.showDosen', compact('data', 'breadcrumb', 'mahasiswaList'));
     }

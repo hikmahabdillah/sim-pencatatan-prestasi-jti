@@ -6,6 +6,7 @@ use App\Models\AnggotaPrestasiModel;
 use App\Models\LombaModel;
 use App\Models\PrestasiMahasiswaModel;
 use App\Models\PenggunaModel;
+use App\Models\RekomendasiLombaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -164,6 +165,53 @@ class DashboardController extends Controller
             ];
         });
     }
+
+
+
+    private function getRekomendasiLomba()
+    {
+        $idMahasiswa = auth()->user()->mahasiswa->id_mahasiswa;
+
+        // Selalu generate ulang rekomendasi
+        app()->call('App\Http\Controllers\RekomendasiLombaController@prosesRekomendasi', [
+            'idMahasiswa' => $idMahasiswa
+        ]);
+
+        // Ambil data rekomendasi terbaru dan urutkan berdasarkan skor_moora desc
+        $query = RekomendasiLombaModel::where('id_mahasiswa', $idMahasiswa)
+            ->orderByDesc('skor_moora')->limit(3);
+
+        $rekomendasi = $query->get();
+        $lombaIds = $rekomendasi->pluck('id_lomba');
+
+        $lombaQuery = LombaModel::with('kategoris')->whereIn('id_lomba', $lombaIds)->where('status_verifikasi', 1);
+
+        $lombaList = $lombaQuery->get()->keyBy('id_lomba');
+
+        $filteredRekom = $rekomendasi->filter(fn($rek) => $lombaList->has($rek->id_lomba));
+
+        $rank = 1;
+        $data = $filteredRekom->map(function ($rek) use ($lombaList, &$rank) {
+            $lomba = $lombaList[$rek->id_lomba];
+
+            return [
+                'id_lomba' => $lomba->id_lomba,
+                'nama_lomba' => $lomba->nama_lomba,
+                'kategoris' => $lomba->kategoris->map(fn($kat) => [
+                    'id_kategori' => $kat->id_kategori,
+                    'nama_kategori' => $kat->nama_kategori,
+                ]),
+                'deskripsi' => $lomba->deskripsi,
+                'link_pendaftaran' => $lomba->link_pendaftaran,
+                'foto' => $lomba->foto,
+                'skor_moora' => $rek->skor_moora,
+                'aksi' => '<a href="' . url('/lomba/' . $lomba->id_lomba . '/showMahasiswa') . '" class="btn btn-info btn-sm">Detail</a>',
+                'rank' => $rank <= 5 ? $rank++ : null, // Hanya beri rank untuk 5 teratas
+            ];
+        });
+
+        return ['data' => $data->values()];
+    }
     public function index()
     {
         $activeMenu = 'dashboard'; // digunakan untuk menandai menu aktif di sidebar
@@ -178,6 +226,7 @@ class DashboardController extends Controller
         $LombaByKategori = $this->LombaByKategori();
         $prestasiMahasiswaPerSemester = $this->prestasiMahasiswaPerSemester();
         $rankMahasiswaByPrestasi = $this->rankMahasiswaByPrestasi();
+        $getRekomendasiLomba = $this->getRekomendasiLomba();
 
         // Notif
         $allNotifikasi = auth()->user()->notifications()->latest()->limit(10)->get();
@@ -192,6 +241,7 @@ class DashboardController extends Controller
             'lombaByKategori' => $LombaByKategori,
             'prestasiMahasiswaPerSemester' => $prestasiMahasiswaPerSemester,
             'rankMahasiswaByPrestasi' => $rankMahasiswaByPrestasi,
+            'rekomLomba' => $getRekomendasiLomba,
             'navbarNotifications' => $allNotifikasi,
         ]);
     }
