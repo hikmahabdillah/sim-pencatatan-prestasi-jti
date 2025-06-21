@@ -3,6 +3,73 @@
     @include('layouts.navbar', ['title' => $breadcrumb->list])
     <div class="container-fluid py-4 h-100 flex-grow-1">
         <h3 class="text-dark">Selamat Datang {{ getuserName() }}!</h3>
+        <div class="col flex-grow-1">
+            <div class="flex-grow-1">
+                <div class="card mx-auto border" style="width: 100%">
+                    <div class="card-body p-4">
+                        <h5 class="font-weight-bolder mb-4">Rekomendasi lomba untuk anda</h5>
+                        <div class="row">
+                            @foreach ($rekomLomba['data'] as $lomba)
+                                <div class="col-md-6 col-lg-4 mb-4">
+                                    <div class="card shadow w-100 d-flex flex-column position-relative h-100">
+                                        <!-- Foto Lomba -->
+                                        <div class="d-flex justify-content-center align-items-center"
+                                            style="height: 200px; width: 150px; margin: auto; border-radius: 25px; overflow: hidden;">
+                                            @if ($lomba['foto'])
+                                                <a href="{{ asset('storage/' . $lomba['foto']) }}" target="_blank"
+                                                    rel="noopener noreferrer">
+                                                    <img src="{{ asset('storage/' . $lomba['foto']) }}" alt="Poster Lomba"
+                                                        class="w-100 h-100 shadow-lg"
+                                                        style="object-fit: cover; border-radius: 25px;">
+                                                </a>
+                                            @else
+                                                <div
+                                                    class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                                                    <i class="fas fa-image fa-3x text-secondary"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- Informasi Lomba -->
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title">{{ $lomba['nama_lomba'] }}</h5>
+
+                                            <!-- Kategori -->
+                                            <div class="mb-2 d-flex flex-wrap gap-1">
+                                                @foreach ($lomba['kategoris'] as $kategori)
+                                                    <span
+                                                        class="badge bg-warning text-wrap">{{ $kategori['nama_kategori'] }}</span>
+                                                @endforeach
+                                            </div>
+
+                                            <!-- Deskripsi -->
+                                            <p class="card-text text-sm mb-2">
+                                                {{ Str::limit($lomba['deskripsi'], 100) }}
+                                            </p>
+
+                                            <!-- Link Pendaftaran -->
+                                            @if ($lomba['link_pendaftaran'])
+                                                <p class="card-text text-sm mb-2">
+                                                    <a href="{{ $lomba['link_pendaftaran'] }}"
+                                                        target="_blank">{{ $lomba['link_pendaftaran'] }}</a>
+                                                </p>
+                                            @endif
+
+                                            <!-- Skor Moora dan Tombol -->
+                                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    {!! $lomba['aksi'] !!}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col mx-auto d-flex flex-column gap-3 mt-4 w-100" style="max-width: 1300px">
             <!-- Row 1: Statistik dan Doughnut Chart -->
             <div class="row text-center">
