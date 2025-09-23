@@ -214,6 +214,8 @@ class DashboardController extends Controller
     }
     public function index()
     {
+        
+        $auth = auth()->user();
         $activeMenu = 'dashboard'; // digunakan untuk menandai menu aktif di sidebar
         $breadcrumb = (object)[
             'title' => 'Dashboard', // untuk title halaman
@@ -226,7 +228,15 @@ class DashboardController extends Controller
         $LombaByKategori = $this->LombaByKategori();
         $prestasiMahasiswaPerSemester = $this->prestasiMahasiswaPerSemester();
         $rankMahasiswaByPrestasi = $this->rankMahasiswaByPrestasi();
-        $getRekomendasiLomba = $this->getRekomendasiLomba();
+
+        /// cek role sebelum ambil rekomendasi lomba
+        if (auth()->user()->role_id == 3) {
+            $getRekomendasiLomba = $this->getRekomendasiLomba();
+        } else {
+            $getRekomendasiLomba = ['data' => collect()]; // kosong tapi tetap ada key 'data'
+        }
+
+
 
         // Notif
         $allNotifikasi = auth()->user()->notifications()->latest()->limit(10)->get();
