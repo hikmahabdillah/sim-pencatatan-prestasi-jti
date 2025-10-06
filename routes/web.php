@@ -148,6 +148,10 @@ Route::middleware(['auth', 'check.user.status'])->group(function () { // artinya
         });
     });
 
+    Route::get('/mahasiswa/{id}/prestasi', [PrestasiController::class, 'getPrestasiMahasiswa'])
+        ->name('mahasiswa.prestasi');
+
+
     // Routes untuk MahasiswaController
     Route::prefix('mahasiswa')->group(function () {
         Route::middleware(['authorize:Admin'])->group(function () {
