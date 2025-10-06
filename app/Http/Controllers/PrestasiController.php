@@ -763,7 +763,7 @@ class PrestasiController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Prestasi berhasil dihapus',
-                'redirect_url' => '/mahasiswa/' . $prestasi->id_mahasiswa . '/prestasi',
+                'redirect_url' => route('mahasiswa.prestasi', ['id' => $prestasi->id_mahasiswa]),
             ]);
         } catch (\Exception $e) {
             return response()->json([
